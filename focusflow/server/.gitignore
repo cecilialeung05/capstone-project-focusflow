@@ -1,0 +1,10 @@
+# Dependencies
+node_modules/
+
+# Database & Environment Files
+.env
+knexfile.js
+
+# Logs
+*.log
+debug.log
