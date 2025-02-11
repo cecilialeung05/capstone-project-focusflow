@@ -18,26 +18,26 @@ This app is designed for individuals who:
 
 1️. **Task Management (To-Do List)**
 The user can...
-    *   Create, Edit, Delete Tasks: to create change to the to-do lists. Manage tasks with priority levels and deadlines.
-    *   Tagging System: Assign categories to tasks (e.g., Work, Personal, Study).
-    *   Update A Tasks' Status: Track progress and completion rates.
-    *   Tag Filtering & Search: Filter tasks by tags and search for specific tasks.
+*   Create, Edit, Delete Tasks: to create change to the to-do lists. Manage tasks with priority levels and deadlines.
+*   Tagging System: Assign categories to tasks (e.g., Work, Personal, Study).
+*   Update A Tasks' Status: Track progress and completion rates.
+*   Tag Filtering & Search: Filter tasks by tags and search for specific tasks.
 
 2. **Notes Organization (Linked to Tasks & Standalone)**
 The user can...
-    *   Create, Edit, Organize Notes: Change the context of the notes and ideas.
-    *   Task-Linked Notes: Attach notes to specific tasks to keep related information in one place.
-    *   Tag Filtering & Search: Search and filter notes based on tags or keywords.
+*   Create, Edit, Organize Notes: Change the context of the notes and ideas.
+*   Task-Linked Notes: Attach notes to specific tasks to keep related information in one place.
+*   Tag Filtering & Search: Search and filter notes based on tags or keywords.
 
-3️. **Focus Timer**
+3. **Focus Timer**
 The user can...
-    *   use a Pomodoro Timer: Track work sessions to improve focus and productivity.
+*   use a Pomodoro Timer: Track work sessions to improve focus and productivity.
 
 4. **Progress Insights**
     *   Basic Analytics: Track task completion trends using visual charts.
 
-5️. **Weather Tracker**
-    *   Weather Tracker: Display current conditions.
+5. **Weather Tracker**
+*   Weather Tracker: Display current conditions.
 
 ## Implementation
 
@@ -57,30 +57,28 @@ The user can...
     *   cors (for handling Cross-Origin Resource Sharing)
 
 ### Libraries
-    *   Framer Motion (animations)
-    *   Recharts (data visualization)
-    *   React-Beautiful-DND (drag-and-drop tasks)
+*   Framer Motion (animations)
+*   Recharts (data visualization)
+*   React-Beautiful-DND (drag-and-drop tasks)
 
 ### APIs
-
 *   This application does not rely on external APIs. All data is managed within the internal database.
 
 ### Sitemap
-
 *   **/dashboard:** Overview of tasks, focus timer, etc.
 
 *   **/tasks:** Add, edit, and organize tasks.
     Subpages:
-        *   **/tasks/:taskId:** Displays the details of a specific task.
-        *   **/tasks/add:** Allows users to create a new task.
-        *   **/tasks/:taskId/edit:** Allows users to edit an existing task.
+    *   **/tasks/:taskId:** Displays the details of a specific task.
+    *   **/tasks/add:** Allows users to create a new task.
+    *   **/tasks/:taskId/edit:** Allows users to edit an existing task.
 
 *   **/notes:** Write and organize notes separately from tasks.
     Subpages:
-        *   **/notes/:noteId:** Displays the details of a specific note.
-        *   **/notes/add:** Allows users to create a new note.
-        *   **/notes/:noteId/edit:** Allows users to edit an existing note.
-        
+    *   **/notes/:noteId:** Displays the details of a specific note.
+    *   **/notes/add:** Allows users to create a new note.
+    *   **/notes/:noteId/edit:** Allows users to edit an existing note.
+
 *   **/tags:** Allows users to manage tags (create, edit, delete).
 *   **/insights:** Visualizations of productivity and trends.
 *   **/weather:** Displays current weather.
