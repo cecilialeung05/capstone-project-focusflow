@@ -2,7 +2,7 @@
 
 ## Overview
 
-FocusFlow is a modern productivity tool designed to allows users to create, organize, and track their tasks and ideas, helping them stay focused and productive.
+FocusFlow is a modern productivity tool designed to allows users to create, organize, and track their tasks and notes, helping them stay focused and productive. Key featuresinclude  tag linking and filtering, as well as a standalone timer.
 
 ## Problem Space
 
@@ -18,26 +18,21 @@ This app is designed for individuals who:
 
 1️. **Task Management (To-Do List)**
 The user can...
-*   Create, Edit, Delete Tasks: to create change to the to-do lists. Manage tasks with priority levels and deadlines.
+*   Create, Edit, Delete Tasks: Manage tasks with titles, descriptions, duedates and the task's status (open, in progress, completed).
 *   Tagging System: Assign categories to tasks (e.g., Work, Personal, Study).
 *   Update A Tasks' Status: Track progress and completion rates.
-*   Tag Filtering & Search: Filter tasks by tags and search for specific tasks.
+*   Tag Filtering & Search: Filter tasks by tags.
 
-2. **Notes Organization (Linked to Tasks & Standalone)**
+2. **Notes Organization (Linked to Tasks)**
 The user can...
-*   Create, Edit, Organize Notes: Change the context of the notes and ideas.
+*   Create, Edit, Organize Notes: Change the context of the notes associated with a task.
 *   Task-Linked Notes: Attach notes to specific tasks to keep related information in one place.
-*   Tag Filtering & Search: Search and filter notes based on tags or keywords.
+*   Tag Filtering & Search: Search and filter notes based on tasks and tags.
 
 3. **Focus Timer**
 The user can...
-*   use a Pomodoro Timer: Track work sessions to improve focus and productivity.
+*   use a timer to track work sessions to improve focus and productivity.
 
-4. **Progress Insights**
-    *   Basic Analytics: Track task completion trends using visual charts.
-
-5. **Weather Tracker**
-*   Weather Tracker: Display current conditions.
 
 ## Implementation
 
@@ -65,7 +60,7 @@ The user can...
 *   This application does not rely on external APIs. All data is managed within the internal database.
 
 ### Sitemap
-*   **/dashboard:** Overview of tasks, focus timer, etc.
+*   **/dashboard:** Overview of tasks, notes andfocus timer.
 
 *   **/tasks:** Add, edit, and organize tasks.
     Subpages:
@@ -80,9 +75,7 @@ The user can...
     *   **/notes/:noteId/edit:** Allows users to edit an existing note.
 
 *   **/tags:** Allows users to manage tags (create, edit, delete).
-*   **/insights:** Visualizations of productivity and trends.
-*   **/weather:** Displays current weather.
-*   **/settings:** Light and Dark theme. 
+
 
 ### Mockups
 #### Dashboard Page
@@ -103,17 +96,17 @@ The user can...
 #### All Tags Page
 ![](image-6.png)
 
-#### Insights, Weather and Settings Page 
+#### Settings Page 
 ![](image-7.png)
 
 
 
 ## Database Schema
-![DatabaseSchema](image.png)
+![DatabaseSchema](image-db.png)
 - Tasks relate One-to-Many with Notes.
 - Tasks and Tags relate Many-to-Many via task_tags.
 - Notes and Tags relate Many-to-Many via note_tags.
-- Weather, Timer and User Preferences are standalone tables.
+- Timer is a standalone table.
 
 ### Data
 *   **Tasks:**
@@ -121,9 +114,7 @@ The user can...
     *   `title` (VARCHAR, Not Null)
     *   `description` (TEXT)
     *   `status` (ENUM ['open', 'in progress', 'completed' ], Default: 'open')
-    *   `due_date` (DATE)
-    *   `priority` (INT)
-    *   `position` (INT, Default: 0)
+    *   `due_date` (TIMESTAMP, Nullable)
     *   `created_at` (TIMESTAMP)
     *   `updated_at` (TIMESTAMP)
 *   **Notes:**
@@ -131,7 +122,6 @@ The user can...
     *   `task_id` (INT, Foreign Key referencing `tasks.id`, Nullable)
     *   `title` (VARCHAR, Not Null)
     *   `content` (TEXT, Not Null)
-     *   `is_standalone` (BOOLEAN, Default: false)
     *   `created_at` (TIMESTAMP)
     *   `updated_at` (TIMESTAMP)
 *   **Tags:**
@@ -152,13 +142,13 @@ The user can...
     *   `UNIQUE (note\_id, tag\_id)`
     *   `created_at` (TIMESTAMP)
 
-- **Weather**: { location, temperature }.
 - **User Preferences**: { theme }.
 
 ### Endpoints
 **Tasks:**
 *   `GET /api/tasks`
-    *   Description: Get all tasks, sorted by position.
+    *   Description: Get all tasks,
+    *   Query Parameters: `tagId` (optional, to filter by tag)
     *   Response:
     ```json
     [
@@ -168,10 +158,9 @@ The user can...
             "description": "Outline the new design for the company website.",
             "status": "in progress",
             "due_date": "2024-01-15",
-            "priority": 1,
-            "position": 0,
             "created_at": "2023-10-27T10:00:00.000Z",
-            "updated_at": "2023-10-27T10:00:00.000Z"
+            "updated_at": "2023-10-27T10:00:00.000Z",
+            "tags": [ { "id": 1, "name": "Work" } ]
         },
         // ... other tasks
     ]
@@ -187,9 +176,7 @@ The user can...
         "title": "Plan Website Redesign",
         "description": "Outline the new design for the company website.",
         "status": "in progress",
-        "due_date": "2024-01-15",
-        "priority": 1,
-        "position": 0,
+        "due_date": "2024-03-15T00:00:00.000Z",
         "created_at": "2023-10-27T10:00:00.000Z",
         "updated_at": "2023-10-27T10:00:00.000Z",
         "tags": [
@@ -201,7 +188,7 @@ The user can...
 
 *   `POST /api/tasks`
     *   Description: Create a new task.
-    *   Parameters: `title`, `description`, `status`, `due_date`, `priority`, `tags` (array of tag IDs)
+    *   Parameters: `title`, `description`, `status`, `due_date`, `tags` (array of tag IDs)
     *   Response: (Newly created task)
     ```json
     {
@@ -209,9 +196,7 @@ The user can...
         "title": "New Task Title",
         "description": "...",
         "status": "open",
-        "due_date": null,
-        "priority": 2,
-        "position": 0,
+        "due_date": "2024-02-29T00:00:00.000Z",
         "created_at": "2023-10-27T10:00:00.000Z",
         "updated_at": "2023-10-27T10:00:00.000Z"
     }
@@ -219,7 +204,7 @@ The user can...
 
 *   `PUT /api/tasks/:id`
     *   Description: Update an existing task.
-    *   Parameters: `id`, `title`, `description`, `status`, `due_date`, `priority`, `tags` (array of tag IDs)
+    *   Parameters: `id`, `title`, `description`, `status`, `due_date`, `tags` (array of tag IDs)
     *   Response: (Updated task)
     ```json
     {
@@ -227,41 +212,21 @@ The user can...
         "title": "Updated Task Title",
         "description": "...",
         "status": "completed",
-        "due_date": "2024-01-01",
-        "priority": 3,
-        "position": 0,
+        "due_date": "2024-03-01T00:00:00.000Z",
         "created_at": "2023-10-27T10:00:00.000Z",
         "updated_at": "2023-10-27T10:00:00.000Z"
     }
     ```
 
-*   `PUT /api/tasks/:id/position`
-    *    Description: Update the position
-    *   Parameters: `id`, `position`
-        *  Response: (Updated Task)
-            ```json
-              {
-              "id": 1,
-              "title": "Plan Website Redesign",
-              "description": "Outline the new design for the company website.",
-              "status": "in progress",
-              "due_date": "2024-01-15",
-              "priority": 1,
-              "position": 2,
-              "created_at": "2023-10-27T10:00:00.000Z",
-              "updated_at": "2023-10-27T10:00:00.000Z"
-          },
-    ```
-
 *   `DELETE /api/tasks/:id`
-    *   Description: Delete a task.
+    *   Description: Delete a task. 
     *   Parameters: `id`
     *   Response: 204 No Content
 
 **Notes:**
 *   `GET /api/notes`
-    *   Description: Get all notes, can be filtered by `taskId` or to return only standalone notes (`isStandalone=true`).
-    *   Parameters: `taskId` (optional), `isStandalone` (optional, boolean)
+    *   Description: Get all notes, can be filtered by `taskId`.
+    *   Parameters: `taskId` (optional), `tagId` (optional).
     *   Response: (Array of notes)
     ```json
     [
@@ -271,7 +236,8 @@ The user can...
             "title": "Initial Ideas",
             "content": "Brainstorming session notes",
             "created_at": "2023-10-27T10:00:00.000Z",
-            "updated_at": "2023-10-27T10:00:00.000Z"
+            "updated_at": "2023-10-27T10:00:00.000Z",
+            "tags": [ { "id": 1, "name": "Work" } ]
         },
         // ... other notes
     ]
@@ -290,7 +256,7 @@ The user can...
         "created_at": "2023-10-27T10:00:00.000Z",
         "updated_at": "2023-10-27T10:00:00.000Z",
         "tags": [
-            {"id": 1, "name": "Work", "created_at": "...", "updated_at": "..."}
+            {"id": 1, "name": "Work"}
         ]
     }
     ```
@@ -303,8 +269,8 @@ The user can...
     {
         "id": 7,
         "task_id": null,
-        "title": "Standalone Note",
-        "content": "This is a standalone note.",
+        "title": "Note",
+        "content": "This is a note.",
         "created_at": "2023-10-27T10:00:00.000Z",
         "updated_at": "2023-10-27T10:00:00.000Z"
     }
@@ -391,6 +357,7 @@ The user can...
     *   Parameters: `id`
     *   Response: 204 No Content
 
+
 ## Roadmap
 
 **Sprint (2 Weeks):**
@@ -406,15 +373,17 @@ The user can...
     *   Develop note management (add, edit, delete, link to tasks).
     *   Implement progress insights (charts and analytics for task completion rates).
     *   Integrate focus timer.
-    *   Implement weather tracker functionality.
     *   Finalize settings and personalization features.
     *   Test, refine, and deploy.
 
 ---
 
-## Nice to haves
+## Nice to haves 
+*   **Progress Insights**: Track task completion rate over time.
  *   **Custom Reminders**: Gentle nudges to encourage breaks or task transitions.
- *   **User Authentication:** Add user authentication for multi-user support.
+ *   **User Authentication:** Add user authentication for multi-user support. 
+ *   **Weather Tracker:** Display prompts based on weather.
+ *   **Settings:** Light and Dark theme. 
 
 
 ## Future Implementations
