@@ -12,7 +12,6 @@ export async function seed(knex) {
         description: 'Outline the new design for the company website.',
         status: 'in progress',
         due_date: '2024-01-15',
-        priority: 1,
       },
       {
         id: 2,
@@ -20,7 +19,6 @@ export async function seed(knex) {
         description: 'Analyze pricing strategies of key competitors.',
         status: 'open',
         due_date: '2023-12-20',
-        priority: 2,
       },
       {
         id: 3,
@@ -28,7 +26,6 @@ export async function seed(knex) {
         description: 'Create a compelling presentation for the potential client.',
         status: 'completed',
         due_date: '2023-11-10',
-        priority: 1,
       },
       {
         id: 4,
@@ -36,7 +33,6 @@ export async function seed(knex) {
         description: 'Resolve the reported issue in the user login process.',
         status: 'blocked',
         due_date: null,  // No due date
-        priority: 3,
       },
       {
         id: 5,
@@ -44,7 +40,6 @@ export async function seed(knex) {
         description: 'Compose an informative blog post for the company blog.',
         status: 'open',
         due_date: '2023-12-31',
-        priority: 2,
       },
     ]);
   }

@@ -1,12 +1,12 @@
 import express from "express";
 const router = express.Router();
 
-import { getTags, getTag, addTag, updateTag, deleteTag } from '../controllers/tagsControllers.js';
+import { getTags, getTag, addTag, updateTag, deleteTag } from '../controllers/tagsController.js';
 
-router.get('/tags', getTags);
-router.get('/tags/:id', getTag);
-router.post('/tags', addTag);
-router.put('/tags/:id', updateTag);
-router.delete('/tags/:id', deleteTag);
+router.get('/', getTags);
+router.get('/:id', getTag);
+router.post('/', addTag);
+router.put('/:id', updateTag);
+router.delete('/:id', deleteTag);
 
 export default router;
