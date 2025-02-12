@@ -60,7 +60,7 @@ The user can...
 *   This application does not rely on external APIs. All data is managed within the internal database.
 
 ### Sitemap
-*   **/dashboard:** Overview of tasks, notes andfocus timer.
+*   **/dashboard:** Overview of tasks, notes and focus timer.
 
 *   **/tasks:** Add, edit, and organize tasks.
     Subpages:
@@ -362,12 +362,13 @@ The user can...
 
 **Sprint (2 Weeks):**
 
+FEB 12 - Test tag links & set up front end.     
 *   **Week 1:**
     *   Set up the React project and basic routing.
     *   Implement routing and page navigation.
     *   Build basic UI.
-    *   Implement the backend API endpoints. 
-    *  Set up database schema and migrations.
+    *   Implement the backend API endpoints. - complete - OUTSTANDING: test tag links.
+    *   Set up database schema and migrations.  - complete - OUTSTANDING: test tag links.
 *   **Week 2:**
     *   Implement task filtering, tagging, and search functionality.
     *   Develop note management (add, edit, delete, link to tasks).
