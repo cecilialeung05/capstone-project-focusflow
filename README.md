@@ -62,42 +62,22 @@ The user can...
 ### Sitemap
 *   **/dashboard:** Overview of tasks, notes and focus timer.
 
-*   **/tasks:** Add, edit, and organize tasks.
-    Subpages:
-    *   **/tasks/:taskId:** Displays the details of a specific task.
-    *   **/tasks/add:** Allows users to create a new task.
-    *   **/tasks/:taskId/edit:** Allows users to edit an existing task.
+*   **/tasks:** Manage tasks (list, add, edit, delete).
+        A form on this page allows creating/editing a task.
 
-*   **/notes:** Write and organize notes separately from tasks.
-    Subpages:
-    *   **/notes/:noteId:** Displays the details of a specific note.
-    *   **/notes/add:** Allows users to create a new note.
-    *   **/notes/:noteId/edit:** Allows users to edit an existing note.
-
+*   **/notes:** Manage notes (list, add, edit, delete).
+        A form on this page allows creating/editing a note.
 *   **/tags:** Allows users to manage tags (create, edit, delete).
 
-
 ### Mockups
-#### Dashboard Page
-![](image-1.png)
+#### Dashboard Page (all tags, tasks, notes and timer)
+![](img1.png)
 
-#### Tasks List Page
-![](image-2.png)
+#### Tasks Page (list, add, edit, delete)
+![](img2.png)
 
-#### Add and Edit Tasks Page
-![](image-3.png)
-
-#### Notes List Page
-![](image-4.png)
-
-#### Add and Edit Notes Page
-![](image-5.png)
-
-#### All Tags Page
-![](image-6.png)
-
-#### Settings Page 
-![](image-7.png)
+#### Notes List Page (list, add, edit, delete)
+![](img3.png)
 
 
 
