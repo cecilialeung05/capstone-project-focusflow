@@ -33,16 +33,15 @@ export const getTag = async (req, res) => {
 export const addTag = async (req, res) => {
   const { name } = req.body;
 
-  if (!name) {
-    return res.status(400).json({ message: "Tag name is required" });
-  }
-
   try {
     const [tagId] = await knex("tags").insert({ name });
     const newTag = await knex("tags").where({ id: tagId }).first();
     res.status(201).json(newTag);
   } catch (error) {
     console.error("Error creating tag:", error);
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res.status(400).json({ message: "Tag name already exists." });
+    }
     res.status(500).json({ message: "Error creating tag", error: error.message });
   }
 };
@@ -51,10 +50,6 @@ export const addTag = async (req, res) => {
 export const updateTag = async (req, res) => {
   const { id } = req.params;
   const { name } = req.body;
-
-  if (!name) {
-    return res.status(400).json({ message: "Tag name is required" });
-  }
 
   try {
     const tagExists = await knex("tags").where({ id }).first();
@@ -67,6 +62,9 @@ export const updateTag = async (req, res) => {
     res.status(200).json(updatedTag);
   } catch (error) {
     console.error("Error updating tag:", error);
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res.status(400).json({ message: "Tag name already exists." });
+    }
     res.status(500).json({ message: "Error updating tag", error: error.message });
   }
 };
@@ -76,6 +74,12 @@ export const deleteTag = async (req, res) => {
   const { id } = req.params;
 
   try {
+    // Delete tag associations in task_tags
+    await knex("task_tags").where({ tag_id: id }).del();
+
+    // Delete tag associations in note_tags
+    await knex("note_tags").where({ tag_id: id }).del();
+
     const tagExists = await knex("tags").where({ id }).first();
     if (!tagExists) {
       return res.status(404).json({ message: `Tag with ID ${id} not found` });

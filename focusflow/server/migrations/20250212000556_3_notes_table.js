@@ -4,7 +4,7 @@
  */
 export function up(knex) {
     return knex.schema.createTable('notes', (table) => {
-      table.increments('id').primary(); // Primary Key
+      table.increments('id').primary().unsigned();  // Primary Key
       table
         .integer('task_id')
         .unsigned()
