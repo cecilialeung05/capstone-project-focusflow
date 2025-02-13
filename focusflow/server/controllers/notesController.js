@@ -1,7 +1,9 @@
 // controllers/notesController.js
 import initKnex from "knex";
 import configuration from "../knexfile.js";
+
 const knex = initKnex(configuration);
+
 
 // Get all notes
 export const getNotes = async (req, res) => {
@@ -164,7 +166,7 @@ export const updateNote = async (req, res) => {
       } else {
         updatedNote.tags = [];
       }
-      
+
     res.status(200).json(updatedNote);
   } catch (error) {
     console.error("Error updating note:", error);

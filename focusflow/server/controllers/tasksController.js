@@ -15,31 +15,25 @@ export const getTasks = async (req, res) => {
         knex.raw('GROUP_CONCAT(tags.name) as tags') // Add this
       )
       .leftJoin("task_tags", "tasks.id", "task_tags.task_id")
-      .leftJoin("tags", "task_tags.tag_id", "tags.id")
-      .groupBy("tasks.id");
-
+      .leftJoin("tags", "task_tags.tag_id", "tags.id");
     if (tagId) {
-      query = knex("tasks")
-        .select("tasks.*", knex.raw('GROUP_CONCAT(tags.name) as tags'))  // Add this also to the tagId query
-        .leftJoin("task_tags", "tasks.id", "task_tags.task_id")
-        .leftJoin("tags", "task_tags.tag_id", "tags.id")
-        .where("task_tags.tag_id", tagId)
-        .groupBy("tasks.id");
+      query = query.where("task_tags.tag_id", tagId);
     }
 
+    query = query.groupBy("tasks.id");
     const tasks = await query;
 
     // Convert comma separated string to array
     const formattedTasks = tasks.map(task => {
       if (task.tags) {
-        task.tags = task.tags.split(',');
+          task.tags = task.tags.split(',');
       } else {
-        task.tags = [];
+          task.tags = [];
       }
       return task;
     });
-    
-    res.status(200).json(tasks);
+
+    res.status(200).json(formattedTasks);
   } catch (error) {
     console.error("Error getting tasks:", error);
     res.status(500).json({ message: "Error retrieving tasks", error: error.message });
@@ -86,13 +80,11 @@ export const addTask = async (req, res) => {
       status,
       due_date: dueDate || null,
     });
-
     // Associate tags with the new task
     if (tags && tags.length > 0) {
       const inserts = tags.map(tagId => ({ task_id: taskId, tag_id: tagId }));
       await knex("task_tags").insert(inserts);
     }
-
     // Fetch the newly created task with its tags
     const newTask = await knex("tasks")
     .select("tasks.*", knex.raw('GROUP_CONCAT(tags.name) as tags'))
@@ -111,6 +103,9 @@ export const addTask = async (req, res) => {
     res.status(201).json(newTask);
   } catch (error) {
     console.error("Error creating task:", error);
+    if (error.code === 'ER_NO_REFERENCED_ROW_2') { 
+      return res.status(400).json({ message: "Invalid task_id or tag_id.  Make sure they exist." });
+    } 
     res.status(500).json({ message: "Error creating task", error: error.message });
   }
 };
@@ -161,8 +156,11 @@ export const updateTask = async (req, res) => {
 
     res.status(200).json(updatedTask);
   } catch (error) {
-    console.error("Error updating task:", error);
-    res.status(500).json({ message: "Error updating task", error: error.message });
+        console.error("Error updating task:", error);
+        if (error.code === 'ER_NO_REFERENCED_ROW_2') {  
+            return res.status(400).json({ message: "Invalid task_id or tag_id.  Make sure they exist." });
+        }
+    return res.status(500).json({ message: "Error updating task", error: error.message });
   }
 };
 
