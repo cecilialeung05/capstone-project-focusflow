@@ -33,10 +33,8 @@ The user can...
 The user can...
 *   use a timer to track work sessions to improve focus and productivity.
 
-<<<<<<< HEAD
-=======
 
->>>>>>> feature-backend-api
+
 ## Implementation
 
 ### Tech Stack
@@ -67,13 +65,6 @@ The user can...
 
 *   **/tasks:** Manage tasks (list, add, edit, delete).
         A form on this page allows creating/editing a task.
-<<<<<<< HEAD
-
-*   **/notes:** Manage notes (list, add, edit, delete).
-        A form on this page allows creating/editing a note.
-=======
->>>>>>> feature-backend-api
-
 *   **/notes:** Manage notes (list, add, edit, delete).
         A form on this page allows creating/editing a note.
 *   **/tags:** Allows users to manage tags (create, edit, delete).
@@ -81,16 +72,6 @@ The user can...
 ### Mockups
 #### Dashboard Page (all tags, tasks, notes and timer)
 ![](img1.png)
-<<<<<<< HEAD
-=======
-
-#### Tasks Page (list, add, edit, delete)
-![](img2.png)
-
-#### Notes List Page (list, add, edit, delete)
-![](img3.png)
->>>>>>> feature-backend-api
-
 #### Tasks Page (list, add, edit, delete)
 ![](img2.png)
 

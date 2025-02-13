@@ -1,12 +1,19 @@
-import AnimatedPage from "../components/AnimatedPage";
+import React from 'react';
+import NoteForm from '../components/NoteForm';
+import NoteItem from '../components/NoteItem';
 
-const Notes = () => {
+function Notes({ notes, addNote, updateNote, deleteNote }) {
   return (
-    <AnimatedPage>
+    <div>
       <h1>Notes</h1>
-      <p>Manage your notes here.</p>
-    </AnimatedPage>
+      <NoteForm addNote={addNote} />
+      <ul>
+        {notes.map(note => (
+          <NoteItem key={note.id} note={note}  updateNote={updateNote} deleteNote={deleteNote}/>
+        ))}
+      </ul>
+    </div>
   );
-};
+}
 
 export default Notes;

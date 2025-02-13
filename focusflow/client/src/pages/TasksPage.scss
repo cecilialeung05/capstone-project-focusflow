@@ -1,0 +1,37 @@
+// src/pages/TasksPage/TasksPage.scss
+.tasks-page {
+    padding: 1rem;
+
+    &__add-button {
+        display: inline-block;
+        margin-bottom: 1rem;
+        padding: 0.5rem 1rem;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+
+        &:hover {
+            background-color: #0056b3;
+        }
+    }
+
+    &__list {
+        list-style: none;
+        padding: 0;
+
+        &-item {
+            margin-bottom: 0.5rem;
+        }
+    }
+
+    &__task-link {
+        text-decoration: none;
+        color: #333;
+        font-weight: bold;
+
+        &:hover {
+            color: #007bff;
+        }
+    }
+}

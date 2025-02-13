@@ -1,0 +1,14 @@
+.container {
+    margin-left: 200px; /* Same width as the navbar */
+    padding: 20px; /* Add some padding around the content */
+  }
+
+  .layout-container {
+    display: flex;
+}
+
+.content-wrapper {
+  margin-left: 200px; /* Same width as the navbar */
+  padding: 20px; /* Add some padding around the content */
+  width: 100%;
+}

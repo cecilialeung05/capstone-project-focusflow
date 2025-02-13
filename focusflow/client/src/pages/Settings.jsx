@@ -1,12 +1,13 @@
-import AnimatedPage from "../components/AnimatedPage";
+import React from 'react';
 
-const Settings = () => {
+function Settings({ theme, toggleTheme }) {
   return (
-    <AnimatedPage>
+    <div>
       <h1>Settings</h1>
-      <p>Customize your preferences here.</p>
-    </AnimatedPage>
+      <p>Theme: {theme}</p>
+      <button onClick={toggleTheme}>Toggle Theme</button>
+    </div>
   );
-};
+}
 
 export default Settings;
