@@ -9,7 +9,7 @@ function Tasks({ tasks, addTask, updateTask, deleteTask }) {
       <TaskForm addTask={addTask} />
       <ul>
         {tasks.map(task => (
-          <TaskItem key={task.id} task={task} addTask={addTask} supdateTask={updateTask} deleteTask={deleteTask}/>
+          <TaskItem key={task.id} task={task} addTask={addTask} updateTask={updateTask} deleteTask={deleteTask}/>
         ))}
       </ul>
     </div>

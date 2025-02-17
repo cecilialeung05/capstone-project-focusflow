@@ -341,8 +341,8 @@ The user can...
 
 FEB 12 - Test tag links & set up front end.     
 *   **Week 1:**
-    *   Set up the React project and basic routing.
-    *   Implement routing and page navigation.
+    *   Set up the React project and basic routing. - complete
+    *   Implement routing and page navigation. - complete 
     *   Build basic UI.
     *   Implement the backend API endpoints. - complete - OUTSTANDING: test tag links.
     *   Set up database schema and migrations.  - complete - OUTSTANDING: test tag links.
