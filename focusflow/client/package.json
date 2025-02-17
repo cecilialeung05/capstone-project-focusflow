@@ -1,7 +1,7 @@
 {
-  "name": "focusflow",
+  "name": "focusflow-client",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -16,8 +16,7 @@
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.5",
     "recharts": "^2.15.1",
-    "sass": "^1.84.0",
-    "scss": "^0.2.4"
+    "sass": "^1.84.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",

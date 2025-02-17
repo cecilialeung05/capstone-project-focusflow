@@ -71,15 +71,15 @@ The user can...
 
 ### Mockups
 #### Dashboard Page (all tags, tasks, notes and timer)
-![](img1.png)
+![](./assets/images/mockups/img1.png)
 #### Tasks Page (list, add, edit, delete)
-![](img2.png)
+![](./assets/images/mockups/img2.png)
 
 #### Notes List Page (list, add, edit, delete)
-![](img3.png)
+![](./assets/images/mockups/img3.png)
 
 ## Database Schema
-![DatabaseSchema](image-db.png)
+![DatabaseSchema](./assets/images/mockups/image-db.png)
 - Tasks relate One-to-Many with Notes.
 - Tasks and Tags relate Many-to-Many via task_tags.
 - Notes and Tags relate Many-to-Many via note_tags.
