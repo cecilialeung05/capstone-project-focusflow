@@ -131,7 +131,13 @@ function App() {
   return (
     <Layout>
       <Routes>
-          <Route path="/" element={<Header />} />
+          <Route path="/" element={
+            <>
+              <Header />
+              <Dashboard tasks={tasks} notes={notes} tags={tags} />
+              <Footer />
+            </>
+          } />
           <Route path="/dashboard" element={<Dashboard tasks={tasks} notes={notes} tags={tags} />} />
           <Route path="/tasks" element={<Tasks tasks={tasks} addTask={addTask} updateTask={updateTask} deleteTask={deleteTask} />} />
           <Route path="/tasks/:taskId" element={<TaskDetails tasks={tasks} updateTask={updateTask} deleteTask={deleteTask} />} />
@@ -141,10 +147,8 @@ function App() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/insights" element={<Insights />} />
           <Route path="/weather" element={<Weather />} />
-          <Route path="/" element={<Dashboard tasks={tasks} notes={notes}/>} />
-          <Route path="/" element={<Footer />} />
       </Routes>
-   </Layout>
+    </Layout>
   );
 }
 
