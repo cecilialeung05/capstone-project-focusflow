@@ -17,5 +17,5 @@ export async function up(knex) {
    * @returns { Promise<void> }
    */
   export async function down(knex) {
-    return knex.schema.dropTableIfExists('task_tags');
+    return knex.schema.dropTable('task_tags');
   }
