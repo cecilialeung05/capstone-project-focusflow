@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route } from "react-router-dom";
-import Header from './components/Header';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";   
+import Container from './components/Layout/Container';
 import Dashboard from "./pages/Dashboard";
 import Tasks from "./pages/Tasks";
 import TaskDetails from "./pages/TaskDetails";
@@ -15,8 +15,11 @@ import tagService from './services/tagService';
 import Insights from './pages/Insights';
 import Weather from './pages/Weather';
 import Footer from './components/Footer';
+import Navbar from './components/Layout/Navbar';
+import './App.scss';
 
 function App() {
+  const [theme, setTheme] = useState('light');
   const [tasks, setTasks] = useState([]);
   const [notes, setNotes] = useState([]);
   const [tags, setTags] = useState([]);
@@ -131,71 +134,79 @@ function App() {
     }
   };
 
-
-  // const [theme, setTheme] = useState('light');
-  // const toggleTheme = () => {
-  //   setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
-  // };
+  const toggleTheme = () => {
+    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
+  };
 
   return (
-    <Layout>
-      <Routes>
-        <Route path="/" element={
-          <>
-            <Dashboard tasks={tasks} notes={notes} tags={tags} />
-          </>
-        } />
-        <Route path="/tasks" element={
-          <Tasks 
-            tasks={tasks} 
-            tags={tags}
-            addTask={addTask} 
-            updateTask={updateTask} 
-            deleteTask={deleteTask} 
-          />
-        } />
-        <Route path="/tasks/:taskId" element={
-          <TaskDetails 
-            tasks={tasks}
-            tags={tags}
-            updateTask={updateTask} 
-            deleteTask={deleteTask}
-          />
-        } />
-        <Route path="/notes" element={
-          <Notes 
-            notes={notes}
-            tasks={tasks}
-            tags={tags}
-            addNote={addNote} 
-            updateNote={updateNote} 
-            deleteNote={deleteNote}
-          />
-        } />
-        <Route path="/notes/:noteId" element={
-          <NotesDetails 
-            notes={notes}
-            tasks={tasks}
-            tags={tags}
-            updateNote={updateNote} 
-            deleteNote={deleteNote}
-          />
-        } />
-        <Route path="/tags" element={
-          <Tags 
-            tags={tags}
-            notes={notes}
-            tasks={tasks}
-            addTag={addTag} 
-            updateTag={updateTag} 
-            deleteTag={deleteTag}
-          />
-        } />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/insights" element={<Insights />} />
-        <Route path="/weather" element={<Weather />} />
-      </Routes>
-    </Layout>
+    <Router>
+      <div className="app">
+        <Navbar 
+          theme={theme} 
+          toggleTheme={toggleTheme}
+          tasks={tasks}
+          notes={notes}
+        />
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={
+              <>
+                <Dashboard tasks={tasks} notes={notes} tags={tags} />
+              </>
+            } />
+            <Route path="/tasks" element={
+              <Tasks 
+                tasks={tasks} 
+                tags={tags}
+                addTask={addTask} 
+                updateTask={updateTask} 
+                deleteTask={deleteTask} 
+              />
+            } />
+            <Route path="/tasks/:taskId" element={
+              <TaskDetails 
+                tasks={tasks}
+                tags={tags}
+                updateTask={updateTask} 
+                deleteTask={deleteTask}
+              />
+            } />
+            <Route path="/notes" element={
+              <Notes 
+                notes={notes}
+                tasks={tasks}
+                tags={tags}
+                addNote={addNote} 
+                updateNote={updateNote} 
+                deleteNote={deleteNote}
+              />
+            } />
+            <Route path="/notes/:noteId" element={
+              <NotesDetails 
+                notes={notes}
+                tasks={tasks}
+                tags={tags}
+                updateNote={updateNote} 
+                deleteNote={deleteNote}
+              />
+            } />
+            <Route path="/tags" element={
+              <Tags 
+                tags={tags}
+                notes={notes}
+                tasks={tasks}
+                addTag={addTag} 
+                updateTag={updateTag} 
+                deleteTag={deleteTag}
+              />
+            } />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/insights" element={<Insights />} />
+            <Route path="/weather" element={<Weather />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
   );
 }
 

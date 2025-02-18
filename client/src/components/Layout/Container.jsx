@@ -4,18 +4,18 @@ import Header from '../Header';
 import Footer from '../Footer';
 import './Container.scss'; 
 
-const Container = ({ children, theme, toggleTheme }) => {
+const Container = ({ children, theme, toggleTheme, tasks, notes }) => {
   return (
-    <div className={`app-container ${theme}`}> {/* Apply theme class */}
-        <div className="layout-container"> {/* Apply the new class */}
-      <Navbar theme={theme} toggleTheme={toggleTheme} />
-      <div className="container">
-      <div className="content-wrapper">  {/* Add a content wrapper */}
+    <div className={`app-container ${theme}`}>
+      <div className="layout-container">
         <Header />
-        {children}
+        <Navbar theme={theme} toggleTheme={toggleTheme} tasks={tasks} notes={notes} />
+        <div className="container">
+          <div className="content-wrapper">
+            {children}
+          </div>
+        </div>
         <Footer />
-      </div>
-      </div>
       </div>
     </div>
   );

@@ -1,0 +1,115 @@
+.search-container {
+  position: relative;
+
+  .search-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  .search-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    padding-top: 80px;
+
+    .modal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+    }
+
+    .search-content {
+      position: relative;
+      width: 500px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+
+      .search-input {
+        padding: 16px;
+        border-bottom: 1px solid #eee;
+
+        input {
+          width: 100%;
+          padding: 8px 12px;
+          border: 2px solid #eee;
+          border-radius: 6px;
+          font-size: 16px;
+
+          &:focus {
+            outline: none;
+            border-color: #3498db;
+          }
+        }
+      }
+
+      .search-results {
+        max-height: 400px;
+        overflow-y: auto;
+
+        ul {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+
+          li {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+
+            &:hover {
+              background: #f8f9fa;
+            }
+
+            .icon {
+              font-size: 18px;
+            }
+
+            .title {
+              flex: 1;
+              color: #2c3e50;
+            }
+
+            .type {
+              font-size: 12px;
+              color: #666;
+              text-transform: capitalize;
+            }
+          }
+        }
+
+        .no-results,
+        .search-hint {
+          padding: 24px;
+          text-align: center;
+          color: #666;
+        }
+      }
+    }
+  }
+} 

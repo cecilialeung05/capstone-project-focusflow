@@ -1,4 +1,3 @@
-
 nav {
     width: 200px; // Fixed width for the sidebar
     height: 100vh; /* Make it full height */
@@ -49,6 +48,22 @@ nav {
             background-color: #367c39;
           }
         }
+  
+        // Add specific styling for the search container
+        .search-container {
+          margin: 0;
+          
+          .search-button {
+            // Adjust the search button to match your theme
+            background: transparent;
+            border: 1px solid currentColor;
+            color: inherit;
+            
+            &:hover {
+              background: rgba(255, 255, 255, 0.1);
+            }
+          }
+        }
       }
     }
   
@@ -67,3 +82,8 @@ nav {
       }
     }
   }
+
+// Ensure the search modal appears above other content
+.search-modal {
+  z-index: 1000;
+}
