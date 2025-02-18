@@ -1,24 +1,206 @@
 // src/pages/Dashboard/Dashboard.scss
 .dashboard {
-    padding: 20px;
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
 
-    h1 {
-        font-size: 2rem;
+    section {
+        margin-bottom: 32px;
+        
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 16px;
+            font-size: 1.5rem;
+        }
+    }
+
+    // Stats Section
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        h3 {
+            margin: 0 0 16px 0;
+            color: #34495e;
+        }
+
+        .stat-numbers {
+            display: grid;
+            gap: 12px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-radius: 4px;
+            background: #f8f9fa;
+
+            &.status-completed { background: #e8f5e9; }
+            &.status-in-progress { background: #e3f2fd; }
+            &.status-blocked { background: #ffebee; }
+
+            .label {
+                color: #666;
+                font-weight: 500;
+            }
+
+            .value {
+                font-weight: 600;
+                color: #2c3e50;
+            }
+        }
+    }
+
+    // Recent Activity Section
+    .activity-list {
+        display: grid;
+        gap: 12px;
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: flex-start;
+        padding: 16px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        text-decoration: none;
+        color: inherit;
+        transition: transform 0.2s;
+
+        &:hover {
+            transform: translateY(-2px);
+        }
+
+        .activity-type {
+            margin-right: 16px;
+            font-size: 1.5rem;
+
+            &.task { color: #3498db; }
+            &.note { color: #2ecc71; }
+        }
+
+        .activity-content {
+            flex: 1;
+
+            h4 {
+                margin: 0 0 4px 0;
+                color: #2c3e50;
+            }
+
+            .activity-date {
+                color: #666;
+                font-size: 0.9rem;
+                margin: 0;
+            }
+
+            .activity-tags {
+                display: flex;
+                gap: 8px;
+                margin-top: 8px;
+
+                .tag {
+                    background: #f0f0f0;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 0.8rem;
+                    color: #666;
+                }
+            }
+        }
+    }
+
+    // Tag Filter Section
+    .tags-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
         margin-bottom: 20px;
     }
 
-    h2 {
-        font-size: 1.5rem;
-        margin-top: 20px;
-        margin-bottom: 10px;
+    .tag-button {
+        background: #f0f0f0;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.2s;
+        color: #666;
+
+        &:hover {
+            background: #e0e0e0;
+        }
+
+        &.selected {
+            background: #3498db;
+            color: white;
+        }
     }
 
-    ul {
-        list-style: none;
-        padding: 0;
+    .filtered-results {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
 
-        li {
-            margin-bottom: 5px;
+        h3 {
+            color: #34495e;
+            margin: 0 0 12px 0;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+
+            li {
+                margin-bottom: 8px;
+
+                a {
+                    display: flex;
+                    align-items: center;
+                    text-decoration: none;
+                    color: #2c3e50;
+                    padding: 8px;
+                    background: #f8f9fa;
+                    border-radius: 4px;
+                    transition: background-color 0.2s;
+
+                    &:hover {
+                        background: #e9ecef;
+                    }
+
+                    .status {
+                        width: 8px;
+                        height: 8px;
+                        border-radius: 50%;
+                        margin-right: 8px;
+
+                        &.completed { background: #2ecc71; }
+                        &.in-progress { background: #3498db; }
+                        &.blocked { background: #e74c3c; }
+                        &.open { background: #95a5a6; }
+                    }
+                }
+            }
+        }
+    }
+
+    @media (max-width: 768px) {
+        padding: 16px;
+
+        .stats-grid,
+        .filtered-results {
+            grid-template-columns: 1fr;
         }
     }
 }
