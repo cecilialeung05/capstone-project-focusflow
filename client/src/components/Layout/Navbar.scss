@@ -1,13 +1,13 @@
 nav {
-    width: 200px; // Fixed width for the sidebar
-    height: 100vh; /* Make it full height */
-    position: fixed; /* Stick to the left side */
+    width: 200px; 
+    height: 100vh; 
+    position: fixed; 
     top: 0;
     left: 0;
-    background-color: #f0f0f0; // Light background color
+    background-color: #f0f0f0;
     padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    z-index: 10; /* Ensure it's above other content */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); 
+    z-index: 10; 
   
     ul {
       list-style: none;
@@ -26,7 +26,7 @@ nav {
           transition: background-color 0.2s ease;
   
           &:hover {
-            background-color: #ddd;
+            background: rgba(0, 0, 0, 0.05);
           }
         }
   
@@ -49,12 +49,12 @@ nav {
           }
         }
   
-        // Add specific styling for the search container
+        
         .search-container {
           margin: 0;
           
           .search-button {
-            // Adjust the search button to match your theme
+           
             background: transparent;
             border: 1px solid currentColor;
             color: inherit;
@@ -67,7 +67,6 @@ nav {
       }
     }
   
-    /* Optional: Style for the 'theme' class (light/dark) */
     &.light {
       background-color: #f0f0f0;
       color: #333;
@@ -83,7 +82,6 @@ nav {
     }
   }
 
-// Ensure the search modal appears above other content
 .search-modal {
   z-index: 1000;
 }

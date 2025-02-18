@@ -8,12 +8,12 @@ import Notes from "./pages/Notes";
 import NotesDetails from "./pages/NotesDetails";
 import Tags from './pages/Tags';
 import Settings from "./pages/Settings";
-import Layout from './components/Layout/Container';
 import taskService from './services/taskService';
 import noteService from './services/noteService';
 import tagService from './services/tagService';
 import Insights from './pages/Insights';
 import Weather from './pages/Weather';
+import Header from './components/Header';
 import Footer from './components/Footer';
 import Navbar from './components/Layout/Navbar';
 import './App.scss';
@@ -141,13 +141,14 @@ function App() {
   return (
     <Router>
       <div className="app">
-        <Navbar 
+        <Navbar
           theme={theme} 
           toggleTheme={toggleTheme}
           tasks={tasks}
           notes={notes}
         />
-        <main className="main-content">
+        <div className="main-content">
+          <Header />
           <Routes>
             <Route path="/" element={
               <>
@@ -204,7 +205,8 @@ function App() {
             <Route path="/insights" element={<Insights />} />
             <Route path="/weather" element={<Weather />} />
           </Routes>
-        </main>
+          <Footer />
+        </div>
       </div>
     </Router>
   );

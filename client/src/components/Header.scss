@@ -1,20 +1,18 @@
 // src/components/Header/Header.scss
 .header {
-    background-color: #f0f0f0;
-    padding: 0.5rem;
-    border-bottom: 1px solid #ddd;
+    background:  #333;
+    padding: 1rem;
+    border-bottom: 1px solid #3d5061;
+    margin-bottom: 2rem;
 
     &__container {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
         max-width: 1200px;
         margin: 0 auto;
     }
 
     &__logo {
-        font-size: 1.2rem;
         margin: 0;
-        text-align: center;
+        color: #ffffff;
+        font-size: 1.5rem;
     }
 }

@@ -63,3 +63,22 @@ a {
   text-decoration: none;
   color: #007bff; // Example link color
 }
+
+.app {
+  display: flex;
+  min-height: 100vh;
+
+  .main-content {
+    flex: 1;
+    margin-left: 200px; // Width of your navbar
+    min-height: 100vh;
+    background: #f8f9fa;
+    
+    // Ensure content doesn't overlap with navbar
+    padding: 20px;
+    
+    // Remove any unwanted margins/padding
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}

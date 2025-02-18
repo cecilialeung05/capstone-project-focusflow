@@ -1,7 +1,12 @@
 // src/components/Footer/Footer.scss
 .footer {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 1rem;
+  background:  #333;
+  color: #ffffff;
+  padding: 1rem;
+  text-align: center;
+  border-top: 1px solid #3d5061;
+  
+  p {
+    margin: 0;
   }
+}

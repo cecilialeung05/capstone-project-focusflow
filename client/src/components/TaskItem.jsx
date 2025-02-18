@@ -18,14 +18,14 @@ function TaskItem({ task, updateTask, deleteTask }) {
   };
 
   return (
-    <div className={`task-item ${getStatusColor(task.status)}`}>
+    <div className={`task-item task-item--${task.status?.toLowerCase().replace(' ', '-') || 'open'}`}>
       <div className="task-item__content">
         <div className="task-item__header">
           <h3 className="task-item__title">
             <Link to={`/tasks/${task.id}`}>{task.title}</Link>
           </h3>
-          <span className={`status-badge ${task.status.toLowerCase().replace(' ', '-')}`}>
-            {task.status}
+          <span className={`status-badge ${task.status?.toLowerCase().replace(' ', '-') || 'open'}`}>
+            {task.status || 'Open'}
           </span>
         </div>
 
@@ -73,6 +73,14 @@ function TaskItem({ task, updateTask, deleteTask }) {
               onClick={() => handleStatusChange('completed')}
             >
               Set Completed
+            </button>
+          )}
+          {task.status !== 'blocked' && (
+            <button 
+              className="status-btn blocked"
+              onClick={() => handleStatusChange('blocked')}
+            >
+              Set Blocked
             </button>
           )}
         </div>
