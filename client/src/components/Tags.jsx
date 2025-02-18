@@ -3,12 +3,16 @@ import taskService from '../services/taskService';
 import noteService from '../services/noteService';
 import { Link, useParams } from 'react-router-dom';
 import './Tags.scss';
+import TaskItem from './TaskItem';
+import NoteItem from './NoteItem';
 
 function Tags({ tags, tasks, notes, addTag, updateTag, deleteTag }) {
   const [newTagName, setNewTagName] = useState('');
   const [selectedTagId, setSelectedTagId] = useState(null);
   const [editingTagId, setEditingTagId] = useState(null);
   const [editingTagName, setEditingTagName] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredTags, setFilteredTags] = useState(tags);
 
   const handleCreateTag = () => {
     if (newTagName.trim()) {
@@ -34,16 +38,23 @@ function Tags({ tags, tasks, notes, addTag, updateTag, deleteTag }) {
     setSelectedTagId(tagId === selectedTagId ? null : tagId);
   };
 
-  // Filter items based on selected tag
-  const filteredTasks = selectedTagId
-    ? tasks.filter(task => 
-        task.tags && task.tags.some(tag => tag.id === selectedTagId)
-      )
-    : [];
+  useEffect(() => {
+    const filtered = tags.filter(tag => 
+      tag.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredTags(filtered);
+  }, [tags, searchTerm]);
 
+  // Filter items based on selected tag
   const filteredNotes = selectedTagId
     ? notes.filter(note => 
         note.tags && note.tags.some(tag => tag.id === selectedTagId)
+      )
+    : [];
+
+  const filteredTasks = selectedTagId
+    ? tasks.filter(task => 
+        task.tags && task.tags.some(tag => tag.id === selectedTagId)
       )
     : [];
 
@@ -67,54 +78,44 @@ function Tags({ tags, tasks, notes, addTag, updateTag, deleteTag }) {
   }, [selectedTagId, tasks, notes]);
 
   return (
-    <div className="tags-page">
-      <div className="tags-page__header">
-        <h1>Tags</h1>
-        <div className="tag-creation">
-          <input
-            type="text"
-            value={newTagName}
-            onChange={(e) => setNewTagName(e.target.value)}
-            placeholder="New Tag Name"
-          />
-          <button onClick={handleCreateTag}>Create Tag</button>
+    <div className="tags-container">
+      <div className="tags-section">
+        <div className="tags-header">
+          <h2>Tags</h2>
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Search tags..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+          </div>
         </div>
-      </div>
 
-      <div className="tags-page__content">
         <div className="tags-list">
-          {tags.map(tag => (
-            <div key={tag.id} className="tag-item">
-              {editingTagId === tag.id ? (
-                <div className="tag-edit">
-                  <input
-                    type="text"
-                    value={editingTagName}
-                    onChange={(e) => setEditingTagName(e.target.value)}
-                  />
-                  <button onClick={handleUpdateTag}>Save</button>
-                  <button onClick={() => setEditingTagId(null)}>Cancel</button>
-                </div>
-              ) : (
-                <div className="tag-display">
-                  <button 
-                    className={`tag-button ${selectedTagId === tag.id ? 'selected' : ''}`}
-                    onClick={() => handleTagClick(tag.id)}
-                  >
-                    {tag.name}
-                  </button>
-                  <div className="tag-actions">
-                    <button onClick={() => handleEditTag(tag)}>Edit</button>
-                    <button onClick={() => deleteTag(tag.id)}>Delete</button>
-                  </div>
-                </div>
-              )}
+          {filteredTags.map(tag => (
+            <div 
+              key={tag.id}
+              className={`tag-item ${selectedTagId === tag.id ? 'selected' : ''}`}
+              onClick={() => handleTagClick(tag.id)}
+            >
+              <span className="tag-name">{tag.name}</span>
+              <span className="tag-count">
+                {tasks.filter(task => task.tags?.some(t => t.id === tag.id)).length +
+                 notes.filter(note => note.tags?.some(t => t.id === tag.id)).length} items
+              </span>
             </div>
           ))}
+          {filteredTags.length === 0 && (
+            <p className="no-results">No tags found matching "{searchTerm}"</p>
+          )}
         </div>
-
+      </div>
+      
+      <div className="tagged-items">
         {selectedTagId && (
-          <div className="tagged-items">
+          <>
             <h3>Tasks with this tag:</h3>
             <div className="tasks-list">
               {filteredTasks.length > 0 ? (
@@ -122,7 +123,7 @@ function Tags({ tags, tasks, notes, addTag, updateTag, deleteTag }) {
                   <TaskItem key={task.id} task={task} />
                 ))
               ) : (
-                <p>No tasks with this tag</p>
+                <p className="no-items">No tasks with this tag</p>
               )}
             </div>
 
@@ -133,10 +134,10 @@ function Tags({ tags, tasks, notes, addTag, updateTag, deleteTag }) {
                   <NoteItem key={note.id} note={note} />
                 ))
               ) : (
-                <p>No notes with this tag</p>
+                <p className="no-items">No notes with this tag</p>
               )}
             </div>
-          </div>
+          </>
         )}
       </div>
     </div>

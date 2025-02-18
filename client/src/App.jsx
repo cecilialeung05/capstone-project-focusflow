@@ -23,17 +23,15 @@ function App() {
 
   useEffect(() => {
     const fetchInitialData = async () => {
-      try {
-        console.log('Fetching initial data...');
+      try { 
         const [tasksData, notesData, tagsData] = await Promise.all([
           taskService.getAllTasks(),
           noteService.getAllNotes(),
           tagService.getAllTags()
         ]);
-        
+        console.log('Fetched Tasks:', tasksData);
         console.log('Fetched Notes:', notesData);
         console.log('Fetched Tags:', tagsData);
-        
         setTasks(tasksData);
         setNotes(notesData);
         setTags(tagsData);

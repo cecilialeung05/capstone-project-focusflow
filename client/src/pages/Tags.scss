@@ -1,5 +1,11 @@
 .tags-page {
-  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
 
   .tags-header {
     margin-bottom: 2rem;
