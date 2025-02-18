@@ -343,14 +343,14 @@ FEB 12 - Test tag links & set up front end.
 *   **Week 1:**
     *   Set up the React project and basic routing. - complete
     *   Implement routing and page navigation. - complete 
-    *   Build basic UI.
-    *   Implement the backend API endpoints. - complete - OUTSTANDING: test tag links.
-    *   Set up database schema and migrations.  - complete - OUTSTANDING: test tag links.
+    *   Build basic UI. - complete
+    *   Implement the backend API endpoints. - complete 
+    *   Set up database schema and migrations.  - complete
 *   **Week 2:**
-    *   Implement task filtering, tagging, and search functionality.
-    *   Develop note management (add, edit, delete, link to tasks).
-    *   Implement progress insights (charts and analytics for task completion rates).
-    *   Integrate focus timer.
+    *   Implement task filtering, tagging, and search functionality. - complete
+    *   Develop note management (add, edit, delete, link to tasks). - complete
+    *   Implement progress insights (charts and analytics for task completion rates). - OUTSTANDING
+    *   Integrate focus timer. - OUTSTANDING
     *   Finalize settings and personalization features.
     *   Test, refine, and deploy.
 
