@@ -138,7 +138,7 @@ function App() {
           } />
           <Route path="/tasks" element={<Tasks tasks={tasks} addTask={addTask} updateTask={updateTask} deleteTask={deleteTask} />} />
           <Route path="/tasks/:taskId" element={<TaskDetails tasks={tasks} updateTask={updateTask} deleteTask={deleteTask} />} />
-          <Route path="/notes" element={<Notes notes={notes} addNote={addNote} updateNote={updateNote} deleteNote={deleteNote} />} />
+          <Route path="/notes" element={<Notes notes={notes} tasks={tasks} addNote={addNote} updateNote={updateNote} deleteNote={deleteNote} />} />
           <Route path="/notes/:noteId" element={<NotesDetails notes={notes} updateNote={updateNote} deleteNote={deleteNote}/>} />
           <Route path="/tags" element={<Tags tags={tags} addTag={addTag} updateTag={updateTag} deleteTag={deleteTag} />} />
           <Route path="/settings" element={<Settings />} />
