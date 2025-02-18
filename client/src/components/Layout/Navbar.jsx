@@ -5,7 +5,7 @@ function Navbar({ theme, toggleTheme }) {
   return (
     <nav className={theme}>
       <ul>
-        <li><Link to="/dashboard">Dashboard</Link></li>
+        <li><Link to="/">Dashboard</Link></li>
         <li><Link to="/tasks">Tasks</Link></li>
         <li><Link to="/notes">Notes</Link></li>
         <li><Link to="/tags">Tags</Link></li>

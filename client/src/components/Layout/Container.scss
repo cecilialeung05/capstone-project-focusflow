@@ -5,6 +5,20 @@
 
   .layout-container {
     display: flex;
+
+    .container {
+        flex: 1;
+        
+        .content-wrapper {
+            // Add some spacing between header and content
+            .header {
+                margin-bottom: 1rem;
+            }
+
+            // Add padding to content area
+            padding: 0 1rem;
+        }
+    }
 }
 
 .content-wrapper {

@@ -133,12 +133,9 @@ function App() {
       <Routes>
           <Route path="/" element={
             <>
-              <Header />
               <Dashboard tasks={tasks} notes={notes} tags={tags} />
-              <Footer />
             </>
           } />
-          <Route path="/dashboard" element={<Dashboard tasks={tasks} notes={notes} tags={tags} />} />
           <Route path="/tasks" element={<Tasks tasks={tasks} addTask={addTask} updateTask={updateTask} deleteTask={deleteTask} />} />
           <Route path="/tasks/:taskId" element={<TaskDetails tasks={tasks} updateTask={updateTask} deleteTask={deleteTask} />} />
           <Route path="/notes" element={<Notes notes={notes} addNote={addNote} updateNote={updateNote} deleteNote={deleteNote} />} />
