@@ -1,0 +1,148 @@
+.task-item {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #ddd;
+  transition: all 0.2s ease;
+
+  // Status-based colors
+  &.success { border-left-color: #28a745; }
+  &.warning { border-left-color: #ffc107; }
+  &.default { border-left-color: #6c757d; }
+
+  &:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  &__content {
+    margin-bottom: 1rem;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 1.25rem;
+    
+    a {
+      color: #2c3e50;
+      text-decoration: none;
+      
+      &:hover {
+        color: #007bff;
+      }
+    }
+  }
+
+  &__details {
+    color: #666;
+  }
+
+  &__description {
+    margin: 0.5rem 0;
+    line-height: 1.4;
+  }
+
+  &__due-date {
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+    
+    .label {
+      font-weight: 500;
+      color: #495057;
+    }
+  }
+
+  .status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    
+    &.open {
+      background-color: #e9ecef;
+      color: #495057;
+    }
+    
+    &.in-progress {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    
+    &.completed {
+      background-color: #d4edda;
+      color: #155724;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+
+    .status-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .management-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    button, .edit-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.875rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      
+      &.status-btn {
+        background-color: #f8f9fa;
+        color: #495057;
+        
+        &:hover {
+          background-color: #e9ecef;
+        }
+        
+        &.completed {
+          &:hover { background-color: #d4edda; }
+        }
+        
+        &.in-progress {
+          &:hover { background-color: #fff3cd; }
+        }
+      }
+      
+      &.edit-btn {
+        background-color: #007bff;
+        color: white;
+        
+        &:hover {
+          background-color: #0056b3;
+        }
+      }
+      
+      &.delete-btn {
+        background-color: #dc3545;
+        color: white;
+        
+        &:hover {
+          background-color: #c82333;
+        }
+      }
+    }
+  }
+} 
