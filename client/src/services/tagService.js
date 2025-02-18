@@ -52,6 +52,24 @@ const tagService = {
       throw error;
     }
   },
+
+  // Get all items associated with a tag
+  getTaggedItems: async (tagId) => {
+    try {
+      const [tasksResponse, notesResponse] = await Promise.all([
+        axios.get(`${API_BASE_URL}/tasks`, { params: { tagId } }),
+        axios.get(`${API_BASE_URL}/notes`, { params: { tagId } })
+      ]);
+      
+      return {
+        tasks: tasksResponse.data,
+        notes: notesResponse.data
+      };
+    } catch (error) {
+      console.error(`Error fetching items for tag ${tagId}:`, error);
+      throw error;
+    }
+  },
 };
 
 export default tagService;

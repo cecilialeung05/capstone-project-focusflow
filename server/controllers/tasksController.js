@@ -6,34 +6,27 @@ const knex = initKnex(configuration);
 
 // Get all tasks
 export const getTasks = async (req, res) => {
-  const { tagId } = req.query;
-
   try {
-    let query = knex("tasks")
-      .select(
-        "tasks.*",
-        knex.raw('GROUP_CONCAT(tags.name) as tags') // Add this
-      )
-      .leftJoin("task_tags", "tasks.id", "task_tags.task_id")
-      .leftJoin("tags", "task_tags.tag_id", "tags.id");
-    if (tagId) {
-      query = query.where("task_tags.tag_id", tagId);
-    }
+    const tasks = await knex("tasks")
+      .select("tasks.*")
+      .orderBy("tasks.created_at", "desc");
 
-    query = query.groupBy("tasks.id");
-    const tasks = await query;
+    // For each task, get its tags
+    const tasksWithTags = await Promise.all(
+      tasks.map(async (task) => {
+        const tags = await knex("tags")
+          .select("tags.*")
+          .join("task_tags", "tags.id", "task_tags.tag_id")
+          .where("task_tags.task_id", task.id);
 
-    // Convert comma separated string to array
-    const formattedTasks = tasks.map(task => {
-      if (task.tags) {
-          task.tags = task.tags.split(',');
-      } else {
-          task.tags = [];
-      }
-      return task;
-    });
+        return {
+          ...task,
+          tags: tags || []
+        };
+      })
+    );
 
-    res.status(200).json(formattedTasks);
+    res.status(200).json(tasksWithTags);
   } catch (error) {
     console.error("Error getting tasks:", error);
     res.status(500).json({ message: "Error retrieving tasks", error: error.message });
@@ -45,24 +38,20 @@ export const getTask = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const task = await knex("tasks")
-    .select("tasks.*", knex.raw('GROUP_CONCAT(tags.name) as tags'))
-    .leftJoin("task_tags", "tasks.id", "task_tags.task_id")
-    .leftJoin("tags", "task_tags.tag_id", "tags.id")
-    .where("tasks.id", id)
-    .groupBy("tasks.id")
-    .first();
-
+    const task = await knex("tasks").where({ id }).first();
     if (!task) {
       return res.status(404).json({ message: `Task with ID ${id} not found` });
     }
-    //Convert comma separated string to array
-    if (task.tags) {
-      task.tags = task.tags.split(',');
-    } else {
-      task.tags = [];
-    }
-    res.status(200).json(task);
+
+    const tags = await knex("tags")
+      .select("tags.*")
+      .join("task_tags", "tags.id", "task_tags.tag_id")
+      .where("task_tags.task_id", id);
+
+    res.status(200).json({
+      ...task,
+      tags: tags || []
+    });
   } catch (error) {
     console.error("Error getting task:", error);
     res.status(500).json({ message: "Error retrieving task", error: error.message });
@@ -71,41 +60,41 @@ export const getTask = async (req, res) => {
 
 // Add a new task
 export const addTask = async (req, res) => {
-  const { title, description, status, dueDate, tags } = req.body;
+  const { title, description, status, due_date, tags } = req.body;
 
   try {
-    const [taskId] = await knex("tasks").insert({
-      title,
-      description,
-      status,
-      due_date: dueDate || null,
+    await knex.transaction(async (trx) => {
+      // Insert task
+      const [taskId] = await trx("tasks").insert({
+        title,
+        description,
+        status,
+        due_date: due_date || null
+      });
+
+      // Insert tag associations if any
+      if (tags && tags.length > 0) {
+        const tagInserts = tags.map(tagId => ({
+          task_id: taskId,
+          tag_id: tagId
+        }));
+        await trx("task_tags").insert(tagInserts);
+      }
+
+      // Get the complete task with tags
+      const task = await trx("tasks").where({ id: taskId }).first();
+      const taskTags = await trx("tags")
+        .select("tags.*")
+        .join("task_tags", "tags.id", "task_tags.tag_id")
+        .where("task_tags.task_id", taskId);
+
+      res.status(201).json({
+        ...task,
+        tags: taskTags || []
+      });
     });
-    // Associate tags with the new task
-    if (tags && tags.length > 0) {
-      const inserts = tags.map(tagId => ({ task_id: taskId, tag_id: tagId }));
-      await knex("task_tags").insert(inserts);
-    }
-    // Fetch the newly created task with its tags
-    const newTask = await knex("tasks")
-    .select("tasks.*", knex.raw('GROUP_CONCAT(tags.name) as tags'))
-    .leftJoin("task_tags", "tasks.id", "task_tags.task_id")
-    .leftJoin("tags", "task_tags.tag_id", "tags.id")
-    .where("tasks.id", taskId)
-    .groupBy("tasks.id")
-    .first();
-
-    if (newTask.tags) {
-      newTask.tags = newTask.tags.split(',');
-    } else {
-      newTask.tags = [];
-    }
-
-    res.status(201).json(newTask);
   } catch (error) {
     console.error("Error creating task:", error);
-    if (error.code === 'ER_NO_REFERENCED_ROW_2') { 
-      return res.status(400).json({ message: "Invalid task_id or tag_id.  Make sure they exist." });
-    } 
     res.status(500).json({ message: "Error creating task", error: error.message });
   }
 };

@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import TaskForm from '../components/TaskForm';
 
-function TaskDetails({ tasks, updateTask, deleteTask }) {
+function TaskDetails({ tasks, tags, updateTask, deleteTask }) {
   const { taskId } = useParams();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   
-  const task = tasks.find(t => t.id === parseInt(taskId));
+  const task = tasks.find(t => t.id === Number(taskId));
 
   if (!task) {
     return <div>Task not found</div>;
@@ -61,6 +61,7 @@ function TaskDetails({ tasks, updateTask, deleteTask }) {
         <TaskForm 
           task={task}
           addTask={handleUpdate}
+          tags={tags}
           onCancel={() => setIsEditing(false)}
         />
       ) : (

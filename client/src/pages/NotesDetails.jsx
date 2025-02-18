@@ -1,20 +1,34 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import NoteForm from '../components/NoteForm';
 
-function NotesDetails({ notes }) {
+function NotesDetails({ notes, tasks, tags, updateNote, deleteNote }) {
   const { noteId } = useParams();
-  const note = notes.find(note => note.id === parseInt(noteId));
+  const navigate = useNavigate();
+  const note = notes.find(n => n.id === Number(noteId));
 
   if (!note) {
-    return <div>Note not found.</div>;
+    return <div>Note not found</div>;
   }
 
+  const handleDelete = () => {
+    deleteNote(note.id);
+    navigate('/notes');
+  };
+
   return (
-    <div>
-      <h1>Note Details</h1>
-      <h2>{note.title}</h2>
-      <p>{note.content}</p>
-      {/* Display other note details */}
+    <div className="note-details">
+      <h1>Edit Note</h1>
+      <NoteForm
+        note={note}
+        addNote={updateNote}
+        tasks={tasks}
+        tags={tags} // Pass tags to form
+        onCancel={() => navigate('/notes')}
+      />
+      <button onClick={handleDelete} className="delete-btn">
+        Delete Note
+      </button>
     </div>
   );
 }

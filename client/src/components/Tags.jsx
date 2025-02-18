@@ -4,92 +4,141 @@ import noteService from '../services/noteService';
 import { Link, useParams } from 'react-router-dom';
 import './Tags.scss';
 
-function Tags({ tags, addTag, updateTag, deleteTag }) {
+function Tags({ tags, tasks, notes, addTag, updateTag, deleteTag }) {
   const [newTagName, setNewTagName] = useState('');
-  const [tasks, setTasks] = useState([]);
-  const [notes, setNotes] = useState([]); // Fetch tasks and notes
-//   const [selectedTagId, setSelectedTagId] = useState(null);
+  const [selectedTagId, setSelectedTagId] = useState(null);
+  const [editingTagId, setEditingTagId] = useState(null);
+  const [editingTagName, setEditingTagName] = useState('');
 
-const { tagId } = useParams(); // Get tagId from URL
-
-    useEffect(() => {
-    const fetchInitialData = async () => {
-        try {
-            const [tasksData, notesData] = await Promise.all([
-                taskService.getAllTasks(),
-                noteService.getAllNotes()
-              ]);
-              setTasks(tasksData);
-              setNotes(notesData);
-        } catch (error) {
-            console.error("Error fetching initial data:", error);
-            // Handle errors (e.g., display an error message to the user)
-        }
-    };
-    fetchInitialData();
-  }, []);
-
-//   const handleCreateTag = () => {
-//     addTag({ name: newTagName });
-//     setNewTagName('');
-//   };
   const handleCreateTag = () => {
-    addTag({ name: newTagName });
-    setNewTagName('');
+    if (newTagName.trim()) {
+      addTag({ name: newTagName.trim() });
+      setNewTagName('');
+    }
   };
 
-  // Filter tasks based on selected tag
+  const handleEditTag = (tag) => {
+    setEditingTagId(tag.id);
+    setEditingTagName(tag.name);
+  };
+
+  const handleUpdateTag = () => {
+    if (editingTagName.trim()) {
+      updateTag(editingTagId, { name: editingTagName.trim() });
+      setEditingTagId(null);
+      setEditingTagName('');
+    }
+  };
+
+  const handleTagClick = (tagId) => {
+    setSelectedTagId(tagId === selectedTagId ? null : tagId);
+  };
+
+  // Filter items based on selected tag
   const filteredTasks = selectedTagId
-    ? tasks.filter(task => task.tags && task.tags.some(tag => tag.id === selectedTagId))
+    ? tasks.filter(task => 
+        task.tags && task.tags.some(tag => tag.id === selectedTagId)
+      )
     : [];
 
-  // Filter notes based on selected tag
   const filteredNotes = selectedTagId
-    ? notes.filter(note => note.tags && note.tags.some(tag => tag.id === selectedTagId))
+    ? notes.filter(note => 
+        note.tags && note.tags.some(tag => tag.id === selectedTagId)
+      )
     : [];
+
+  // Debug logs
+  console.log('All Notes:', notes);
+  console.log('Selected Tag ID:', selectedTagId);
+
+  // Debug logs for filtered items
+  console.log('Filtered Notes:', filteredNotes);
+  console.log('Filtered Tasks:', filteredTasks);
+
+  useEffect(() => {
+    // Log for debugging
+    if (selectedTagId) {
+      console.log('Selected Tag ID:', selectedTagId);
+      console.log('All Tasks:', tasks);
+      console.log('Filtered Tasks:', filteredTasks);
+      console.log('All Notes:', notes);
+      console.log('Filtered Notes:', filteredNotes);
+    }
+  }, [selectedTagId, tasks, notes]);
 
   return (
-    <div className="tags-page"> {/* Added a className for styling */}
-      <h1>Tags</h1>
-      <input
-        type="text"
-        value={newTagName}
-        onChange={(e) => setNewTagName(e.target.value)}
-        placeholder="New Tag Name"
-      />
-      <button onClick={handleCreateTag}>Create Tag</button>
-      <ul>
-      {tags.map(tag => (
-          <li key={tag.id} className="tags-page__list-item"> {/* Added className for list items */}
-            <button onClick={() => handleTagClick(tag.id)}>{tag.name}</button>
-          </li>
-        ))}
-      </ul>
-      {selectedTagId && (
-        <div className="tags-page__filtered-content"> {/* Add a className for this div */}
-          <h2>Tasks with Tag ID {selectedTagId}</h2>
-          {filteredTasks.length > 0 ? (
-            <ul>
-              {filteredTasks.map(task => (
-                <li key={task.id}>{task.title}</li>
-              ))}
-            </ul>
-          ) : (
-            <p>No tasks found with this tag.</p>
-          )}
-
-          <h2>Notes with Tag ID {selectedTagId}</h2>
-          {filteredNotes.length > 0 ? (
-            <ul>
-              {filteredNotes.map(note => (
-                <li key={note.id}>{note.title}</li>
-              ))}
-            </ul>
-          ) : (
-            <p>No notes found with this tag.</p>
-          )}
+    <div className="tags-page">
+      <div className="tags-page__header">
+        <h1>Tags</h1>
+        <div className="tag-creation">
+          <input
+            type="text"
+            value={newTagName}
+            onChange={(e) => setNewTagName(e.target.value)}
+            placeholder="New Tag Name"
+          />
+          <button onClick={handleCreateTag}>Create Tag</button>
         </div>
-      )}
+      </div>
+
+      <div className="tags-page__content">
+        <div className="tags-list">
+          {tags.map(tag => (
+            <div key={tag.id} className="tag-item">
+              {editingTagId === tag.id ? (
+                <div className="tag-edit">
+                  <input
+                    type="text"
+                    value={editingTagName}
+                    onChange={(e) => setEditingTagName(e.target.value)}
+                  />
+                  <button onClick={handleUpdateTag}>Save</button>
+                  <button onClick={() => setEditingTagId(null)}>Cancel</button>
+                </div>
+              ) : (
+                <div className="tag-display">
+                  <button 
+                    className={`tag-button ${selectedTagId === tag.id ? 'selected' : ''}`}
+                    onClick={() => handleTagClick(tag.id)}
+                  >
+                    {tag.name}
+                  </button>
+                  <div className="tag-actions">
+                    <button onClick={() => handleEditTag(tag)}>Edit</button>
+                    <button onClick={() => deleteTag(tag.id)}>Delete</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {selectedTagId && (
+          <div className="tagged-items">
+            <h3>Tasks with this tag:</h3>
+            <div className="tasks-list">
+              {filteredTasks.length > 0 ? (
+                filteredTasks.map(task => (
+                  <TaskItem key={task.id} task={task} />
+                ))
+              ) : (
+                <p>No tasks with this tag</p>
+              )}
+            </div>
+
+            <h3>Notes with this tag:</h3>
+            <div className="notes-list">
+              {filteredNotes.length > 0 ? (
+                filteredNotes.map(note => (
+                  <NoteItem key={note.id} note={note} />
+                ))
+              ) : (
+                <p>No notes with this tag</p>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

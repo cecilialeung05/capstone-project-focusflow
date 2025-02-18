@@ -1,50 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { formatDate } from '../utils/dateUtils';
 import './TaskItem.scss';
 
 function TaskItem({ task, updateTask, deleteTask }) {
-  const formatDate = (dateString) => {
-    if (!dateString) return 'No due date';
-    
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffTime = date - now;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    const formattedDate = date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: now.getFullYear() !== date.getFullYear() ? 'numeric' : undefined
-    });
-
-    let relativeTime;
-    if (diffDays === 0) {
-      relativeTime = '(Today)';
-    } else if (diffDays === 1) {
-      relativeTime = '(Tomorrow)';
-    } else if (diffDays === -1) {
-      relativeTime = '(Yesterday)';
-    } else if (diffDays < -1) {
-      relativeTime = `(${Math.abs(diffDays)} days overdue)`;
-    } else if (diffDays <= 7) {
-      relativeTime = `(in ${diffDays} days)`;
-    } else {
-      relativeTime = '';
+  const getStatusColor = (status) => {
+    switch (status.toLowerCase()) {
+      case 'completed': return 'status-completed';
+      case 'in progress': return 'status-in-progress';
+      case 'blocked': return 'status-blocked';
+      default: return 'status-open';
     }
-
-    return `${formattedDate} ${relativeTime}`.trim();
   };
 
   const handleStatusChange = (newStatus) => {
     updateTask(task.id, { ...task, status: newStatus });
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'completed': return 'success';
-      case 'in progress': return 'warning';
-      default: return 'default';
-    }
   };
 
   return (
@@ -54,7 +24,7 @@ function TaskItem({ task, updateTask, deleteTask }) {
           <h3 className="task-item__title">
             <Link to={`/tasks/${task.id}`}>{task.title}</Link>
           </h3>
-          <span className={`status-badge ${task.status.replace(' ', '-')}`}>
+          <span className={`status-badge ${task.status.toLowerCase().replace(' ', '-')}`}>
             {task.status}
           </span>
         </div>
@@ -67,6 +37,16 @@ function TaskItem({ task, updateTask, deleteTask }) {
             <span className="label">Due:</span> {formatDate(task.due_date)}
           </p>
         </div>
+
+        {task.tags && task.tags.length > 0 && (
+          <div className="task-item__tags">
+            {task.tags.map(tag => (
+              <span key={`task-${task.id}-tag-${tag.id}`} className="tag-badge">
+                {tag.name}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="task-item__actions">

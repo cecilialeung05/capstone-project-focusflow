@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './TaskForm.scss';
 
-function TaskForm({ task, addTask, onCancel }) {
+function TaskForm({ task, addTask, tags, onCancel }) {
   // Initialize state with existing task data or defaults
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     due_date: '',
-    status: 'open'
+    status: 'open',
+    tags: [] // Add tags array to form data
   });
 
   // If editing existing task, populate form with task data
@@ -21,7 +22,8 @@ function TaskForm({ task, addTask, onCancel }) {
         title: task.title || '',
         description: task.description || '',
         due_date: formattedDate,
-        status: task.status || 'open'
+        status: task.status || 'open',
+        tags: task.tags?.map(tag => tag.id) || [] // Initialize tags if present
       });
     }
   }, [task]);
@@ -51,7 +53,8 @@ function TaskForm({ task, addTask, onCancel }) {
         title: '',
         description: '',
         due_date: '',
-        status: 'open'
+        status: 'open',
+        tags: []
       });
     }
 
@@ -66,6 +69,14 @@ function TaskForm({ task, addTask, onCancel }) {
     setFormData(prev => ({
       ...prev,
       [name]: value
+    }));
+  };
+
+  const handleTagChange = (e) => {
+    const selectedOptions = Array.from(e.target.selectedOptions, option => Number(option.value));
+    setFormData(prev => ({
+      ...prev,
+      tags: selectedOptions
     }));
   };
 
@@ -121,6 +132,27 @@ function TaskForm({ task, addTask, onCancel }) {
             <option value="completed">Completed</option>
           </select>
         </div>
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="tags">Tags</label>
+        <select
+          id="tags"
+          name="tags"
+          multiple
+          value={formData.tags}
+          onChange={handleTagChange}
+          className="tag-select"
+        >
+          {tags?.map(tag => (
+            <option key={tag.id} value={tag.id}>
+              {tag.name}
+            </option>
+          ))}
+        </select>
+        <small className="form-help-text">
+          Hold Ctrl (Cmd on Mac) to select multiple tags. Click again to deselect.
+        </small>
       </div>
 
       <div className="form-actions">

@@ -1,6 +1,118 @@
 .task-item {
   background: #fff;
   border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+  padding: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 1.2rem;
+    
+    a {
+      color: #2c3e50;
+      text-decoration: none;
+      
+      &:hover {
+        color: #3498db;
+      }
+    }
+  }
+
+  &__details {
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  &__description {
+    margin: 8px 0;
+    line-height: 1.4;
+  }
+
+  &__due-date {
+    margin: 4px 0;
+    font-size: 0.85rem;
+    color: #666;
+
+    .label {
+      font-weight: 600;
+      margin-right: 4px;
+    }
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: capitalize;
+
+  &.open {
+    background: #e0e0e0;
+    color: #333;
+  }
+
+  &.in-progress {
+    background: #3498db;
+    color: white;
+  }
+
+  &.completed {
+    background: #2ecc71;
+    color: white;
+  }
+
+  &.blocked {
+    background: #e74c3c;
+    color: white;
+  }
+}
+
+.tag-badge {
+  background: #f0f0f0;
+  color: #666;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: #e0e0e0;
+  }
+}
+
+.task-item {
+  background: #fff;
+  border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
