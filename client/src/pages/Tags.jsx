@@ -8,9 +8,8 @@ function Tags({ tags, tasks, notes, addTag, updateTag, deleteTag }) {
   const [editingTag, setEditingTag] = useState(null);
   const [editTagName, setEditTagName] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('name'); // 'name', 'count', 'recent'
+  const [sortBy, setSortBy] = useState('name'); 
 
-  // Memoized calculations
   const tagStats = useMemo(() => {
     return tags.map(tag => ({
       ...tag,
@@ -22,7 +21,6 @@ function Tags({ tags, tasks, notes, addTag, updateTag, deleteTag }) {
     }));
   }, [tags, tasks, notes]);
 
-  // Filter and sort tags
   const filteredTags = useMemo(() => {
     return tagStats
       .filter(tag => 
@@ -34,13 +32,12 @@ function Tags({ tags, tasks, notes, addTag, updateTag, deleteTag }) {
             return (b.taskCount + b.noteCount) - (a.taskCount + a.noteCount);
           case 'recent':
             return new Date(b.lastUsed || 0) - new Date(a.lastUsed || 0);
-          default: // 'name'
+          default: 
             return a.name.localeCompare(b.name);
         }
       });
   }, [tagStats, searchTerm, sortBy]);
 
-  // Get filtered items for selected tag
   const filteredItems = useMemo(() => {
     if (!selectedTag) return { tasks: [], notes: [] };
 

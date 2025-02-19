@@ -53,7 +53,6 @@ const tagService = {
     }
   },
 
-  // Get all items associated with a tag
   getTaggedItems: async (tagId) => {
     try {
       const [tasksResponse, notesResponse] = await Promise.all([

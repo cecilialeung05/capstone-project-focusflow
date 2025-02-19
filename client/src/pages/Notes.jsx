@@ -9,9 +9,9 @@ function Notes({ notes, tasks, tags, addNote, updateNote, deleteNote }) {
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedTask, setSelectedTask] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('created'); // 'created', 'updated', 'title'
+  const [sortBy, setSortBy] = useState('created'); 
 
-  // Filter and sort notes
+
   const filteredNotes = useMemo(() => {
     return notes
       .filter(note => {

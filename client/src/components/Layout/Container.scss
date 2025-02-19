@@ -1,6 +1,6 @@
 .container {
-    margin-left: 200px; /* Same width as the navbar */
-    padding: 20px; /* Add some padding around the content */
+    margin-left: 200px; 
+    padding: 20px; 
   }
 
   .layout-container {
@@ -10,19 +10,18 @@
         flex: 1;
         
         .content-wrapper {
-            // Add some spacing between header and content
+
             .header {
                 margin-bottom: 1rem;
             }
 
-            // Add padding to content area
             padding: 0 1rem;
         }
     }
 }
 
 .content-wrapper {
-  margin-left: 200px; /* Same width as the navbar */
-  padding: 20px; /* Add some padding around the content */
+  margin-left: 200px; 
+  padding: 20px;
   width: 100%;
 }

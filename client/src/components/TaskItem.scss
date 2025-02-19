@@ -7,21 +7,20 @@
   border-left: 4px solid #ddd;
   transition: all 0.2s ease;
 
-  // Status-based border colors
   &--open {
-    border-left-color: #95a5a6; // grey
+    border-left-color: #95a5a6; 
   }
 
   &--in-progress {
-    border-left-color: #3498db; // blue
+    border-left-color: #3498db; 
   }
 
   &--completed {
-    border-left-color: #2ecc71; // green
+    border-left-color: #2ecc71; 
   }
 
   &--blocked {
-    border-left-color: #e74c3c; // red
+    border-left-color: #e74c3c; 
   }
 
   &:hover {
@@ -136,7 +135,6 @@
   border-left: 4px solid #ddd;
   transition: all 0.2s ease;
 
-  // Status-based colors
   &.success { border-left-color: #28a745; }
   &.warning { border-left-color: #ffc107; }
   &.default { border-left-color: #6c757d; }

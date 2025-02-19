@@ -2,7 +2,7 @@ import initKnex from "knex";
 import configuration from "../knexfile.js";
 const knex = initKnex(configuration);
 
-// Get all tags
+
 export const getTags = async (req, res) => {
   try {
     const tags = await knex("tags")
@@ -16,12 +16,12 @@ export const getTags = async (req, res) => {
   }
 };
 
-// Get a specific tag with its associated tasks and notes
+
 export const getTag = async (req, res) => {
   const { id } = req.params;
 
   try {
-    // First get the tag
+
     const tag = await knex("tags")
       .where({ id })
       .first();
@@ -30,13 +30,13 @@ export const getTag = async (req, res) => {
       return res.status(404).json({ message: `Tag with ID ${id} not found` });
     }
 
-    // Get tasks with this tag
+
     const tasks = await knex("tasks")
       .select("tasks.*")
       .join("task_tags", "tasks.id", "task_tags.task_id")
       .where("task_tags.tag_id", id);
 
-    // Get notes with this tag
+
     const notes = await knex("notes")
       .select("notes.*")
       .join("note_tags", "notes.id", "note_tags.note_id")
@@ -53,7 +53,7 @@ export const getTag = async (req, res) => {
   }
 };
 
-// Add a new tag
+
 export const addTag = async (req, res) => {
   const { name } = req.body;
 
@@ -67,7 +67,7 @@ export const addTag = async (req, res) => {
   }
 };
 
-// Update an existing tag
+
 export const updateTag = async (req, res) => {
   const { id } = req.params;
   const { name } = req.body;
@@ -82,16 +82,16 @@ export const updateTag = async (req, res) => {
   }
 };
 
-// Delete a tag and its associations
+
 export const deleteTag = async (req, res) => {
   const { id } = req.params;
 
   try {
     await knex.transaction(async (trx) => {
-      // Delete tag associations first
+
       await trx("task_tags").where({ tag_id: id }).del();
       await trx("note_tags").where({ tag_id: id }).del();
-      // Then delete the tag
+
       await trx("tags").where({ id }).del();
     });
     res.status(204).send();

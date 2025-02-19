@@ -18,15 +18,6 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
@@ -35,10 +26,6 @@
 
 .card {
   padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }
 
 // src/App.scss
@@ -61,7 +48,7 @@ ul {
 
 a {
   text-decoration: none;
-  color: #007bff; // Example link color
+  color: #007bff; 
 }
 
 .app {
@@ -70,14 +57,12 @@ a {
 
   .main-content {
     flex: 1;
-    margin-left: 200px; // Width of your navbar
+    margin-left: 200px; 
     min-height: 100vh;
     background: #f8f9fa;
-    
-    // Ensure content doesn't overlap with navbar
+  
     padding: 20px;
     
-    // Remove any unwanted margins/padding
     margin-top: 0;
     margin-bottom: 0;
   }

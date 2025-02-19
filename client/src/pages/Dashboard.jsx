@@ -6,7 +6,6 @@ import './Dashboard.scss';
 function Dashboard({ tasks, notes, tags }) {
   const [selectedTag, setSelectedTag] = useState(null);
 
-  // Memoized calculations
   const statistics = useMemo(() => {
     const taskStats = {
       total: tasks.length,
@@ -25,7 +24,6 @@ function Dashboard({ tasks, notes, tags }) {
     return { taskStats, noteStats };
   }, [tasks, notes]);
 
-  // Filter and sort recent items
   const recentItems = useMemo(() => {
     const allItems = [
       ...tasks.map(task => ({
@@ -45,7 +43,6 @@ function Dashboard({ tasks, notes, tags }) {
       .slice(0, 5);
   }, [tasks, notes]);
 
-  // Filter items by selected tag
   const filteredItems = useMemo(() => {
     if (!selectedTag) return { tasks, notes };
 
@@ -61,7 +58,6 @@ function Dashboard({ tasks, notes, tags }) {
 
   return (
     <div className="dashboard">
-      {/* Quick Stats Section */}
       <section className="stats-section">
         <h2>Overview</h2>
         <div className="stats-grid">
@@ -107,7 +103,6 @@ function Dashboard({ tasks, notes, tags }) {
         </div>
       </section>
 
-      {/* Recent Activity Section */}
       <section className="recent-section">
         <h2>Recent Activity</h2>
         <div className="activity-list">
@@ -136,7 +131,6 @@ function Dashboard({ tasks, notes, tags }) {
         </div>
       </section>
 
-      {/* Tag Filter Section */}
       <section className="filter-section">
         <h2>Filter by Tag</h2>
         <div className="tags-list">

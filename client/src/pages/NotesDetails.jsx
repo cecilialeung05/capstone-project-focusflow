@@ -23,7 +23,7 @@ function NotesDetails({ notes, tasks, tags, updateNote, deleteNote }) {
         note={note}
         addNote={updateNote}
         tasks={tasks}
-        tags={tags} // Pass tags to form
+        tags={tags}
         onCancel={() => navigate('/notes')}
       />
       <button onClick={handleDelete} className="delete-btn">

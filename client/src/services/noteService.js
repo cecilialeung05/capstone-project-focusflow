@@ -7,7 +7,7 @@ const noteService = {
   getAllNotes: async () => {
     try {
       const response = await axios.get(API_ENDPOINT);
-      console.log('Note service response:', response.data); // Debug log
+      console.log('Note service response:', response.data); 
       return response.data;
     } catch (error) {
       console.error('Error fetching notes:', error);
@@ -18,7 +18,7 @@ const noteService = {
   getNote: async (id) => {
     try {
       const response = await axios.get(`${API_ENDPOINT}/${id}`);
-      console.log('Single note response:', response.data); // Debug log
+      console.log('Single note response:', response.data); 
       return response.data;
     } catch (error) {
       console.error(`Error fetching note ${id}:`, error);
@@ -28,7 +28,7 @@ const noteService = {
 
   createNote: async (note) => {
     try {
-      console.log('Creating note with data:', note); // Debug log
+      console.log('Creating note with data:', note); 
       const response = await axios.post(API_ENDPOINT, note);
       return response.data;
     } catch (error) {
@@ -39,7 +39,7 @@ const noteService = {
 
   updateNote: async (id, note) => {
     try {
-      console.log('Updating note with data:', note); // Debug log
+      console.log('Updating note with data:', note); 
       const response = await axios.put(`${API_ENDPOINT}/${id}`, note);
       return response.data;
     } catch (error) {

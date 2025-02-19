@@ -9,7 +9,6 @@ function Search({ tasks, notes }) {
   const [results, setResults] = useState([]);
   const navigate = useNavigate();
 
-  // Fuse.js options
   const options = {
     keys: ['title', 'description', 'content'],
     threshold: 0.4,

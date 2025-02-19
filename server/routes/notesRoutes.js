@@ -18,7 +18,7 @@ const validateNote = [
         next();
     }
 ];
-// // Notes routes
+
 router.get("/", getNotes); 
 router.get("/:id", getNote);
 router.post("/", validateNote, addNote);

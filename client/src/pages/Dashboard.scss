@@ -1,4 +1,4 @@
-// src/pages/Dashboard/Dashboard.scss
+
 .dashboard {
     padding: 24px;
     max-width: 1200px;
@@ -14,7 +14,6 @@
         }
     }
 
-    // Stats Section
     .stats-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -61,7 +60,6 @@
         }
     }
 
-    // Recent Activity Section
     .activity-list {
         display: grid;
         gap: 12px;
@@ -120,7 +118,6 @@
         }
     }
 
-    // Tag Filter Section
     .tags-list {
         display: flex;
         flex-wrap: wrap;

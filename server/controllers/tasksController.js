@@ -1,17 +1,16 @@
-// controllers/tasksController.js
+
 import initKnex from "knex";
 import configuration from "../knexfile.js";
 
 const knex = initKnex(configuration);
 
-// Get all tasks
+
 export const getTasks = async (req, res) => {
   try {
     const tasks = await knex("tasks")
       .select("tasks.*")
       .orderBy("tasks.created_at", "desc");
 
-    // For each task, get its tags
     const tasksWithTags = await Promise.all(
       tasks.map(async (task) => {
         const tags = await knex("tags")
@@ -33,7 +32,6 @@ export const getTasks = async (req, res) => {
   }
 };
 
-// Get a specific task by ID
 export const getTask = async (req, res) => {
   const { id } = req.params;
 
@@ -58,13 +56,13 @@ export const getTask = async (req, res) => {
   }
 };
 
-// Add a new task
+
 export const addTask = async (req, res) => {
   const { title, description, status, due_date, tags } = req.body;
 
   try {
     await knex.transaction(async (trx) => {
-      // Insert task
+
       const [taskId] = await trx("tasks").insert({
         title,
         description,
@@ -72,7 +70,7 @@ export const addTask = async (req, res) => {
         due_date: due_date || null
       });
 
-      // Insert tag associations if any
+ 
       if (tags && tags.length > 0) {
         const tagInserts = tags.map(tagId => ({
           task_id: taskId,
@@ -81,7 +79,6 @@ export const addTask = async (req, res) => {
         await trx("task_tags").insert(tagInserts);
       }
 
-      // Get the complete task with tags
       const task = await trx("tasks").where({ id: taskId }).first();
       const taskTags = await trx("tags")
         .select("tags.*")
@@ -99,7 +96,7 @@ export const addTask = async (req, res) => {
   }
 };
 
-// Update an existing task
+
 export const updateTask = async (req, res) => {
   const { id } = req.params;
   const { title, description, status, dueDate, tags } = req.body;
@@ -110,7 +107,6 @@ export const updateTask = async (req, res) => {
       return res.status(404).json({ message: `Task with ID ${id} not found` });
     }
 
-    // 1. Update the task itself:
     await knex("tasks").where({ id }).update({
       title,
       description,
@@ -118,17 +114,13 @@ export const updateTask = async (req, res) => {
       due_date: dueDate || null,
     });
 
-    // 2. Update the task_tags table:
-    // a. Delete existing tag associations:
     await knex("task_tags").where({ task_id: id }).del();
 
-    // b. Insert new tag associations:
     if (tags && tags.length > 0) {
       const inserts = tags.map(tagId => ({ task_id: id, tag_id: tagId }));
       await knex("task_tags").insert(inserts);
     }
 
-    // 3. Fetch the updated task with its tags:
     const updatedTask = await knex("tasks")
       .select("tasks.*", knex.raw('GROUP_CONCAT(tags.name) as tags'))
       .leftJoin("task_tags", "tasks.id", "task_tags.task_id")
@@ -153,7 +145,6 @@ export const updateTask = async (req, res) => {
   }
 };
 
-// Delete a task
 export const deleteTask = async (req, res) => {
   const { id } = req.params;
 

@@ -3,10 +3,8 @@ export const formatDate = (dateString) => {
   
   const date = new Date(dateString);
   
-  // Check if date is valid
   if (isNaN(date.getTime())) return 'Invalid date';
 
-  // Options for date formatting
   const options = {
     year: 'numeric',
     month: 'short',

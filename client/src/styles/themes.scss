@@ -1,4 +1,4 @@
-/* Light theme (default) */
+
 .app.light {
     --bg-primary: #ffffff;
     --bg-secondary: #f8f9fa;
@@ -8,7 +8,7 @@
     --accent-color: #007bff;
   }
   
-  /* Dark theme */
+
   .app.dark {
     --bg-primary: #1a1a1a;
     --bg-secondary: #2d2d2d;
@@ -18,13 +18,11 @@
     --accent-color: #4dabf7;
   }
   
-  /* Base styles using CSS variables */
   body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
   }
   
-  /* Add more theme-aware styles as needed */
   .card {
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
@@ -35,5 +33,4 @@
     color: var(--bg-primary);
   }
   
-  /* ... add more component styles ... */
   

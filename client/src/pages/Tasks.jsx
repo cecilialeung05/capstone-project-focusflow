@@ -7,10 +7,9 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
   const [showForm, setShowForm] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedTags, setSelectedTags] = useState([]);
-  const [sortBy, setSortBy] = useState('created'); // 'created', 'due', 'status'
+  const [sortBy, setSortBy] = useState('created'); 
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Filter and sort tasks
   const filteredTasks = useMemo(() => {
     return tasks
       .filter(task => {
@@ -28,7 +27,7 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
             return new Date(a.due_date || '9999') - new Date(b.due_date || '9999');
           case 'status':
             return a.status.localeCompare(b.status);
-          default: // 'created'
+          default: 
             return new Date(b.created_at) - new Date(a.created_at);
         }
       });

@@ -45,7 +45,6 @@ function Tags({ tags, tasks, notes, addTag, updateTag, deleteTag }) {
     setFilteredTags(filtered);
   }, [tags, searchTerm]);
 
-  // Filter items based on selected tag
   const filteredNotes = selectedTagId
     ? notes.filter(note => 
         note.tags && note.tags.some(tag => tag.id === selectedTagId)
@@ -58,16 +57,9 @@ function Tags({ tags, tasks, notes, addTag, updateTag, deleteTag }) {
       )
     : [];
 
-  // Debug logs
-  console.log('All Notes:', notes);
-  console.log('Selected Tag ID:', selectedTagId);
-
-  // Debug logs for filtered items
-  console.log('Filtered Notes:', filteredNotes);
-  console.log('Filtered Tasks:', filteredTasks);
 
   useEffect(() => {
-    // Log for debugging
+
     if (selectedTagId) {
       console.log('Selected Tag ID:', selectedTagId);
       console.log('All Tasks:', tasks);

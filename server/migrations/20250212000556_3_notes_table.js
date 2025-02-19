@@ -4,15 +4,15 @@
  */
 export function up(knex) {
     return knex.schema.createTable('notes', (table) => {
-      table.increments('id').primary().unsigned();  // Primary Key
+      table.increments('id').primary().unsigned();  
       table
         .integer('task_id')
         .unsigned()
         .references('tasks.id')
         .onUpdate('CASCADE')
-        .onDelete('CASCADE'); // Foreign Key to tasks
+        .onDelete('CASCADE'); 
       table.string('title').notNullable();
-      table.text('content').notNullable(); // Store the actual note content.  Use 'text' for larger notes
+      table.text('content').notNullable(); 
       table.timestamp('created_at').defaultTo(knex.fn.now());
       table.timestamp('updated_at').defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
     });

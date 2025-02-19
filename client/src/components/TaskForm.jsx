@@ -2,19 +2,19 @@ import React, { useState, useEffect } from 'react';
 import './TaskForm.scss';
 
 function TaskForm({ task, addTask, tags, onCancel }) {
-  // Initialize state with existing task data or defaults
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     due_date: '',
     status: 'open',
-    tags: [] // Add tags array to form data
+    tags: [] 
   });
 
-  // If editing existing task, populate form with task data
+
   useEffect(() => {
     if (task) {
-      // Format the date to YYYY-MM-DD for the date input
+
       const formattedDate = task.due_date ? 
         new Date(task.due_date).toISOString().split('T')[0] : '';
       
@@ -23,7 +23,7 @@ function TaskForm({ task, addTask, tags, onCancel }) {
         description: task.description || '',
         due_date: formattedDate,
         status: task.status || 'open',
-        tags: task.tags?.map(tag => tag.id) || [] // Initialize tags if present
+        tags: task.tags?.map(tag => tag.id) || [] 
       });
     }
   }, [task]);
@@ -31,23 +31,19 @@ function TaskForm({ task, addTask, tags, onCancel }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Validate required fields
     if (!formData.title.trim()) {
       alert('Title is required');
       return;
     }
 
-    // Create task object
     const taskData = {
       ...formData,
       title: formData.title.trim(),
       description: formData.description.trim()
     };
 
-    // Submit the task
     addTask(task ? { ...taskData, id: task.id } : taskData);
     
-    // Reset form if not editing
     if (!task) {
       setFormData({
         title: '',
@@ -58,7 +54,6 @@ function TaskForm({ task, addTask, tags, onCancel }) {
       });
     }
 
-    // Call onCancel if provided (for closing edit mode)
     if (onCancel) {
       onCancel();
     }
