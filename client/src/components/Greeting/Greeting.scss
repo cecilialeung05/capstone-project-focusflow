@@ -1,0 +1,93 @@
+.greeting {
+  position: relative;
+  width: 250px;
+  
+  &--collapsed {
+    height: 40px;
+  }
+
+  &__toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 4px 8px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #000;
+    z-index: 1;
+
+    &:hover {
+      color: var(--accent-color);
+    }
+  }
+
+  &__resizable {
+    border: 3px solid #000000;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.2);
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      right: 8px;
+      bottom: 8px;
+      border: 2px solid #000000;
+      border-radius: 8px;
+      pointer-events: none;
+    }
+  }
+
+  &__content {
+    padding: 1rem 1.5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #000;
+    position: relative;
+    z-index: 1;
+    gap: 0.5rem;
+  }
+
+  &__text {
+    font-size: 1.5rem;
+    font-family: "Times New Roman", serif;
+    font-weight: bold;
+    font-style: italic;
+    margin-bottom: 1rem;
+    letter-spacing: 0.05em;
+  }
+
+  &__date {
+    font-family: "Courier New", monospace;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.2em;
+  }
+
+  &__time {
+    font-family: "Courier New", monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+  }
+
+  // Styles for react-resizable handle
+  .react-resizable-handle {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    background: url('data:image/svg+xml,...') no-repeat center;
+    background-size: 10px;
+    padding: 0 3px 3px 0;
+    cursor: se-resize;
+    z-index: 2;
+  }
+} 

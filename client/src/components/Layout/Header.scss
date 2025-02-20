@@ -1,18 +1,22 @@
-
 .header {
-    background:  #333;
-    padding: 1rem;
+    background: #333;
+    color: #ffffff;
+    padding: 0.25rem;
     border-bottom: 1px solid #3d5061;
-    margin-bottom: 2rem;
 
-    &__container {
+    &__content {
         max-width: 1200px;
         margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
-    &__logo {
-        margin: 0;
-        color: #ffffff;
+    &__title {
         font-size: 1.5rem;
+        font-weight: bold;
+        margin: 0;
+        text-align: center;
     }
 }

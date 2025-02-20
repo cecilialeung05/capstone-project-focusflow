@@ -1,10 +1,19 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { formatDate } from '../utils/dateUtils';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { ResizableBox } from 'react-resizable';
+import AnimatedPage from '../components/AnimatedPage';
 import './Dashboard.scss';
+import 'react-resizable/css/styles.css';
 
 function Dashboard({ tasks, notes, tags }) {
   const [selectedTag, setSelectedTag] = useState(null);
+  const [components, setComponents] = useState([
+    { id: 'tasks', title: 'Tasks Overview', width: 400, height: 300 },
+    { id: 'notes', title: 'Notes', width: 400, height: 300 },
+    { id: 'recent', title: 'Recent Items', width: 400, height: 300 }
+  ]);
 
   const statistics = useMemo(() => {
     const taskStats = {
@@ -56,131 +65,154 @@ function Dashboard({ tasks, notes, tags }) {
     };
   }, [tasks, notes, selectedTag]);
 
-  return (
-    <div className="dashboard">
-      <div className="dashboard__header">
-        <h2 className="dashboard__title">Dashboard</h2>
-      </div>
+  const handleDragEnd = (result) => {
+    if (!result.destination) return;
 
-      <div className="dashboard__stats">
-        <div className="dashboard__card">
-          <h3 className="dashboard__card-title">Tasks Overview</h3>
-          <div className="dashboard__card-content dashboard__stats-grid">
-            <div className="dashboard__stats-item">
-              <span className="dashboard__stats-label">Total Tasks</span>
-              <span className="dashboard__stats-value">{tasks.length}</span>
-            </div>
-            <div className="dashboard__stats-item">
-              <span className="dashboard__stats-label">Completed</span>
-              <span className="dashboard__stats-value">{statistics.taskStats.completed}</span>
-            </div>
-            <div className="dashboard__stats-item">
-              <span className="dashboard__stats-label">In Progress</span>
-              <span className="dashboard__stats-value">{statistics.taskStats.inProgress}</span>
-            </div>
-            <div className="dashboard__stats-item">
-              <span className="dashboard__stats-label">Blocked</span>
-              <span className="dashboard__stats-value">{statistics.taskStats.blocked}</span>
+    const items = Array.from(components);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setComponents(items);
+  };
+
+  const handleResize = (index, size) => {
+    const newComponents = [...components];
+    newComponents[index] = {
+      ...newComponents[index],
+      width: size.width,
+      height: size.height
+    };
+    setComponents(newComponents);
+  };
+
+  const renderComponentContent = (componentId) => {
+    switch (componentId) {
+      case 'tasks':
+        return (
+          <div className="dashboard__tasks">
+            <div className="dashboard__stats">
+              <div className="dashboard__stat">
+                <span className="dashboard__stat-label">Total</span>
+                <span className="dashboard__stat-value">{statistics.taskStats.total}</span>
+              </div>
+              <div className="dashboard__stat">
+                <span className="dashboard__stat-label">Completed</span>
+                <span className="dashboard__stat-value">{statistics.taskStats.completed}</span>
+              </div>
+              <div className="dashboard__stat">
+                <span className="dashboard__stat-label">In Progress</span>
+                <span className="dashboard__stat-value">{statistics.taskStats.inProgress}</span>
+              </div>
+              <div className="dashboard__stat">
+                <span className="dashboard__stat-label">Open</span>
+                <span className="dashboard__stat-value">{statistics.taskStats.open}</span>
+              </div>
             </div>
           </div>
-        </div>
+        );
 
-        <div className="dashboard__card">
-          <h3 className="dashboard__card-title">Notes</h3>
-          <div className="dashboard__card-content">
-            <div className="dashboard__stats-item">
-              <span className="dashboard__stats-label">Total</span>
-              <span className="dashboard__stats-value">{statistics.noteStats.total}</span>
-            </div>
-            <div className="dashboard__stats-item">
-              <span className="dashboard__stats-label">With Tasks</span>
-              <span className="dashboard__stats-value">{statistics.noteStats.withTasks}</span>
-            </div>
-            <div className="dashboard__stats-item">
-              <span className="dashboard__stats-label">With Tags</span>
-              <span className="dashboard__stats-value">{statistics.noteStats.withTags}</span>
+      case 'notes':
+        return (
+          <div className="dashboard__notes">
+            <div className="dashboard__stats">
+              <div className="dashboard__stat">
+                <span className="dashboard__stat-label">Total Notes</span>
+                <span className="dashboard__stat-value">{statistics.noteStats.total}</span>
+              </div>
+              <div className="dashboard__stat">
+                <span className="dashboard__stat-label">With Tasks</span>
+                <span className="dashboard__stat-value">{statistics.noteStats.withTasks}</span>
+              </div>
+              <div className="dashboard__stat">
+                <span className="dashboard__stat-label">With Tags</span>
+                <span className="dashboard__stat-value">{statistics.noteStats.withTags}</span>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        );
 
-      <div className="dashboard__recent">
-        <div className="dashboard__card">
-          <h3 className="dashboard__card-title">Recent Tasks</h3>
-          <div className="dashboard__recent-list">
-            {tasks.slice(0, 5).map(task => (
-              <Link 
-                key={task.id} 
-                to={`/tasks/${task.id}`}
+      case 'recent':
+        return (
+          <div className="dashboard__recent">
+            {recentItems.map(item => (
+              <Link
+                key={`${item.type}-${item.id}`}
+                to={`/${item.type}s/${item.id}`}
                 className="dashboard__recent-item"
               >
-                <span className={`dashboard__status dashboard__status--${task.status.replace(' ', '-')}`} />
-                <span>{task.title}</span>
+                <span className="dashboard__recent-icon">
+                  {item.type === 'task' ? '📋' : '📝'}
+                </span>
+                <span className="dashboard__recent-title">{item.title}</span>
+                <span className="dashboard__recent-date">
+                  {formatDate(item.date)}
+                </span>
               </Link>
             ))}
           </div>
-        </div>
+        );
 
-        <div className="dashboard__card">
-          <h3 className="dashboard__card-title">Recent Notes</h3>
-          <div className="dashboard__recent-list">
-            {/* ... notes list */}
-          </div>
-        </div>
-      </div>
+      default:
+        return null;
+    }
+  };
 
-      <section className="filter-section">
-        <h2>Filter by Tag</h2>
-        <div className="tags-list">
-          {tags.map(tag => (
-            <button
-              key={tag.id}
-              className={`tag-button ${selectedTag === tag.id ? 'selected' : ''}`}
-              onClick={() => setSelectedTag(selectedTag === tag.id ? null : tag.id)}
-            >
-              {tag.name}
-            </button>
-          ))}
+  return (
+    <AnimatedPage>
+      <div className="dashboard">
+        <div className="dashboard__header">
+          <h1 className="dashboard__title">Dashboard</h1>
         </div>
         
-        {selectedTag && (
-          <div className="filtered-results">
-            <div className="filtered-tasks">
-              <h3>Tasks with this tag</h3>
-              {filteredItems.tasks.length > 0 ? (
-                <ul>
-                  {filteredItems.tasks.map(task => (
-                    <li key={task.id}>
-                      <Link to={`/tasks/${task.id}`}>
-                        <span className={`status ${task.status}`}></span>
-                        {task.title}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>No tasks found with this tag</p>
-              )}
-            </div>
-
-            <div className="filtered-notes">
-              <h3>Notes with this tag</h3>
-              {filteredItems.notes.length > 0 ? (
-                <ul>
-                  {filteredItems.notes.map(note => (
-                    <li key={note.id}>
-                      <Link to={`/notes/${note.id}`}>{note.title}</Link>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>No notes found with this tag</p>
-              )}
-            </div>
-          </div>
-        )}
-      </section>
-    </div>
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId="dashboard">
+            {(provided) => (
+              <div 
+                className="dashboard__grid"
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                {components.map((component, index) => (
+                  <Draggable 
+                    key={component.id} 
+                    draggableId={component.id} 
+                    index={index}
+                  >
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                      >
+                        <ResizableBox
+                          width={component.width}
+                          height={component.height}
+                          onResize={(e, data) => handleResize(index, data.size)}
+                          minConstraints={[300, 200]}
+                          maxConstraints={[800, 600]}
+                        >
+                          <div className="dashboard__card">
+                            <div 
+                              className="dashboard__card-header"
+                              {...provided.dragHandleProps}
+                            >
+                              <h3>{component.title}</h3>
+                            </div>
+                            <div className="dashboard__card-content">
+                              {renderComponentContent(component.id)}
+                            </div>
+                          </div>
+                        </ResizableBox>
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      </div>
+    </AnimatedPage>
   );
 }
 

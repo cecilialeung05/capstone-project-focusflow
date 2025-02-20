@@ -23,11 +23,12 @@
 
     // Card block (reusable for both stats and recent sections)
     &__card {
-        background: white;
-        padding: 24px;
+        background: var(--bg-secondary);
         border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s ease;
+        border: 1px solid var(--border-color);
+        height: 100%;
+        cursor: move;
+        user-select: none;
 
         &:hover {
             transform: translateY(-2px);
@@ -45,6 +46,40 @@
             display: grid;
             gap: 16px;
         }
+    }
+
+    &__card-header {
+        padding: 15px;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: grab;
+        &:active {
+            cursor: grabbing;
+        }
+    }
+
+    &__card-content {
+        padding: 15px;
+        overflow-y: auto;
+    }
+
+    // Styles for react-resizable
+    .react-resizable {
+        position: relative;
+    }
+
+    .react-resizable-handle {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 20px;
+        height: 20px;
+        background: url('data:image/svg+xml,...') no-repeat center;
+        background-size: 10px;
+        padding: 0 3px 3px 0;
+        cursor: se-resize;
     }
 
     // Stats section
@@ -129,6 +164,13 @@
         &--completed { background: #2ecc71; }
         &--blocked { background: #e74c3c; }
     }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
 }
 
 // Media queries
@@ -141,4 +183,13 @@
             grid-template-columns: 1fr;
         }
     }
+}
+
+// Dragging styles
+.dragging {
+    opacity: 0.5;
+}
+
+.dragging-over {
+    background-color: var(--bg-primary);
 }
