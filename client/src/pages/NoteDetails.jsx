@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import NoteForm from '../components/NoteForm';
+import NoteForm from '../components/Notes/NoteForm';
 
 function NoteDetails({ notes, tasks, tags, updateNote, deleteNote }) {
   const { noteId } = useParams();

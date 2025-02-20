@@ -3,6 +3,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { ThemeProvider } from './context/ThemeContext';
 import { useAppData } from './hooks/useAppData';
 import Container from './components/Layout/Container';
+import './styles/themes.scss';
 import './App.scss';
 
 function App() {
@@ -23,13 +24,8 @@ function App() {
     deleteTag
   } = useAppData();
 
-  if (error) {
-    return <div>Error loading data: {error.message}</div>;
-  }
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
   return (
     <ThemeProvider>

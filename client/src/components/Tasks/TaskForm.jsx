@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import TagList from './TagList';
+import TagList from '../Tags/TagList';
 import './TaskForm.scss';
 
 function TaskForm({ task, addTask, tags, onCancel }) {

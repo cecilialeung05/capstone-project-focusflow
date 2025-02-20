@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import NoteForm from '../components/NoteForm';
-import NoteItem from '../components/NoteItem';
+import NoteForm from '../components/Notes/NoteForm';
+import NoteItem from '../components/Notes/NoteItem';
 import './Notes.scss';
 
 function Notes({ notes, tasks, tags, addNote, updateNote, deleteNote }) {

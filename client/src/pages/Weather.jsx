@@ -1,4 +1,3 @@
-import AnimatedPage from "../components/AnimatedPage";
 
 function Weather() {
   return (

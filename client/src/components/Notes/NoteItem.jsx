@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { formatDate } from '../utils/dateUtils';
+import { formatDate } from '../../utils/dateUtils';
 import './NoteItem.scss';
 
 function NoteItem({ note, task, onEdit, onDelete }) {

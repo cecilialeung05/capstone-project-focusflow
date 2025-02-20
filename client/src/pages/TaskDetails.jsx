@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import TaskForm from '../components/TaskForm';
+import TaskForm from '../components/Tasks/TaskForm';
 import '../pages/TaskDetails.scss';
 
 function TaskDetails({ tasks, tags, updateTask, deleteTask }) {

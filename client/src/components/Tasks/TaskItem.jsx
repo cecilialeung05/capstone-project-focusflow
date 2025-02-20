@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { formatDate } from '../utils/dateUtils';
+import { formatDate } from '../../utils/dateUtils';
 import './TaskItem.scss';
 
 function TaskItem({ task, updateTask, deleteTask }) {

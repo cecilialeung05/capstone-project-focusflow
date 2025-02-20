@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import TaskForm from '../components/TaskForm';
-import TaskItem from '../components/TaskItem';
+import TaskForm from '../components/Tasks/TaskForm';
+import TaskItem from '../components/Tasks/TaskItem';
 import './Tasks.scss';
 
 function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
