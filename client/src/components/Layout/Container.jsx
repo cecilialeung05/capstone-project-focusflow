@@ -1,5 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import RightSidebar from "./RightSidebar"; 
 import Navbar from './Navbar';
 import Header from './Header';
 import Footer from './Footer';
@@ -31,6 +32,12 @@ function Container({
   updateTag,
   deleteTag 
 }) {
+  // Get pinned items
+  const pinnedItems = [
+    ...tasks.filter(task => task.isPinned),
+    ...notes.filter(note => note.isPinned)
+  ];
+
   return (
     <div className="layout">
       <Navbar tasks={tasks} notes={notes} />
@@ -90,6 +97,11 @@ function Container({
             <Route path="/weather" element={<Weather />} />
           </Routes>
         </main>
+        <RightSidebar 
+          pinnedItems={pinnedItems}
+          updateTask={updateTask}
+          updateNote={updateNote}
+        />
         <Footer />
       </div>
     </div>
