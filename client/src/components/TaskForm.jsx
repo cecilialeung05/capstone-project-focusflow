@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import TagList from './TagList';
 import './TaskForm.scss';
 
 function TaskForm({ task, addTask, tags, onCancel }) {
@@ -77,8 +78,8 @@ function TaskForm({ task, addTask, tags, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit} className="task-form">
-      <div className="form-group">
-        <label htmlFor="title">Title *</label>
+      <div className="task-form__group">
+        <label htmlFor="title" className="task-form__label">Title *</label>
         <input
           type="text"
           id="title"
@@ -87,11 +88,12 @@ function TaskForm({ task, addTask, tags, onCancel }) {
           onChange={handleChange}
           placeholder="Enter task title"
           required
+          className="task-form__input"
         />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="description">Description</label>
+      <div className="task-form__group">
+        <label htmlFor="description" className="task-form__label">Description</label>
         <textarea
           id="description"
           name="description"
@@ -99,28 +101,31 @@ function TaskForm({ task, addTask, tags, onCancel }) {
           onChange={handleChange}
           placeholder="Enter task description"
           rows="3"
+          className="task-form__input task-form__input--textarea"
         />
       </div>
 
-      <div className="form-row">
-        <div className="form-group">
-          <label htmlFor="due_date">Due Date</label>
+      <div className="task-form__group-row">
+        <div className="task-form__group">
+          <label htmlFor="due_date" className="task-form__label">Due Date</label>
           <input
             type="date"
             id="due_date"
             name="due_date"
             value={formData.due_date}
             onChange={handleChange}
+            className="task-form__input"
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="status">Status</label>
+        <div className="task-form__group">
+          <label htmlFor="status" className="task-form__label">Status</label>
           <select
             id="status"
             name="status"
             value={formData.status}
             onChange={handleChange}
+            className="task-form__select"
           >
             <option value="open">Open</option>
             <option value="in progress">In Progress</option>
@@ -129,36 +134,31 @@ function TaskForm({ task, addTask, tags, onCancel }) {
         </div>
       </div>
 
-      <div className="form-group">
-        <label htmlFor="tags">Tags</label>
-        <select
-          id="tags"
-          name="tags"
-          multiple
-          value={formData.tags}
-          onChange={handleTagChange}
-          className="tag-select"
-        >
-          {tags?.map(tag => (
-            <option key={tag.id} value={tag.id}>
-              {tag.name}
-            </option>
-          ))}
-        </select>
-        <small className="form-help-text">
-          Hold Ctrl (Cmd on Mac) to select multiple tags. Click again to deselect.
-        </small>
+      <div className="task-form__group">
+        <label className="task-form__label">Tags</label>
+        <TagList 
+          tags={tags}
+          selectedTags={formData.tags.map(id => tags.find(tag => tag.id === id))}
+          onTagClick={(tag) => {
+            setFormData(prev => ({
+              ...prev,
+              tags: prev.tags.some(t => t === tag.id)
+                ? prev.tags.filter(t => t !== tag.id)
+                : [...prev.tags, tag.id]
+            }));
+          }}
+        />
       </div>
 
-      <div className="form-actions">
-        <button type="submit" className="submit-btn">
+      <div className="task-form__actions">
+        <button type="submit" className="task-form__button task-form__button--primary">
           {task ? 'Update Task' : 'Add Task'}
         </button>
         {onCancel && (
           <button 
             type="button" 
             onClick={onCancel}
-            className="cancel-btn"
+            className="task-form__button task-form__button--secondary"
           >
             Cancel
           </button>

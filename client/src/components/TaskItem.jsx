@@ -34,14 +34,18 @@ function TaskItem({ task, updateTask, deleteTask }) {
             <p className="task-item__description">{task.description}</p>
           )}
           <p className="task-item__due-date">
-            <span className="label">Due:</span> {formatDate(task.due_date)}
+            <span className="task-item__due-date-label">Due:</span> 
+            {formatDate(task.due_date)}
           </p>
         </div>
 
         {task.tags && task.tags.length > 0 && (
           <div className="task-item__tags">
             {task.tags.map(tag => (
-              <span key={`task-${task.id}-tag-${tag.id}`} className="tag-badge">
+              <span 
+                key={`task-${task.id}-tag-${tag.id}`} 
+                className="task-item__tag"
+              >
                 {tag.name}
               </span>
             ))}
@@ -50,10 +54,10 @@ function TaskItem({ task, updateTask, deleteTask }) {
       </div>
 
       <div className="task-item__actions">
-        <div className="status-buttons">
+        <div className="task-item__status-buttons">
           {task.status !== 'open' && (
             <button 
-              className="status-btn open"
+              className="task-item__button task-item__button--open"
               onClick={() => handleStatusChange('open')}
             >
               Set Open
@@ -61,7 +65,7 @@ function TaskItem({ task, updateTask, deleteTask }) {
           )}
           {task.status !== 'in progress' && (
             <button 
-              className="status-btn in-progress"
+              className="task-item__button task-item__button--progress"
               onClick={() => handleStatusChange('in progress')}
             >
               Set In Progress
@@ -69,7 +73,7 @@ function TaskItem({ task, updateTask, deleteTask }) {
           )}
           {task.status !== 'completed' && (
             <button 
-              className="status-btn completed"
+              className="task-item__button task-item__button--complete"
               onClick={() => handleStatusChange('completed')}
             >
               Set Completed
@@ -77,7 +81,7 @@ function TaskItem({ task, updateTask, deleteTask }) {
           )}
           {task.status !== 'blocked' && (
             <button 
-              className="status-btn blocked"
+              className="task-item__button task-item__button--block"
               onClick={() => handleStatusChange('blocked')}
             >
               Set Blocked
@@ -85,16 +89,16 @@ function TaskItem({ task, updateTask, deleteTask }) {
           )}
         </div>
 
-        <div className="management-buttons">
+        <div className="task-item__management">
           <Link 
             to={`/tasks/${task.id}`} 
-            className="edit-btn"
+            className="task-item__button task-item__button--edit"
             title="Edit task details"
           >
             Edit Details
           </Link>
           <button 
-            className="delete-btn"
+            className="task-item__button task-item__button--delete"
             onClick={() => deleteTask(task.id)}
             title="Delete task"
           >

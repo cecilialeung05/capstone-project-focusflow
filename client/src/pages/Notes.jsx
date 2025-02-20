@@ -51,57 +51,53 @@ function Notes({ notes, tasks, tags, addNote, updateNote, deleteNote }) {
   }, [tasks]);
 
   return (
-    <div className="notes-container">
-      <div className="notes-header">
-        <h2>Notes</h2>
+    <div className="notes">
+      <div className="notes__header">
+        <h2 className="notes__title">Notes</h2>
         <button 
-          onClick={() => setShowForm(true)} 
-          className="btn btn-primary"
+          onClick={() => setShowForm(!showForm)}
+          className="notes__button notes__button--primary"
         >
-          Add Note
+          {showForm ? 'Cancel' : 'Add New Note'}
         </button>
       </div>
 
       {showForm && (
-        <div className="note-form-container">
-          <NoteForm
-            note={selectedNote}
+        <div className="notes__form">
+          <NoteForm 
             addNote={addNote}
             tasks={tasks}
             tags={tags}
-            onCancel={() => {
-              setShowForm(false);
-              setSelectedNote(null);
-            }}
+            onCancel={() => setShowForm(false)}
           />
         </div>
       )}
 
-      <div className="notes-filters">
-        <div className="search-bar">
+      <div className="notes__filters">
+        <div className="notes__filters-search">
           <input
             type="text"
+            className="notes__filters-search-input"
             placeholder="Search notes..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
-        <div className="filter-options">
-          <select
+        <div className="notes__filters-options">
+          <select 
+            className="notes__filters-select"
             value={selectedTask}
             onChange={(e) => setSelectedTask(e.target.value)}
           >
             <option value="">All Tasks</option>
-            <option value="none">Notes without Tasks</option>
             {tasks.map(task => (
-              <option key={task.id} value={task.id}>
-                {task.title}
-              </option>
+              <option key={task.id} value={task.id}>{task.title}</option>
             ))}
           </select>
 
           <select
+            className="notes__filters-select"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
           >
@@ -111,11 +107,13 @@ function Notes({ notes, tasks, tags, addNote, updateNote, deleteNote }) {
           </select>
         </div>
 
-        <div className="tags-filter">
+        <div className="notes__filters-tags">
           {tags.map(tag => (
             <button
               key={tag.id}
-              className={`tag-filter-btn ${selectedTags.includes(tag.id) ? 'selected' : ''}`}
+              className={`notes__filters-tag ${
+                selectedTags.includes(tag.id) ? 'notes__filters-tag--selected' : ''
+              }`}
               onClick={() => handleTagToggle(tag.id)}
             >
               {tag.name}
@@ -124,33 +122,27 @@ function Notes({ notes, tasks, tags, addNote, updateNote, deleteNote }) {
         </div>
       </div>
 
-      <div className="notes-list">
+      <div className="notes__list">
         {filteredNotes.length > 0 ? (
-          filteredNotes.map(note => {
-            const noteWithTask = {
-              ...note,
-              task: note.task_id ? taskMap[note.task_id] : null
-            };
-            
-            return (
-              <NoteItem
-                key={note.id}
-                note={noteWithTask}
-                onEdit={() => {
-                  setSelectedNote(noteWithTask);
-                  setShowForm(true);
-                }}
-                onDelete={() => {
-                  if (window.confirm('Are you sure you want to delete this note?')) {
-                    deleteNote(note.id);
-                  }
-                }}
-              />
-            );
-          })
+          filteredNotes.map(note => (
+            <NoteItem
+              key={note.id}
+              note={note}
+              task={taskMap[note.task_id]}
+              onEdit={() => {
+                setSelectedNote(note);
+                setShowForm(true);
+              }}
+              onDelete={() => {
+                if (window.confirm('Are you sure you want to delete this note?')) {
+                  deleteNote(note.id);
+                }
+              }}
+            />
+          ))
         ) : (
-          <div className="no-notes">
-            <p>No notes found matching your filters</p>
+          <div className="notes__empty">
+            <p className="notes__empty-message">No notes found</p>
           </div>
         )}
       </div>

@@ -11,21 +11,21 @@ export async function seed(knex) {
         title: 'Plan Website Redesign',
         description: 'Outline the new design for the company website.',
         status: 'in progress',
-        due_date: '2024-01-15',
+        due_date: '2025-01-15',
       },
       {
         id: 2,
         title: 'Research Competitor Pricing',
         description: 'Analyze pricing strategies of key competitors.',
         status: 'open',
-        due_date: '2023-12-20',
+        due_date: '2025-12-20',
       },
       {
         id: 3,
         title: 'Prepare Presentation for Client',
         description: 'Create a compelling presentation for the potential client.',
         status: 'completed',
-        due_date: '2023-11-10',
+        due_date: '2025-11-10',
       },
       {
         id: 4,
@@ -39,7 +39,14 @@ export async function seed(knex) {
         title: 'Write Blog Post About Productivity Tips',
         description: 'Compose an informative blog post for the company blog.',
         status: 'open',
-        due_date: '2023-12-31',
+        due_date: '2025-12-31',
+      },
+      {
+        id: 6,
+        title: 'Review React core concepts',
+        description: 'Focus on understanding hooks, context, and services.',
+        status: 'open',
+        due_date: '2025-12-31',
       },
     ]);
   }

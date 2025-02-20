@@ -1,128 +1,127 @@
-.notes-container {
+.notes {
   padding: 24px;
   max-width: 1200px;
   margin: 0 auto;
 
-  .notes-header {
+  &__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
-
-    h2 {
-      margin: 0;
-      color: #2c3e50;
-    }
   }
 
-  .note-form-container {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 24px;
+  &__title {
+    margin: 0;
+    color: #2c3e50;
   }
 
-  .notes-filters {
-    background: white;
-    padding: 16px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 24px;
-
-    .search-bar {
-      margin-bottom: 16px;
-
-      input {
-        width: 100%;
-        padding: 8px 12px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 14px;
-
-        &:focus {
-          outline: none;
-          border-color: #3498db;
-          box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
-      }
-    }
-
-    .filter-options {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
-
-      select {
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background: white;
-        min-width: 150px;
-
-        &:focus {
-          outline: none;
-          border-color: #3498db;
-        }
-      }
-    }
-
-    .tags-filter {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-
-      .tag-filter-btn {
-        padding: 4px 12px;
-        border: 1px solid #ddd;
-        border-radius: 16px;
-        background: white;
-        cursor: pointer;
-        transition: all 0.2s;
-
-        &:hover {
-          background: #f8f9fa;
-        }
-
-        &.selected {
-          background: #3498db;
-          color: white;
-          border-color: #3498db;
-        }
-      }
-    }
-  }
-
-  .notes-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-  }
-
-  .no-notes {
-    text-align: center;
-    padding: 32px;
-    background: white;
-    border-radius: 8px;
-    color: #666;
-    grid-column: 1 / -1;
-  }
-
-  .btn {
+  &__button {
     padding: 8px 16px;
-    border: none;
     border-radius: 4px;
     cursor: pointer;
     font-weight: 500;
     transition: background-color 0.2s;
 
-    &.btn-primary {
+    &--primary {
       background: #3498db;
       color: white;
 
       &:hover {
         background: #2980b9;
       }
+    }
+  }
+
+  &__form {
+    margin-bottom: 24px;
+  }
+
+  &__filters {
+    background: white;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 24px;
+
+    &-search {
+      width: 98%;
+      margin: 0 auto 16px;
+      
+      &-input {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        background: white;
+
+        &:focus {
+          border-color: #3498db;
+          box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+      }
+    }
+
+    &-options {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    &-select {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: white;
+      min-width: 150px;
+      cursor: pointer;
+
+      &:focus {
+        border-color: #3498db;
+      }
+    }
+
+    &-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    &-tag {
+      padding: 4px 12px;
+      border: 1px solid #ddd;
+      border-radius: 16px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover {
+        background: #f8f9fa;
+      }
+
+      &--selected {
+        background: #3498db;
+        color: white;
+        border-color: #3498db;
+      }
+    }
+  }
+
+  &__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  &__empty {
+    text-align: center;
+    padding: 32px;
+    background: white;
+    border-radius: 8px;
+    color: #666;
+
+    &-message {
+      color: #6c757d;
     }
   }
 

@@ -6,59 +6,59 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-  .form-group {
+  &__group {
     margin-bottom: 16px;
+  }
 
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
-      color: #333;
+  &__label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
 
-      &::after {
-        content: " *";
-        color: #dc3545;
-        display: none;
-      }
-
-      &[for="title"]::after,
-      &[for="content"]::after {
-        display: inline;
-      }
+    &::after {
+      content: " *";
+      color: #dc3545;
+      display: none;
     }
 
-    input,
-    textarea,
-    select {
-      width: 100%;
-      padding: 8px 12px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
-
-      &:focus {
-        outline: none;
-        border-color: #3498db;
-        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-      }
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    select {
-      background-color: white;
-      cursor: pointer;
-
-      &:hover {
-        border-color: #64a6a6;
-      }
+    &[for="title"]::after,
+    &[for="content"]::after {
+      display: inline;
     }
   }
 
-  .tag-select {
+  &__input,
+  &__textarea,
+  &__select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+
+    &:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+  }
+
+  &__textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  &__select {
+    background-color: white;
+    cursor: pointer;
+
+    &:hover {
+      border-color: #64a6a6;
+    }
+  }
+
+  &__tag-select {
     min-height: 100px;
     
     option {
@@ -71,35 +71,35 @@
     }
   }
 
-  .form-actions {
+  &__actions {
     display: flex;
     gap: 12px;
     margin-top: 20px;
+  }
 
-    button {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: background-color 0.2s;
+  &__button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
 
-      &.btn-primary {
-        background: #3498db;
-        color: white;
+    &--primary {
+      background: #3498db;
+      color: white;
 
-        &:hover {
-          background: #2980b9;
-        }
+      &:hover {
+        background: #2980b9;
       }
+    }
 
-      &.btn-secondary {
-        background: #e0e0e0;
-        color: #333;
+    &--secondary {
+      background: #e0e0e0;
+      color: #333;
 
-        &:hover {
-          background: #ccc;
-        }
+      &:hover {
+        background: #ccc;
       }
     }
   }

@@ -1,0 +1,128 @@
+.task-details {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  input, 
+  select, 
+  button {
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    background: white;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  &__title {
+    margin: 0;
+    color: #2c3e50;
+  }
+
+  &__status {
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 14px;
+
+    &--open {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    &--in-progress {
+      background: #fff3e0;
+      color: #f57c00;
+    }
+
+    &--completed {
+      background: #f5f5f5;
+      color: #616161;
+    }
+
+    &--blocked {
+      background: #ffebee;
+      color: #c62828;
+    }
+  }
+
+  &__info {
+    background: white;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 24px;
+
+    &-item {
+      margin-bottom: 12px;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      strong {
+        color: #2c3e50;
+        margin-right: 8px;
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 12px;
+  }
+
+  &__button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+
+    &--edit {
+      background: #3498db;
+      color: white;
+
+      &:hover {
+        background: #2980b9;
+      }
+    }
+
+    &--delete {
+      background: #e74c3c;
+      color: white;
+
+      &:hover {
+        background: #c0392b;
+      }
+    }
+
+    &--back {
+      background: #95a5a6;
+      color: white;
+
+      &:hover {
+        background: #7f8c8d;
+      }
+    }
+  }
+} 

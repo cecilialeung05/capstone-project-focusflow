@@ -8,19 +8,19 @@
   transition: all 0.2s ease;
 
   &--open {
-    border-left-color: #95a5a6; 
+    border-left-color: #95a5a6;
   }
 
   &--in-progress {
-    border-left-color: #3498db; 
+    border-left-color: #3498db;
   }
 
   &--completed {
-    border-left-color: #2ecc71; 
+    border-left-color: #2ecc71;
   }
 
   &--blocked {
-    border-left-color: #e74c3c; 
+    border-left-color: #e74c3c;
   }
 
   &:hover {
@@ -69,7 +69,7 @@
     font-size: 0.85rem;
     color: #666;
 
-    .label {
+    &-label {
       font-weight: 600;
       margin-right: 4px;
     }
@@ -81,195 +81,114 @@
     gap: 8px;
     margin-top: 8px;
   }
+
+  &__tag {
+    background: #f0f0f0;
+    color: #666;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background: #e0e0e0;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  &__status-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  &__button {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+
+    // Management buttons (Edit/Delete)
+    &--edit {
+      background-color: #64a6a6;
+      color: white;
+      &:hover { background-color: #558e8e; }
+    }
+
+    &--delete {
+      background-color: #dc3545;
+      color: white;
+      &:hover { background-color: #c82333; }
+    }
+
+    // Status buttons with softer colors
+    &--open {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #c8e6c9;
+      &:hover { background-color: #c8e6c9; }
+    }
+
+    &--progress {
+      background-color: #e3f2fd;
+      color: #1976d2;
+      border: 1px solid #bbdefb;
+      &:hover { background-color: #bbdefb; }
+    }
+
+    &--complete {
+      background-color: #f1f8e9;
+      color: #558b2f;
+      border: 1px solid #dcedc8;
+      &:hover { background-color: #dcedc8; }
+    }
+
+    &--block {
+      background-color: #ffebee;
+      color: #c62828;
+      border: 1px solid #ffcdd2;
+      &:hover { background-color: #ffcdd2; }
+    }
+  }
 }
 
 .status-badge {
-  padding: 4px 8px;
+  padding: 4px 12px;
   border-radius: 12px;
   font-size: 0.8rem;
   font-weight: 500;
   text-transform: capitalize;
 
   &.open {
-    background: #e0e0e0;
-    color: #333;
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
   }
 
   &.in-progress {
-    background: #3498db;
-    color: white;
+    background-color: #e3f2fd;
+    color: #1976d2;
+    border: 1px solid #bbdefb;
   }
 
   &.completed {
-    background: #2ecc71;
-    color: white;
+    background-color: #f1f8e9;
+    color: #558b2f;
+    border: 1px solid #dcedc8;
   }
 
   &.blocked {
-    background: #e74c3c;
-    color: white;
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
   }
 }
-
-.tag-badge {
-  background: #f0f0f0;
-  color: #666;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 0.85rem;
-  display: inline-flex;
-  align-items: center;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background: #e0e0e0;
-  }
-}
-
-.task-item {
-  background: #fff;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-left: 4px solid #ddd;
-  transition: all 0.2s ease;
-
-  &.success { border-left-color: #28a745; }
-  &.warning { border-left-color: #ffc107; }
-  &.default { border-left-color: #6c757d; }
-
-  &:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  &__content {
-    margin-bottom: 1rem;
-  }
-
-  &__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-
-  &__title {
-    margin: 0;
-    font-size: 1.25rem;
-    
-    a {
-      color: #2c3e50;
-      text-decoration: none;
-      
-      &:hover {
-        color: #007bff;
-      }
-    }
-  }
-
-  &__details {
-    color: #666;
-  }
-
-  &__description {
-    margin: 0.5rem 0;
-    line-height: 1.4;
-  }
-
-  &__due-date {
-    margin: 0.5rem 0;
-    font-size: 0.9rem;
-    
-    .label {
-      font-weight: 500;
-      color: #495057;
-    }
-  }
-
-  .status-badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 12px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    
-    &.open {
-      background-color: #e9ecef;
-      color: #495057;
-    }
-    
-    &.in-progress {
-      background-color: #fff3cd;
-      color: #856404;
-    }
-    
-    &.completed {
-      background-color: #d4edda;
-      color: #155724;
-    }
-  }
-
-  &__actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #eee;
-
-    .status-buttons {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .management-buttons {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    button, .edit-btn {
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      border: none;
-      cursor: pointer;
-      font-size: 0.875rem;
-      text-decoration: none;
-      transition: all 0.2s ease;
-      
-      &.status-btn {
-        background-color: #f8f9fa;
-        color: #495057;
-        
-        &:hover {
-          background-color: #e9ecef;
-        }
-        
-        &.completed {
-          &:hover { background-color: #d4edda; }
-        }
-        
-        &.in-progress {
-          &:hover { background-color: #fff3cd; }
-        }
-      }
-      
-      &.edit-btn {
-        background-color: #007bff;
-        color: white;
-        
-        &:hover {
-          background-color: #0056b3;
-        }
-      }
-      
-      &.delete-btn {
-        background-color: #dc3545;
-        color: white;
-        
-        &:hover {
-          background-color: #c82333;
-        }
-      }
-    }
-  }
-} 

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import TaskForm from '../components/TaskForm';
+import '../pages/TaskDetails.scss';
 
 function TaskDetails({ tasks, tags, updateTask, deleteTask }) {
   const { taskId } = useParams();
@@ -66,34 +67,40 @@ function TaskDetails({ tasks, tags, updateTask, deleteTask }) {
         />
       ) : (
         <>
-          <div className="task-header">
-            <h2>{task.title}</h2>
-            <span className={`status-badge ${task.status.replace(' ', '-')}`}>
+          <div className="task-details__header">
+            <h2 className="task-details__title">{task.title}</h2>
+            <span className={`task-details__status task-details__status--${task.status.replace(' ', '-')}`}>
               {task.status}
             </span>
           </div>
           
-          <div className="task-info">
-            <p><strong>Description:</strong> {task.description}</p>
-            <p><strong>Due Date:</strong> {formatDate(task.due_date)}</p>
-            <p><strong>Status:</strong> {task.status}</p>
+          <div className="task-details__info">
+            <p className="task-details__info-item">
+              <strong>Description:</strong> {task.description}
+            </p>
+            <p className="task-details__info-item">
+              <strong>Due Date:</strong> {formatDate(task.due_date)}
+            </p>
+            <p className="task-details__info-item">
+              <strong>Status:</strong> {task.status}
+            </p>
           </div>
 
-          <div className="task-actions">
+          <div className="task-details__actions">
             <button 
-              className="edit-btn"
+              className="task-details__button task-details__button--edit"
               onClick={() => setIsEditing(true)}
             >
               Edit Task
             </button>
             <button 
-              className="delete-btn"
+              className="task-details__button task-details__button--delete"
               onClick={handleDelete}
             >
               Delete Task
             </button>
             <button 
-              className="back-btn"
+              className="task-details__button task-details__button--back"
               onClick={() => navigate('/tasks')}
             >
               Back to Tasks

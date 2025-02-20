@@ -1,37 +1,44 @@
-.tasks-page {
+.tasks {
   padding: 24px;
   max-width: 1200px;
   margin: 0 auto;
 
-  .tasks-header {
+  &__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
-
-    h1 {
-      margin: 0;
-      color: #2c3e50;
-    }
   }
 
-  .tasks-filters {
+  &__title {
+    margin: 0;
+    color: #2c3e50;
+  }
+
+  &__form {
+    margin-bottom: 2rem;
+  }
+
+  &__filters {
     background: white;
     padding: 16px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 24px;
 
-    .search-bar {
+    &-search {
+      width: 96%;
       margin-bottom: 16px;
-
-      input {
+      position: relative;
+      
+      &-input {
         width: 100%;
         padding: 8px 12px;
         border: 1px solid #ddd;
         border-radius: 4px;
         font-size: 14px;
-
+        background: transparent; // Change to transparent to blend with container
+      
         &:focus {
           outline: none;
           border-color: #3498db;
@@ -40,65 +47,69 @@
       }
     }
 
-    .filter-options {
+    &-options {
       display: flex;
       gap: 12px;
       margin-bottom: 16px;
-
-      select {
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background: white;
-        min-width: 150px;
-
-        &:focus {
-          outline: none;
-          border-color: #3498db;
-        }
-      }
-    }
-
-    .tags-filter {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-
-      .tag-filter-btn {
-        padding: 4px 12px;
-        border: 1px solid #ddd;
-        border-radius: 16px;
-        background: white;
-        cursor: pointer;
-        transition: all 0.2s;
-
-        &:hover {
-          background: #f8f9fa;
-        }
-
-        &.selected {
-          background: #3498db;
-          color: white;
-          border-color: #3498db;
-        }
-      }
     }
   }
 
-  .tasks-list {
+  &__select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    min-width: 150px;
+
+    &:focus {
+      outline: none;
+      border-color: #3498db;
+    }
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  &__tag-button {
+    padding: 4px 12px;
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background: #f8f9fa;
+    }
+
+    &--selected {
+      background: #3498db;
+      color: white;
+      border-color: #3498db;
+    }
+  }
+
+  &__list  {
     display: grid;
     gap: 16px;
   }
 
-  .no-tasks {
+  &__empty {
     text-align: center;
     padding: 32px;
     background: white;
     border-radius: 8px;
     color: #666;
+
+    &-message {
+      color: #6c757d;
+    }
   }
 
-  .btn {
+  &__button {
     padding: 8px 16px;
     border: none;
     border-radius: 4px;
@@ -106,7 +117,7 @@
     font-weight: 500;
     transition: background-color 0.2s;
 
-    &.btn-primary {
+    &--primary {
       background: #3498db;
       color: white;
 

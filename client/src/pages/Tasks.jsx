@@ -49,37 +49,41 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
   };
 
   return (
-    <div className="tasks-page">
-      <div className="tasks-header">
-        <h1>Tasks</h1>
+    <div className="tasks">
+      <div className="tasks__header">
+        <h1 className="tasks__title">Tasks</h1>
         <button 
           onClick={() => setShowForm(!showForm)}
-          className="btn btn-primary"
+          className="tasks__button tasks__button--primary"
         >
           {showForm ? 'Cancel' : 'Add New Task'}
         </button>
       </div>
 
       {showForm && (
+        <div className="tasks__form">
         <TaskForm 
           addTask={addTask}
           tags={tags}
           onCancel={() => setShowForm(false)}
         />
+        </div>
       )}
 
-      <div className="tasks-filters">
-        <div className="search-bar">
+      <div className="tasks__filters">
+        <div className="tasks__filters-search">
           <input
             type="text"
+            className="tasks__filters-search-input"
             placeholder="Search tasks..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
-        <div className="filter-options">
+        <div className="tasks__filters-options">
           <select 
+            className="tasks__filters-select"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
@@ -91,6 +95,7 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
           </select>
 
           <select
+            className="tasks__filters-select"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
           >
@@ -100,11 +105,11 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
           </select>
         </div>
 
-        <div className="tags-filter">
+        <div className="tasks__tags">
           {tags.map(tag => (
             <button
               key={tag.id}
-              className={`tag-filter-btn ${selectedTags.includes(tag.id) ? 'selected' : ''}`}
+              className={`tasks__tag-button ${selectedTags.includes(tag.id) ? 'tasks__tag-button--selected' : ''}`}
               onClick={() => handleTagToggle(tag.id)}
             >
               {tag.name}
@@ -113,7 +118,7 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
         </div>
       </div>
 
-      <div className="tasks-list">
+      <div className="tasks__list">
         {filteredTasks.length > 0 ? (
           filteredTasks.map(task => (
             <TaskItem
@@ -121,11 +126,12 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
               task={task}
               updateTask={updateTask}
               deleteTask={deleteTask}
+              className="tasks__item"
             />
           ))
         ) : (
-          <div className="no-tasks">
-            <p>No tasks found matching your filters</p>
+          <div className="tasks__empty">
+            <p className="tasks__empty-message">No tasks found matching your filters</p>
           </div>
         )}
       </div>

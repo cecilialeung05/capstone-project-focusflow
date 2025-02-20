@@ -58,78 +58,76 @@ function Dashboard({ tasks, notes, tags }) {
 
   return (
     <div className="dashboard">
-      <section className="stats-section">
-        <h2>Overview</h2>
-        <div className="stats-grid">
-          <div className="stat-card">
-            <h3>Tasks</h3>
-            <div className="stat-numbers">
-              <div className="stat-item">
-                <span className="label">Total:</span>
-                <span className="value">{statistics.taskStats.total}</span>
-              </div>
-              <div className="stat-item status-completed">
-                <span className="label">Completed:</span>
-                <span className="value">{statistics.taskStats.completed}</span>
-              </div>
-              <div className="stat-item status-in-progress">
-                <span className="label">In Progress:</span>
-                <span className="value">{statistics.taskStats.inProgress}</span>
-              </div>
-              <div className="stat-item status-blocked">
-                <span className="label">Blocked:</span>
-                <span className="value">{statistics.taskStats.blocked}</span>
-              </div>
-            </div>
-          </div>
+      <div className="dashboard__header">
+        <h2 className="dashboard__title">Dashboard</h2>
+      </div>
 
-          <div className="stat-card">
-            <h3>Notes</h3>
-            <div className="stat-numbers">
-              <div className="stat-item">
-                <span className="label">Total:</span>
-                <span className="value">{statistics.noteStats.total}</span>
-              </div>
-              <div className="stat-item">
-                <span className="label">With Tasks:</span>
-                <span className="value">{statistics.noteStats.withTasks}</span>
-              </div>
-              <div className="stat-item">
-                <span className="label">With Tags:</span>
-                <span className="value">{statistics.noteStats.withTags}</span>
-              </div>
+      <div className="dashboard__stats">
+        <div className="dashboard__card">
+          <h3 className="dashboard__card-title">Tasks Overview</h3>
+          <div className="dashboard__card-content dashboard__stats-grid">
+            <div className="dashboard__stats-item">
+              <span className="dashboard__stats-label">Total Tasks</span>
+              <span className="dashboard__stats-value">{tasks.length}</span>
+            </div>
+            <div className="dashboard__stats-item">
+              <span className="dashboard__stats-label">Completed</span>
+              <span className="dashboard__stats-value">{statistics.taskStats.completed}</span>
+            </div>
+            <div className="dashboard__stats-item">
+              <span className="dashboard__stats-label">In Progress</span>
+              <span className="dashboard__stats-value">{statistics.taskStats.inProgress}</span>
+            </div>
+            <div className="dashboard__stats-item">
+              <span className="dashboard__stats-label">Blocked</span>
+              <span className="dashboard__stats-value">{statistics.taskStats.blocked}</span>
             </div>
           </div>
         </div>
-      </section>
 
-      <section className="recent-section">
-        <h2>Recent Activity</h2>
-        <div className="activity-list">
-          {recentItems.map(item => (
-            <Link 
-              key={`${item.type}-${item.id}`}
-              to={`/${item.type}s/${item.id}`}
-              className="activity-item"
-            >
-              <div className={`activity-type ${item.type}`}>
-                {item.type === 'task' ? '📋' : '📝'}
-              </div>
-              <div className="activity-content">
-                <h4>{item.title}</h4>
-                <p className="activity-date">{formatDate(item.created_at)}</p>
-                {item.tags && item.tags.length > 0 && (
-                  <div className="activity-tags">
-                    {item.tags.map(tag => (
-                      <span key={tag.id} className="tag">{tag.name}</span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </Link>
-          ))}
+        <div className="dashboard__card">
+          <h3 className="dashboard__card-title">Notes</h3>
+          <div className="dashboard__card-content">
+            <div className="dashboard__stats-item">
+              <span className="dashboard__stats-label">Total</span>
+              <span className="dashboard__stats-value">{statistics.noteStats.total}</span>
+            </div>
+            <div className="dashboard__stats-item">
+              <span className="dashboard__stats-label">With Tasks</span>
+              <span className="dashboard__stats-value">{statistics.noteStats.withTasks}</span>
+            </div>
+            <div className="dashboard__stats-item">
+              <span className="dashboard__stats-label">With Tags</span>
+              <span className="dashboard__stats-value">{statistics.noteStats.withTags}</span>
+            </div>
+          </div>
         </div>
-      </section>
+      </div>
+
+      <div className="dashboard__recent">
+        <div className="dashboard__card">
+          <h3 className="dashboard__card-title">Recent Tasks</h3>
+          <div className="dashboard__recent-list">
+            {tasks.slice(0, 5).map(task => (
+              <Link 
+                key={task.id} 
+                to={`/tasks/${task.id}`}
+                className="dashboard__recent-item"
+              >
+                <span className={`dashboard__status dashboard__status--${task.status.replace(' ', '-')}`} />
+                <span>{task.title}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        <div className="dashboard__card">
+          <h3 className="dashboard__card-title">Recent Notes</h3>
+          <div className="dashboard__recent-list">
+            {/* ... notes list */}
+          </div>
+        </div>
+      </div>
 
       <section className="filter-section">
         <h2>Filter by Tag</h2>

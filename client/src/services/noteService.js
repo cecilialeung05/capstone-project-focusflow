@@ -4,9 +4,10 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080
 const API_ENDPOINT = `${API_BASE_URL}/notes`;
 
 const noteService = {
-  getAllNotes: async () => {
+  getAllNotes: async (tagId = null) => {
     try {
-      const response = await axios.get(API_ENDPOINT);
+      const params = tagId ? { tagId } : {};
+      const response = await axios.get(API_ENDPOINT, { params });
       console.log('Note service response:', response.data); 
       return response.data;
     } catch (error) {

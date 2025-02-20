@@ -1,4 +1,3 @@
-// import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import "dotenv/config";
@@ -6,7 +5,6 @@ import notesRoutes from "./routes/notesRoutes.js";
 import tagsRoutes from "./routes/tagsRoutes.js";
 import tasksRoutes from "./routes/tasksRoutes.js";
 
-// dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8080;
 
@@ -27,5 +25,5 @@ app.get("/", (req, res) => {
 
 
 app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`🚌 Server running on http://localhost:${PORT}`);
 });

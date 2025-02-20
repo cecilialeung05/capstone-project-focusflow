@@ -1,86 +1,85 @@
-nav {
-    width: 200px; 
-    height: 100vh; 
-    position: fixed; 
-    top: 0;
-    left: 0;
-    background-color: #f0f0f0;
-    padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); 
-    z-index: 10; 
-  
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-  
-      li {
-        margin-bottom: 10px;
-  
-        a {
-          display: block;
-          padding: 10px 15px;
-          text-decoration: none;
-          color: #333;
-          border-radius: 5px;
-          transition: background-color 0.2s ease;
-  
-          &:hover {
-            background: rgba(0, 0, 0, 0.05);
-          }
-        }
-  
-        button {
-          background-color: #4CAF50; /* Green */
-          border: none;
-          color: white;
-          padding: 10px 15px;
-          text-align: center;
-          text-decoration: none;
-          display: inline-block;
-          font-size: 14px;
-          margin-top: 5px;
-          cursor: pointer;
-          border-radius: 5px;
-          transition: background-color 0.2s ease;
-  
-          &:hover {
-            background-color: #367c39;
-          }
-        }
-  
-        
-        .search-container {
-          margin: 0;
-          
-          .search-button {
-           
-            background: transparent;
-            border: 1px solid currentColor;
-            color: inherit;
-            
-            &:hover {
-              background: rgba(255, 255, 255, 0.1);
-            }
-          }
-        }
-      }
+.navbar {
+  width: 200px; 
+  height: 100vh; 
+  position: fixed; 
+  top: 0;
+  left: 0;
+  background-color: var(--bg-secondary);
+  padding: 20px;
+  box-shadow: 2px 0 5px var(--form-shadow);
+  z-index: 10; 
+
+  &__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  &__item {
+    margin-bottom: 10px;
+  }
+
+  &__link {
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: var(--text-primary);
+    border-radius: 5px;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background: var(--bg-primary);
     }
-  
-    &.light {
-      background-color: #f0f0f0;
-      color: #333;
+  }
+
+  &__button {
+    background-color: var(--accent-color);
+    border: none;
+    color: var(--bg-primary);
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin-top: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: var(--accent-hover);
     }
-  
-    &.dark {
-      background-color: #333;
-      color: #f0f0f0;
-  
-      a {
-        color: #f0f0f0;
+  }
+
+  &__search {
+    margin: 0;
+    
+    &-button {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      
+      &:hover {
+        background: var(--bg-primary);
       }
     }
   }
+
+  // Theme variations
+  &--light {
+    background-color: #f0f0f0;
+    color: #333;
+  }
+
+  &--dark {
+    background-color: #333;
+    color: #f0f0f0;
+
+    .navbar__link {
+      color: #f0f0f0;
+    }
+  }
+}
 
 .search-modal {
   z-index: 1000;

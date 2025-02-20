@@ -1,219 +1,126 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import TagList from '../components/TagList';
+import tagService from '../services/tagService';
 import './Tags.scss';
 
-function Tags({ tags, tasks, notes, addTag, updateTag, deleteTag }) {
+function Tags({ tags, addTag, updateTag, deleteTag }) {
   const [newTagName, setNewTagName] = useState('');
   const [selectedTag, setSelectedTag] = useState(null);
-  const [editingTag, setEditingTag] = useState(null);
-  const [editTagName, setEditTagName] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('name'); 
+  const [taggedItems, setTaggedItems] = useState({ tasks: [], notes: [] });
 
-  const tagStats = useMemo(() => {
-    return tags.map(tag => ({
-      ...tag,
-      taskCount: tasks.filter(task => task.tags?.some(t => t.id === tag.id)).length,
-      noteCount: notes.filter(note => note.tags?.some(t => t.id === tag.id)).length,
-      lastUsed: [...tasks, ...notes]
-        .filter(item => item.tags?.some(t => t.id === tag.id))
-        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0]?.created_at
-    }));
-  }, [tags, tasks, notes]);
-
-  const filteredTags = useMemo(() => {
-    return tagStats
-      .filter(tag => 
-        tag.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-      .sort((a, b) => {
-        switch (sortBy) {
-          case 'count':
-            return (b.taskCount + b.noteCount) - (a.taskCount + a.noteCount);
-          case 'recent':
-            return new Date(b.lastUsed || 0) - new Date(a.lastUsed || 0);
-          default: 
-            return a.name.localeCompare(b.name);
+  useEffect(() => {
+    const fetchTaggedItems = async () => {
+      if (selectedTag) {
+        try {
+          const items = await tagService.getTaggedItems(selectedTag.id);
+          setTaggedItems(items);
+        } catch (error) {
+          console.error('Error fetching tagged items:', error);
         }
-      });
-  }, [tagStats, searchTerm, sortBy]);
-
-  const filteredItems = useMemo(() => {
-    if (!selectedTag) return { tasks: [], notes: [] };
-
-    return {
-      tasks: tasks.filter(task => 
-        task.tags?.some(tag => tag.id === selectedTag)
-      ),
-      notes: notes.filter(note => 
-        note.tags?.some(tag => tag.id === selectedTag)
-      )
+      } else {
+        setTaggedItems({ tasks: [], notes: [] });
+      }
     };
-  }, [selectedTag, tasks, notes]);
+
+    fetchTaggedItems();
+  }, [selectedTag]);
+
+  const handleAddTag = (e) => {
+    e.preventDefault();
+    if (newTagName.trim()) {
+      addTag({ name: newTagName.trim() });
+      setNewTagName('');
+    }
+  };
+
+  const filteredTags = tags.filter(tag =>
+    tag.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div className="tags-page">
-      <div className="tags-header">
+    <div className="tags">
+      <div className="tags__header">
         <h1>Tags</h1>
-        <div className="tag-management">
-          <div className="tag-creation">
-            <input
-              type="text"
-              value={newTagName}
-              onChange={(e) => setNewTagName(e.target.value)}
-              placeholder="New Tag Name"
-              className="tag-input"
-            />
-            <button 
-              onClick={() => {
-                if (newTagName.trim()) {
-                  addTag({ name: newTagName.trim() });
-                  setNewTagName('');
-                }
-              }}
-              className="create-tag-btn"
-              disabled={!newTagName.trim()}
-            >
-              Create Tag
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="tags-filters">
-        <div className="search-bar">
+        <form onSubmit={handleAddTag} className="tags__form">
           <input
             type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search tags..."
-            className="search-input"
+            value={newTagName}
+            onChange={(e) => setNewTagName(e.target.value)}
+            placeholder="New tag name..."
+            className="tags__input"
           />
-        </div>
-        <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-          className="sort-select"
-        >
-          <option value="name">Sort by Name</option>
-          <option value="count">Sort by Usage Count</option>
-          <option value="recent">Sort by Recent Activity</option>
-        </select>
+          <button type="submit" className="tags__button">Add Tag</button>
+        </form>
       </div>
 
-      <div className="tags-content">
-        <div className="tags-list">
-          {filteredTags.map(tag => (
-            <div key={tag.id} className="tag-item">
-              {editingTag === tag.id ? (
-                <div className="tag-edit">
-                  <input
-                    type="text"
-                    value={editTagName}
-                    onChange={(e) => setEditTagName(e.target.value)}
-                    className="tag-edit-input"
-                    autoFocus
-                  />
-                  <div className="tag-edit-actions">
-                    <button 
-                      onClick={() => {
-                        if (editTagName.trim()) {
-                          updateTag(tag.id, { name: editTagName.trim() });
-                          setEditingTag(null);
-                        }
-                      }}
-                      className="save-btn"
-                      title="Save"
-                    >
-                      ✓
-                    </button>
-                    <button 
-                      onClick={() => setEditingTag(null)}
-                      className="cancel-btn"
-                      title="Cancel"
-                    >
-                      ×
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="tag-display">
-                  <button 
-                    onClick={() => setSelectedTag(selectedTag === tag.id ? null : tag.id)}
-                    className={`tag-btn ${selectedTag === tag.id ? 'active' : ''}`}
-                  >
-                    <span className="tag-name">{tag.name}</span>
-                    <span className="tag-stats">
-                      {tag.taskCount + tag.noteCount} items
-                    </span>
-                  </button>
-                  <div className="tag-actions">
-                    <button 
-                      onClick={() => {
-                        setEditingTag(tag.id);
-                        setEditTagName(tag.name);
-                      }}
-                      className="edit-btn"
-                      title="Edit tag"
-                    >
-                      ✎
-                    </button>
-                    <button 
-                      onClick={() => {
-                        if (window.confirm(`Delete tag "${tag.name}"?`)) {
-                          deleteTag(tag.id);
-                        }
-                      }}
-                      className="delete-btn"
-                      title="Delete tag"
-                    >
-                      ×
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
+      <div className="tags__search">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search tags..."
+          className="tags__search-input"
+        />
+      </div>
+
+      <div className="tags__content">
+        <div className="tags__list">
+          <TagList
+            tags={filteredTags}
+            selectedTags={selectedTag ? [selectedTag] : []}
+            onTagClick={(tag) => setSelectedTag(
+              selectedTag?.id === tag.id ? null : tag
+            )}
+          />
         </div>
 
         {selectedTag && (
-          <div className="tag-details">
-            <h2>Tagged Items</h2>
-            <div className="tagged-items">
-              <div className="tagged-section">
-                <h3>Tasks ({filteredItems.tasks.length})</h3>
-                {filteredItems.tasks.length > 0 ? (
-                  <ul className="items-list">
-                    {filteredItems.tasks.map(task => (
-                      <li key={task.id}>
-                        <Link to={`/tasks/${task.id}`} className="item-link">
-                          <span className={`status-dot ${task.status}`} />
-                          <span className="item-title">{task.title}</span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="no-items">No tasks with this tag</p>
-                )}
-              </div>
+          <div className="tags__details">
+            <div className="tags__details-header">
+              <h2>Items tagged with "{selectedTag.name}"</h2>
+              <button 
+                onClick={() => deleteTag(selectedTag.id)}
+                className="tags__button tags__button--danger"
+              >
+                Delete Tag
+              </button>
+            </div>
 
-              <div className="tagged-section">
-                <h3>Notes ({filteredItems.notes.length})</h3>
-                {filteredItems.notes.length > 0 ? (
-                  <ul className="items-list">
-                    {filteredItems.notes.map(note => (
-                      <li key={note.id}>
-                        <Link to={`/notes/${note.id}`} className="item-link">
-                          <span className="item-title">{note.title}</span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="no-items">No notes with this tag</p>
-                )}
-              </div>
+            <div className="tags__section">
+              <h3>Tasks</h3>
+              {taggedItems.tasks.length > 0 ? (
+                <ul className="tags__items">
+                  {taggedItems.tasks.map(task => (
+                    <li key={task.id} className="tags__item">
+                      <Link to={`/tasks/${task.id}`} className="tags__link">
+                        <span className={`status-dot status-dot--${task.status}`} />
+                        {task.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="tags__empty">No tasks with this tag</p>
+              )}
+            </div>
+
+            <div className="tags__section">
+              <h3>Notes</h3>
+              {taggedItems.notes.length > 0 ? (
+                <ul className="tags__items">
+                  {taggedItems.notes.map(note => (
+                    <li key={note.id} className="tags__item">
+                      <Link to={`/notes/${note.id}`} className="tags__link">
+                        {note.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="tags__empty">No notes with this tag</p>
+              )}
             </div>
           </div>
         )}

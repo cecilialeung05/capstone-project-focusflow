@@ -57,35 +57,37 @@ function Search({ tasks, notes }) {
   }, []);
 
   return (
-    <div className="search-container">
+    <div className="search">
       <button 
-        className="search-button"
+        className="search__button"
         onClick={() => setIsOpen(true)}
       >
-        <span>🔍</span>
-        <span>Search (Ctrl + K)</span>
+        <span className="search__button-icon">🔍</span>
+        <span className="search__button-text">Search (Ctrl + K)</span>
       </button>
 
       {isOpen && (
-        <div className="search-modal">
-          <div className="modal-overlay" onClick={() => setIsOpen(false)} />
-          <div className="search-content">
-            <div className="search-input">
+        <div className="search__modal">
+          <div className="search__overlay" onClick={() => setIsOpen(false)} />
+          <div className="search__content">
+            <div className="search__input-wrapper">
               <input
                 type="text"
                 value={query}
                 onChange={(e) => handleSearch(e.target.value)}
                 placeholder="Search tasks and notes..."
+                className="search__input"
                 autoFocus
               />
             </div>
 
-            <div className="search-results">
+            <div className="search__results">
               {results.length > 0 ? (
-                <ul>
+                <ul className="search__list">
                   {results.map((result, index) => (
                     <li 
                       key={index}
+                      className="search__item"
                       onClick={() => {
                         navigate(result.type === 'task' 
                           ? `/tasks/${result.item.id}`
@@ -94,20 +96,20 @@ function Search({ tasks, notes }) {
                         setIsOpen(false);
                       }}
                     >
-                      <span className="icon">
+                      <span className="search__item-icon">
                         {result.type === 'task' ? '📋' : '📝'}
                       </span>
-                      <span className="title">{result.item.title}</span>
-                      <span className="type">{result.type}</span>
+                      <span className="search__item-title">{result.item.title}</span>
+                      <span className="search__item-type">{result.type}</span>
                     </li>
                   ))}
                 </ul>
               ) : query ? (
-                <div className="no-results">
+                <div className="search__empty">
                   No results found
                 </div>
               ) : (
-                <div className="search-hint">
+                <div className="search__hint">
                   Start typing to search...
                 </div>
               )}

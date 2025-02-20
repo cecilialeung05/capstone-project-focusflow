@@ -54,5 +54,11 @@ export async function seed(knex) {
         title: 'Topic Ideas',
         content: 'Time management techniques, prioritizing tasks, and avoiding distractions.',
       },
+      {
+        id: 9,
+        task_id: 6,
+        title: 'Understanding Knex Transactions',
+        content: 'knex.transaction(): This is the Knex method that creates a new database transaction. It takes an asynchronous function as its argument.',
+      },
     ]);
   }

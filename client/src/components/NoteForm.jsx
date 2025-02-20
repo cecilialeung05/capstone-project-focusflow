@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import TagList from './TagList';
 import './NoteForm.scss';
 
 function NoteForm({ note, addNote, tasks, tags, onCancel }) {
@@ -72,8 +73,8 @@ function NoteForm({ note, addNote, tasks, tags, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit} className="note-form">
-      <div className="form-group">
-        <label htmlFor="title">Title:</label>
+      <div className="note-form__group">
+        <label htmlFor="title" className="note-form__label">Title:</label>
         <input
           type="text"
           id="title"
@@ -81,27 +82,30 @@ function NoteForm({ note, addNote, tasks, tags, onCancel }) {
           value={formData.title}
           onChange={handleChange}
           required
+          className="note-form__input"
         />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="content">Content:</label>
+      <div className="note-form__group">
+        <label htmlFor="content" className="note-form__label">Content:</label>
         <textarea
           id="content"
           name="content"
           value={formData.content}
           onChange={handleChange}
           rows={4}
+          className="note-form__textarea"
         />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="task">Related Task:</label>
+      <div className="note-form__group">
+        <label htmlFor="task" className="note-form__label">Related Task:</label>
         <select
           id="task"
           name="task_id"
           value={formData.task_id}
           onChange={handleChange}
+          className="note-form__select"
         >
           <option value="">None</option>
           {tasks.map(task => (
@@ -112,30 +116,32 @@ function NoteForm({ note, addNote, tasks, tags, onCancel }) {
         </select>
       </div>
 
-      <div className="form-group">
-        <label htmlFor="tags">Tags:</label>
-        <select
-          id="tags"
-          name="tags"
-          multiple
-          value={formData.tags}
-          onChange={handleTagChange}
-          className="tag-select"
-        >
-          {tags.map(tag => (
-            <option key={tag.id} value={tag.id}>
-              {tag.name}
-            </option>
-          ))}
-        </select>
+      <div className="note-form__group">
+        <label className="note-form__label">Tags</label>
+        <TagList 
+          tags={tags}
+          selectedTags={formData.tags}
+          onTagClick={(tag) => {
+            setFormData(prev => ({
+              ...prev,
+              tags: prev.tags.some(t => t === tag.id)
+                ? prev.tags.filter(t => t !== tag.id)
+                : [...prev.tags, tag.id]
+            }));
+          }}
+        />
       </div>
 
-      <div className="form-actions">
-        <button type="submit" className="btn btn-primary">
+      <div className="note-form__actions">
+        <button type="submit" className="note-form__button note-form__button--primary">
           {note ? 'Update Note' : 'Add Note'}
         </button>
         {onCancel && (
-          <button type="button" onClick={onCancel} className="btn btn-secondary">
+          <button 
+            type="button" 
+            onClick={onCancel} 
+            className="note-form__button note-form__button--secondary"
+          >
             Cancel
           </button>
         )}

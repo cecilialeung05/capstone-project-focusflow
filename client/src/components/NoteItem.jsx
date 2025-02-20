@@ -1,9 +1,15 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { formatDate } from '../utils/dateUtils';
 import './NoteItem.scss';
 
-function NoteItem({ note, updateNote, deleteNote }) {
+function NoteItem({ note, task, onEdit, onDelete }) {
+  const navigate = useNavigate();
+
+  const handleEdit = () => {
+    navigate(`/notes/${note.id}`);
+  };
+
   return (
     <div className="note-item">
       <div className="note-item__content">
@@ -18,10 +24,22 @@ function NoteItem({ note, updateNote, deleteNote }) {
 
         <p className="note-item__text">{note.content}</p>
 
+        {task && (
+          <div className="note-item__task">
+            <span className="note-item__task-label">Related Task:</span>
+            <Link to={`/tasks/${task.id}`} className="note-item__task-link">
+              {task.title}
+            </Link>
+          </div>
+        )}
+
         {note.tags && note.tags.length > 0 && (
           <div className="note-item__tags">
             {note.tags.map(tag => (
-              <span key={`note-${note.id}-tag-${tag.id}`} className="tag-badge">
+              <span 
+                key={`note-${note.id}-tag-${tag.id}`} 
+                className="note-item__tag"
+              >
                 {tag.name}
               </span>
             ))}
@@ -30,17 +48,15 @@ function NoteItem({ note, updateNote, deleteNote }) {
       </div>
 
       <div className="note-item__actions">
-        <Link 
-          to={`/notes/${note.id}`} 
-          className="edit-btn"
-          title="Edit note"
+        <button 
+          className="note-item__button note-item__button--edit"
+          onClick={handleEdit}
         >
           Edit
-        </Link>
+        </button>
         <button 
-          className="delete-btn"
-          onClick={() => deleteNote(note.id)}
-          title="Delete note"
+          className="note-item__button note-item__button--delete"
+          onClick={onDelete}
         >
           Delete
         </button>
