@@ -7,15 +7,7 @@ const tagService = {
   getAllTags: async () => {
     try {
       const response = await axios.get(API_ENDPOINT);
-      const tags = response.data;
-      const tagsWithCounts = await Promise.all(tags.map(async (tag) => {
-        const items = await tagService.getTaggedItems(tag.id);
-        return {
-          ...tag,
-          count: items.tasks.length + items.notes.length
-        };
-      }));
-      return tagsWithCounts;
+      return response.data;
     } catch (error) {
       console.error('Error fetching tags:', error);
       throw error;
