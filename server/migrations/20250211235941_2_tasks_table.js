@@ -4,11 +4,11 @@
  */
 export function up(knex) {
     return knex.schema.createTable('tasks', (table) => {
-      table.increments('id').primary().unsigned();
+      table.increments('id').primary();
       table.string('title').notNullable();
       table.text('description');
-      table.enu('status', ['open', 'in progress', 'completed', 'blocked']).defaultTo('open'); 
-      table.date('due_date'); 
+      table.enum('status', ['open', 'in_progress', 'completed']).defaultTo('open');
+      table.date('due_date').nullable();
       table.timestamp('created_at').defaultTo(knex.fn.now());
       table.timestamp('updated_at').defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
     });
