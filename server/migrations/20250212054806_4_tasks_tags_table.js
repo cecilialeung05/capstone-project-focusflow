@@ -8,7 +8,6 @@ export async function up(knex) {
       table.integer('task_id').unsigned().notNullable().references('id').inTable('tasks').onDelete('CASCADE');
       table.integer('tag_id').unsigned().notNullable().references('id').inTable('tags').onDelete('CASCADE');
       table.unique(['task_id', 'tag_id']);
-      table.timestamp('created_at').defaultTo(knex.fn.now());
     });
   }
   

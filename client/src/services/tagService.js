@@ -1,4 +1,6 @@
 import axios from 'axios';
+import taskService from './taskService';
+import noteService from './noteService';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080"; 
 const API_ENDPOINT = `${API_BASE_URL}/tags`;
@@ -55,20 +57,21 @@ const tagService = {
 
   getTaggedItems: async (tagId) => {
     try {
-      const [tasksResponse, notesResponse] = await Promise.all([
-        axios.get(`${API_BASE_URL}/tasks`, { params: { tagId } }),
-        axios.get(`${API_BASE_URL}/notes`, { params: { tagId } })
+      // Use existing services that already handle tag filtering
+      const [tasks, notes] = await Promise.all([
+        taskService.getAllTasks(tagId),
+        noteService.getAllNotes(tagId)
       ]);
       
       return {
-        tasks: tasksResponse.data,
-        notes: notesResponse.data
+        tasks,
+        notes
       };
     } catch (error) {
       console.error(`Error fetching items for tag ${tagId}:`, error);
-      throw error;
+      return { tasks: [], notes: [] };
     }
-  },
+  }
 };
 
 export default tagService;

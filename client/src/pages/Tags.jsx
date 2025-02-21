@@ -73,6 +73,7 @@ function Tags({ tags, addTag, updateTag, deleteTag }) {
             onTagClick={(tag) => setSelectedTag(
               selectedTag?.id === tag.id ? null : tag
             )}
+            updateTag={updateTag}
           />
         </div>
 
