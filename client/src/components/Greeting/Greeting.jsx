@@ -3,7 +3,7 @@ import { ResizableBox } from 'react-resizable';
 import 'react-resizable/css/styles.css';
 import './Greeting.scss';
 
-function Greeting() {
+function Greeting({ username = 'USER' }) {
   const [dateTime, setDateTime] = useState(new Date());
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [dimensions, setDimensions] = useState({ width: 300, height: 150 });
@@ -18,14 +18,15 @@ function Greeting() {
 
   const getGreeting = () => {
     const hour = dateTime.getHours();
-    if (hour < 12) return 'GOOD MORNING';
-    if (hour < 17) return 'GOOD AFTERNOON';
-    return 'GOOD EVENING';
+    const timeGreeting = hour < 12 ? 'GOOD MORNING' : 
+                        hour < 17 ? 'GOOD AFTERNOON' : 
+                        'GOOD EVENING';
+    return `${timeGreeting}, ${username.toUpperCase()}`;
   };
 
   const formatDate = () => {
     const options = {
-      weekday: 'long',
+      weekday: 'short',
       year: 'numeric',
       month: 'long',
       day: 'numeric'

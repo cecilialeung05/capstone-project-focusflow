@@ -3,17 +3,34 @@
   min-height: 100vh;
   background: var(--bg-primary);
   color: var(--text-primary);
+  flex-direction: column; // Mobile first
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
 
   &__main {
     flex: 1;
-    margin-left: 200px; // For navbar width
+    margin-left: 0; // Mobile first
     min-height: 100vh;
     background: var(--bg-secondary);
-    padding: 20px;
+    padding: 15px;
+    transition: margin-left 0.3s ease;
+
+    @media (min-width: 768px) {
+      margin-left: 200px;
+      padding: 20px;
+    }
   }
 
   &__content {
-    padding: 0 1rem;
+    padding: 0 0.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    @media (min-width: 768px) {
+      padding: 0 1rem;
+    }
 
     .header {
       margin-bottom: 1rem;

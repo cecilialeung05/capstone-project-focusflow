@@ -1,89 +1,72 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { FaPlus, FaTasks, FaFileAlt } from 'react-icons/fa';
+import AnimatedPage from '../components/AnimatedPage';
+import './Dashboard.scss';
 import { formatDate } from '../utils/dateUtils';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { ResizableBox } from 'react-resizable';
-import AnimatedPage from '../components/AnimatedPage';
-import './Dashboard.scss';
 import 'react-resizable/css/styles.css';
 
-function Dashboard({ tasks, notes, tags }) {
-  const [selectedTag, setSelectedTag] = useState(null);
-  const [components, setComponents] = useState([
-    { id: 'tasks', title: 'Tasks Overview', width: 400, height: 300 },
-    { id: 'notes', title: 'Notes', width: 400, height: 300 },
-    { id: 'recent', title: 'Recent Items', width: 400, height: 300 }
-  ]);
+function Dashboard({ notes = [], tasks = [], tags = [] }) {
+  const recentNotes = notes.slice(0, 5);
+  const recentTasks = tasks.slice(0, 5);
 
-  const statistics = useMemo(() => {
-    const taskStats = {
-      total: tasks.length,
-      completed: tasks.filter(task => task.status === 'completed').length,
-      inProgress: tasks.filter(task => task.status === 'in progress').length,
-      open: tasks.filter(task => task.status === 'open').length,
-      blocked: tasks.filter(task => task.status === 'blocked').length
-    };
+  const taskStats = {
+    total: tasks.length,
+    completed: tasks.filter(t => t.status === 'completed').length,
+    inProgress: tasks.filter(t => t.status === 'in-progress').length,
+    blocked: tasks.filter(t => t.status === 'blocked').length
+  };
 
-    const noteStats = {
-      total: notes.length,
-      withTasks: notes.filter(note => note.task_id).length,
-      withTags: notes.filter(note => note.tags?.length > 0).length
-    };
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'completed':
+        return 'rgba(var(--success-rgb), 0.1)';
+      case 'in progress':
+        return 'rgba(var(--info-rgb), 0.1)';
+      case 'blocked':
+        return 'rgba(var(--danger-rgb), 0.1)';
+      default:
+        return 'var(--bg-primary)';
+    }
+  };
 
-    return { taskStats, noteStats };
-  }, [tasks, notes]);
+  const getStatusBorder = (status) => {
+    switch (status) {
+      case 'completed':
+        return 'var(--success-color)';
+      case 'in progress':
+        return 'var(--info-color)';
+      case 'blocked':
+        return 'var(--danger-color)';
+      default:
+        return 'var(--border-color)';
+    }
+  };
 
   const recentItems = useMemo(() => {
     const allItems = [
-      ...tasks.map(task => ({
-        ...task,
+      ...(tasks || []).map(task => ({
+        id: task.id || '',
+        title: task.title || 'Untitled Task',
         type: 'task',
-        date: new Date(task.created_at)
+        date: task.created_at ? new Date(task.created_at) : new Date(),
+        status: task.status || 'open'
       })),
-      ...notes.map(note => ({
-        ...note,
+      ...(notes || []).map(note => ({
+        id: note.id || '',
+        title: note.title || 'Untitled Note',
         type: 'note',
-        date: new Date(note.created_at)
+        date: note.created_at ? new Date(note.created_at) : new Date()
       }))
     ];
 
     return allItems
+      .filter(item => item.id) // Only include items with valid IDs
       .sort((a, b) => b.date - a.date)
       .slice(0, 5);
   }, [tasks, notes]);
-
-  const filteredItems = useMemo(() => {
-    if (!selectedTag) return { tasks, notes };
-
-    return {
-      tasks: tasks.filter(task => 
-        task.tags?.some(tag => tag.id === selectedTag)
-      ),
-      notes: notes.filter(note => 
-        note.tags?.some(tag => tag.id === selectedTag)
-      )
-    };
-  }, [tasks, notes, selectedTag]);
-
-  const handleDragEnd = (result) => {
-    if (!result.destination) return;
-
-    const items = Array.from(components);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-
-    setComponents(items);
-  };
-
-  const handleResize = (index, size) => {
-    const newComponents = [...components];
-    newComponents[index] = {
-      ...newComponents[index],
-      width: size.width,
-      height: size.height
-    };
-    setComponents(newComponents);
-  };
 
   const renderComponentContent = (componentId) => {
     switch (componentId) {
@@ -92,40 +75,20 @@ function Dashboard({ tasks, notes, tags }) {
           <div className="dashboard__tasks">
             <div className="dashboard__stats">
               <div className="dashboard__stat">
-                <span className="dashboard__stat-label">Total</span>
-                <span className="dashboard__stat-value">{statistics.taskStats.total}</span>
+                <span>Total:</span>
+                <span>{taskStats.total}</span>
               </div>
-              <div className="dashboard__stat">
-                <span className="dashboard__stat-label">Completed</span>
-                <span className="dashboard__stat-value">{statistics.taskStats.completed}</span>
+              <div className="dashboard__stat dashboard__stat--completed">
+                <span>Completed:</span>
+                <span>{taskStats.completed}</span>
               </div>
-              <div className="dashboard__stat">
-                <span className="dashboard__stat-label">In Progress</span>
-                <span className="dashboard__stat-value">{statistics.taskStats.inProgress}</span>
+              <div className="dashboard__stat dashboard__stat--in-progress">
+                <span>In Progress:</span>
+                <span>{taskStats.inProgress}</span>
               </div>
-              <div className="dashboard__stat">
-                <span className="dashboard__stat-label">Open</span>
-                <span className="dashboard__stat-value">{statistics.taskStats.open}</span>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 'notes':
-        return (
-          <div className="dashboard__notes">
-            <div className="dashboard__stats">
-              <div className="dashboard__stat">
-                <span className="dashboard__stat-label">Total Notes</span>
-                <span className="dashboard__stat-value">{statistics.noteStats.total}</span>
-              </div>
-              <div className="dashboard__stat">
-                <span className="dashboard__stat-label">With Tasks</span>
-                <span className="dashboard__stat-value">{statistics.noteStats.withTasks}</span>
-              </div>
-              <div className="dashboard__stat">
-                <span className="dashboard__stat-label">With Tags</span>
-                <span className="dashboard__stat-value">{statistics.noteStats.withTags}</span>
+              <div className="dashboard__stat dashboard__stat--blocked">
+                <span>Blocked:</span>
+                <span>{taskStats.blocked}</span>
               </div>
             </div>
           </div>
@@ -134,21 +97,34 @@ function Dashboard({ tasks, notes, tags }) {
       case 'recent':
         return (
           <div className="dashboard__recent">
-            {recentItems.map(item => (
-              <Link
-                key={`${item.type}-${item.id}`}
-                to={`/${item.type}s/${item.id}`}
-                className="dashboard__recent-item"
-              >
-                <span className="dashboard__recent-icon">
-                  {item.type === 'task' ? '📋' : '📝'}
-                </span>
-                <span className="dashboard__recent-title">{item.title}</span>
-                <span className="dashboard__recent-date">
-                  {formatDate(item.date)}
-                </span>
-              </Link>
-            ))}
+            {recentItems.length > 0 ? (
+              recentItems.map(item => (
+                <Link
+                  key={`${item.type}-${item.id}`}
+                  to={`/${item.type}s/${item.id}`}
+                  className="dashboard__recent-item"
+                >
+                  <span className="dashboard__recent-icon" role="img" aria-label={item.type}>
+                    {item.type === 'task' ? '📋' : '📝'}
+                  </span>
+                  <span className="dashboard__recent-title">
+                    {item.title}
+                  </span>
+                  {item.type === 'task' && (
+                    <span className={`dashboard__recent-status dashboard__recent-status--${item.status}`}>
+                      {item.status}
+                    </span>
+                  )}
+                  <span className="dashboard__recent-date">
+                    {formatDate(item.date)}
+                  </span>
+                </Link>
+              ))
+            ) : (
+              <div className="dashboard__empty">
+                No recent activity
+              </div>
+            )}
           </div>
         );
 
@@ -161,56 +137,55 @@ function Dashboard({ tasks, notes, tags }) {
     <AnimatedPage>
       <div className="dashboard">
         <div className="dashboard__header">
-          <h1 className="dashboard__title">Dashboard</h1>
+          <h1 className="dashboard__title">Overview</h1>
+          <div className="dashboard__quick-actions">
+            <Link to="/tasks/new" className="dashboard__action-button">
+              <span role="img" aria-label="New Task">📋</span>
+              New Task
+            </Link>
+            <Link to="/notes/new" className="dashboard__action-button">
+              <span role="img" aria-label="New Note">📝</span>
+              New Note
+            </Link>
+          </div>
         </div>
         
-        <DragDropContext onDragEnd={handleDragEnd}>
-          <Droppable droppableId="dashboard">
-            {(provided) => (
-              <div 
-                className="dashboard__grid"
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-              >
-                {components.map((component, index) => (
-                  <Draggable 
-                    key={component.id} 
-                    draggableId={component.id} 
-                    index={index}
-                  >
-                    {(provided) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                      >
-                        <ResizableBox
-                          width={component.width}
-                          height={component.height}
-                          onResize={(e, data) => handleResize(index, data.size)}
-                          minConstraints={[300, 200]}
-                          maxConstraints={[800, 600]}
-                        >
-                          <div className="dashboard__card">
-                            <div 
-                              className="dashboard__card-header"
-                              {...provided.dragHandleProps}
-                            >
-                              <h3>{component.title}</h3>
-                            </div>
-                            <div className="dashboard__card-content">
-                              {renderComponentContent(component.id)}
-                            </div>
-                          </div>
-                        </ResizableBox>
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
+        <div className="dashboard__grid">
+          {/* Tasks Overview */}
+          <div className="dashboard__widget">
+            <h2>Tasks</h2>
+            {renderComponentContent('tasks')}
+          </div>
+
+          {/* Notes Overview */}
+          <div className="dashboard__widget">
+            <h2>Notes</h2>
+            <div className="dashboard__stats">
+              <div className="dashboard__stat">
+                <span>Total:</span>
+                <span>{notes.length}</span>
               </div>
-            )}
-          </Droppable>
-        </DragDropContext>
+            </div>
+          </div>
+
+          {/* Recent Activity */}
+          <div className="dashboard__widget">
+            <h2>Recent Activity</h2>
+            {renderComponentContent('recent')}
+          </div>
+        </div>
+
+        {/* Add floating action buttons */}
+        <div className="dashboard__floating-actions">
+          <Link to="/tasks/new" className="dashboard__floating-button">
+            <span role="img" aria-label="New Task">📋</span>
+            New Task
+          </Link>
+          <Link to="/notes/new" className="dashboard__floating-button">
+            <span role="img" aria-label="New Note">📝</span>
+            New Note
+          </Link>
+        </div>
       </div>
     </AnimatedPage>
   );

@@ -1,143 +1,125 @@
 .notes {
-  padding: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: 20px;
 
   &__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
-  }
+    margin-bottom: 20px;
 
-  &__title {
-    margin: 0;
-    color: #2c3e50;
-  }
+    h2 {
+      margin: 0;
+      color: #333;
+      font-size: 20px;
+    }
 
-  &__button {
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.2s;
-
-    &--primary {
-      background: #3498db;
+    .add-note {
+      background: #4285f4;
       color: white;
-
-      &:hover {
-        background: #2980b9;
-      }
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
     }
   }
 
-  &__form {
-    margin-bottom: 24px;
-  }
-
-  &__filters {
+  &__controls {
     background: white;
     padding: 16px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 24px;
+    border-radius: 4px;
+    margin-bottom: 20px;
 
-    &-search {
-      width: 98%;
-      margin: 0 auto 16px;
-      
-      &-input {
-        width: 100%;
-        padding: 8px 12px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 14px;
-        background: white;
-
-        &:focus {
-          border-color: #3498db;
-          box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
-      }
-    }
-
-    &-options {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    &-select {
+    .search-input {
+      width: 100%;
       padding: 8px;
       border: 1px solid #ddd;
       border-radius: 4px;
-      background: white;
-      min-width: 150px;
-      cursor: pointer;
-
-      &:focus {
-        border-color: #3498db;
-      }
+      margin-bottom: 12px;
+      font-size: 14px;
     }
+  }
 
-    &-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
+  &__filters {
+    display: flex;
+    gap: 12px;
 
-    &-tag {
-      padding: 4px 12px;
+    select {
+      padding: 6px 8px;
       border: 1px solid #ddd;
-      border-radius: 16px;
-      background: white;
-      cursor: pointer;
-      transition: all 0.2s;
+      border-radius: 4px;
+      font-size: 14px;
+      min-width: 120px;
+    }
+  }
+
+  &__item {
+    background: white;
+    border-radius: 4px;
+    padding: 16px;
+    border-left: 3px solid #4285f4;
+    margin-bottom: 12px;
+
+    &-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    &-title {
+      color: #4285f4;
+      text-decoration: none;
+      font-size: 16px;
 
       &:hover {
-        background: #f8f9fa;
+        text-decoration: underline;
       }
+    }
 
-      &--selected {
-        background: #3498db;
+    &-date {
+      color: #666;
+      font-size: 12px;
+    }
+
+    &-content {
+      color: #333;
+      margin: 0 0 12px 0;
+      line-height: 1.4;
+      font-size: 14px;
+    }
+
+    &-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+
+      button {
+        padding: 4px 12px;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
         color: white;
-        border-color: #3498db;
+
+        &.edit {
+          background: #5f9ea0;
+        }
+
+        &.export {
+          background: #4285f4;
+        }
+
+        &.delete {
+          background: #dc3545;
+        }
       }
     }
   }
+}
 
-  &__list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-  }
-
-  &__empty {
-    text-align: center;
-    padding: 32px;
-    background: white;
-    border-radius: 8px;
-    color: #666;
-
-    &-message {
-      color: #6c757d;
-    }
-  }
-
-  @media (max-width: 768px) {
-    padding: 16px;
-
-    .filter-options {
-      flex-direction: column;
-      
-      select {
-        width: 100%;
-      }
-    }
-
-    .notes-list {
-      grid-template-columns: 1fr;
-    }
-  }
-} 
+// Override any conflicting styles from NoteItem
+.note-item {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 0; // Remove margin since we're using gap in the list
+}

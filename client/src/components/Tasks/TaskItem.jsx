@@ -17,6 +17,40 @@ function TaskItem({ task, updateTask, deleteTask }) {
     updateTask(task.id, { ...task, status: newStatus });
   };
 
+  const formatRelativeDate = (dateString) => {
+    if (!dateString) return 'No due date';
+    
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = date - now;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    // Format the actual date
+    const formattedDate = date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: now.getFullYear() !== date.getFullYear() ? 'numeric' : undefined
+    });
+    
+    // Get relative time
+    let relativeTime;
+    if (diffDays === 0) relativeTime = 'due today';
+    else if (diffDays === 1) relativeTime = 'due tomorrow';
+    else if (diffDays === -1) relativeTime = 'due yesterday';
+    else if (diffDays > 1 && diffDays <= 7) relativeTime = `due in ${diffDays} days`;
+    else if (diffDays < -1 && diffDays >= -7) relativeTime = `due ${Math.abs(diffDays)} days ago`;
+    else if (diffDays > 7 && diffDays <= 14) relativeTime = 'due next week';
+    else if (diffDays < -7 && diffDays >= -14) relativeTime = 'due last week';
+    else relativeTime = diffDays > 0 ? 'upcoming' : 'overdue';
+    
+    return {
+      date: formattedDate,
+      relative: relativeTime
+    };
+  };
+
+  const dueDate = formatRelativeDate(task.due_date);
+
   return (
     <div className={`task-item task-item--${task.status?.toLowerCase().replace(' ', '-') || 'open'}`}>
       <div className="task-item__content">
@@ -35,15 +69,15 @@ function TaskItem({ task, updateTask, deleteTask }) {
           )}
           <p className="task-item__due-date">
             <span className="task-item__due-date-label">Due:</span> 
-            {formatDate(task.due_date)}
+            {dueDate.date} ({dueDate.relative})
           </p>
         </div>
 
         {task.tags && task.tags.length > 0 && (
           <div className="task-item__tags">
-            {task.tags.map(tag => (
+            {task.tags.map((tag, index) => (
               <span 
-                key={`task-${task.id}-tag-${tag.id}`} 
+                key={`task-${task.id}-tag-${tag.id || index}`} 
                 className="task-item__tag"
               >
                 {tag.name}
@@ -99,7 +133,11 @@ function TaskItem({ task, updateTask, deleteTask }) {
           </Link>
           <button 
             className="task-item__button task-item__button--delete"
-            onClick={() => deleteTask(task.id)}
+            onClick={() => {
+              if (window.confirm('Are you sure you want to delete this task?')) {
+                deleteTask(task.id);
+              }
+            }}
             title="Delete task"
           >
             Delete

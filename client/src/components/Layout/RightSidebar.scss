@@ -1,16 +1,35 @@
 .right-sidebar {
   position: fixed;
-  top: 60px; // Adjust based on your header height
-  right: 0;
   bottom: 0;
-  width: 300px;
+  left: 0;
+  right: 0;
+  height: 60vh; // Mobile first: takes up bottom portion of screen
+  width: 100%;
   background-color: var(--bg-secondary);
-  border-left: 1px solid var(--border-color);
-  transition: transform 0.3s ease;
+  border-top: 1px solid var(--border-color);
+  transition: all 0.3s ease;
   z-index: 100;
+  display: flex;
+  flex-direction: column;
+
+  @media (min-width: 768px) {
+    top: 60px;
+    right: 0;
+    left: auto;
+    bottom: 0;
+    width: 350px;
+    height: calc(100vh - 60px);
+    border-left: 1px solid var(--border-color);
+    border-top: none;
+  }
 
   &--collapsed {
-    transform: translateX(calc(100% - 40px));
+    height: 40px; // Mobile collapsed state
+
+    @media (min-width: 768px) {
+      width: 40px;
+      height: calc(100vh - 60px);
+    }
 
     .right-sidebar__content {
       opacity: 0;
@@ -20,38 +39,153 @@
 
   &__toggle {
     position: absolute;
-    left: 0;
-    top: 20px;
-    transform: translateX(-100%);
-    padding: 8px;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 40px;
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-right: none;
-    border-radius: 4px 0 0 4px;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: var(--text-primary);
+    transition: all 0.2s ease;
+
+    @media (min-width: 768px) {
+      top: 20px;
+      left: -40px;
+      width: 40px;
+      height: 60px;
+      border-radius: 8px 0 0 8px;
+      border-right: none;
+      transform: none;
+    }
 
     &:hover {
       background-color: var(--bg-primary);
     }
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
   }
 
   &__content {
-    height: 100%;
-    padding: 20px;
+    flex: 1;
     overflow-y: auto;
-    transition: opacity 0.2s ease;
+    padding: 15px;
+    opacity: 1;
+    visibility: visible;
+    transition: all 0.3s ease;
+
+    /* Custom scrollbar */
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
   }
 
   &__widget {
-    background-color: var(--bg-primary);
+    background: var(--bg-primary);
     border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
 
-    &:last-child {
-      margin-bottom: 0;
+    &--collapsed {
+      .right-sidebar__widget-content {
+        height: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    }
+
+    &-header {
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--border-color);
+      gap: 10px;
+    }
+
+    &-drag {
+      cursor: grab;
+      color: var(--text-secondary);
+      
+      &:active {
+        cursor: grabbing;
+      }
+
+      svg {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    &-title {
+      flex: 1;
+      margin: 0;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    &-toggle {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 4px 8px;
+      font-size: 1.2rem;
+      line-height: 1;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+      }
+    }
+
+    &-content {
+      padding: 15px;
+      transition: all 0.3s ease;
     }
   }
+}
+
+// Animation classes
+.widget-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.widget-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.3s ease;
+}
+
+.widget-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.widget-exit-active {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
 } 

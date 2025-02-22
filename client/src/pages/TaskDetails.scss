@@ -88,15 +88,20 @@
 
   &__actions {
     display: flex;
-    gap: 12px;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: flex-start;
+    flex-wrap: wrap;
   }
 
   &__button {
     padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 0.9rem;
     font-weight: 500;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
+    min-width: 100px;
 
     &--edit {
       background: #3498db;
@@ -123,6 +128,12 @@
       &:hover {
         background: #7f8c8d;
       }
+    }
+
+    &--status {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      min-width: 80px;
     }
   }
 } 

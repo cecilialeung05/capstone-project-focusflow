@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import TagList from '../Tags/TagList';
 import './NoteForm.scss';
 
-function NoteForm({ note, addNote, tasks, tags, onCancel }) {
+function NoteForm({ note, tasks, tags, onSubmit, onCancel }) {
   const [formData, setFormData] = useState({
     title: '',
     content: '',
     task_id: '',
     tags: []
   });
+
+  const [showExport, setShowExport] = useState(false);
 
   useEffect(() => {
     if (note) {
@@ -23,8 +25,7 @@ function NoteForm({ note, addNote, tasks, tags, onCancel }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Submitting note with data:', formData);
-
+    
     if (!formData.title.trim()) {
       alert('Title is required');
       return;
@@ -38,94 +39,72 @@ function NoteForm({ note, addNote, tasks, tags, onCancel }) {
       tags: formData.tags.map(Number)
     };
 
-    addNote(note ? { ...noteData, id: note.id } : noteData);
-    
-    if (!note) {
-      setFormData({
-        title: '',
-        content: '',
-        task_id: '',
-        tags: []
-      });
-    }
-
-    if (onCancel) {
-      onCancel();
-    }
+    onSubmit(note ? { ...noteData, id: note.id } : noteData);
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleTagChange = (e) => {
-    const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
-    console.log('Selected tag IDs:', selectedOptions);
-    setFormData(prev => ({
-      ...prev,
-      tags: selectedOptions
-    }));
+  const handleExport = () => {
+    const content = JSON.stringify(formData, null, 2);
+    const blob = new Blob([content], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `note-${formData.title.toLowerCase().replace(/\s+/g, '-')}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   return (
     <form onSubmit={handleSubmit} className="note-form">
       <div className="note-form__group">
-        <label htmlFor="title" className="note-form__label">Title:</label>
+        <label htmlFor="title">Title:</label>
         <input
           type="text"
           id="title"
           name="title"
           value={formData.title}
-          onChange={handleChange}
+          onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
           required
-          className="note-form__input"
         />
       </div>
 
       <div className="note-form__group">
-        <label htmlFor="content" className="note-form__label">Content:</label>
+        <label htmlFor="content">Content:</label>
         <textarea
           id="content"
           name="content"
           value={formData.content}
-          onChange={handleChange}
+          onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
           rows={4}
-          className="note-form__textarea"
         />
       </div>
 
       <div className="note-form__group">
-        <label htmlFor="task" className="note-form__label">Related Task:</label>
+        <label htmlFor="task">Related Task:</label>
         <select
           id="task"
           name="task_id"
           value={formData.task_id}
-          onChange={handleChange}
-          className="note-form__select"
+          onChange={(e) => setFormData(prev => ({ ...prev, task_id: e.target.value }))}
         >
           <option value="">None</option>
           {tasks.map(task => (
-            <option key={task.id} value={task.id}>
-              {task.title}
-            </option>
+            <option key={task.id} value={task.id}>{task.title}</option>
           ))}
         </select>
       </div>
 
       <div className="note-form__group">
-        <label className="note-form__label">Tags</label>
+        <label>Tags</label>
         <TagList 
           tags={tags}
           selectedTags={formData.tags}
           onTagClick={(tag) => {
             setFormData(prev => ({
               ...prev,
-              tags: prev.tags.some(t => t === tag.id)
-                ? prev.tags.filter(t => t !== tag.id)
+              tags: prev.tags.includes(tag.id)
+                ? prev.tags.filter(id => id !== tag.id)
                 : [...prev.tags, tag.id]
             }));
           }}
@@ -136,10 +115,19 @@ function NoteForm({ note, addNote, tasks, tags, onCancel }) {
         <button type="submit" className="note-form__button note-form__button--primary">
           {note ? 'Update Note' : 'Add Note'}
         </button>
+        {note && (
+          <button 
+            type="button" 
+            onClick={handleExport}
+            className="note-form__button note-form__button--export"
+          >
+            Export
+          </button>
+        )}
         {onCancel && (
           <button 
             type="button" 
-            onClick={onCancel} 
+            onClick={onCancel}
             className="note-form__button note-form__button--secondary"
           >
             Cancel

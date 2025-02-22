@@ -1,7 +1,9 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import Search from '../Search/Search';
 import { useTheme } from '../../context/ThemeContext';
 import './Navbar.scss'; // 
+import { FaUser } from 'react-icons/fa';
 
 function Navbar({ tasks, notes }) {
   const { theme, toggleTheme } = useTheme();
@@ -10,6 +12,9 @@ function Navbar({ tasks, notes }) {
     <nav className="navbar">
       <div className="navbar__container">
         <ul className="navbar__list">
+        <li className="navbar__item">
+          <button className="navbar__user-circle"></button>
+          </li>
           <li className="navbar__item">
             <Link to="/" className="navbar__link">Dashboard</Link>
           </li>

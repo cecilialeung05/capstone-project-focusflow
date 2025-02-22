@@ -3,12 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { formatDate } from '../../utils/dateUtils';
 import './NoteItem.scss';
 
-function NoteItem({ note, task, onEdit, onDelete }) {
+function NoteItem({ note, task, onDelete }) {
   const navigate = useNavigate();
-
-  const handleEdit = () => {
-    navigate(`/notes/${note.id}`);
-  };
 
   return (
     <div className="note-item">
@@ -33,13 +29,10 @@ function NoteItem({ note, task, onEdit, onDelete }) {
           </div>
         )}
 
-        {note.tags && note.tags.length > 0 && (
+        {note.tags?.length > 0 && (
           <div className="note-item__tags">
             {note.tags.map(tag => (
-              <span 
-                key={`note-${note.id}-tag-${tag.id}`} 
-                className="note-item__tag"
-              >
+              <span key={tag.id} className="note-item__tag">
                 {tag.name}
               </span>
             ))}
@@ -50,7 +43,7 @@ function NoteItem({ note, task, onEdit, onDelete }) {
       <div className="note-item__actions">
         <button 
           className="note-item__button note-item__button--edit"
-          onClick={handleEdit}
+          onClick={() => navigate(`/notes/${note.id}`)}
         >
           Edit
         </button>

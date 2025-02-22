@@ -127,6 +127,74 @@
     }
   }
 
+  &__item {
+    &-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    &-button {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      min-width: 60px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+
+      &--status {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+
+        &:hover {
+          background: var(--bg-primary);
+        }
+      }
+
+      &--edit {
+        background: #3498db;
+        color: white;
+
+        &:hover {
+          background: #2980b9;
+        }
+      }
+
+      &--delete {
+        background: #e74c3c;
+        color: white;
+
+        &:hover {
+          background: #c0392b;
+        }
+      }
+    }
+
+    &-dates {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    &-date {
+      color: var(--text-primary);
+    }
+
+    &-relative {
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+  }
+
   @media (max-width: 768px) {
     padding: 16px;
 

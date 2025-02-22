@@ -32,6 +32,124 @@ a {
 
 .app {
   min-height: 100vh;
-  background-color: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
   color: var(--text-primary);
+}
+
+// Add any app-specific styles here
+.layout {
+  display: flex;
+  flex: 1;
+  
+  &__main {
+    flex: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+// Utility classes
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+// Common page layout
+.page-container {
+  max-width: 100%;
+  padding: 15px;
+  margin: 0 auto;
+
+  @media (min-width: 768px) {
+    max-width: 1200px;
+    padding: 24px;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  &__filters {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+
+    @media (min-width: 576px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 992px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}
+
+// Common form elements
+.form-control {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 14px;
+
+  @media (min-width: 768px) {
+    font-size: 16px;
+  }
+}
+
+// Common buttons
+.btn {
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  @media (min-width: 768px) {
+    padding: 10px 16px;
+  }
+
+  &--primary {
+    background: var(--accent-color);
+    color: white;
+
+    &:hover {
+      background: var(--accent-hover);
+    }
+  }
+
+  &--secondary {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+
+    &:hover {
+      background: var(--bg-primary);
+    }
+  }
 }

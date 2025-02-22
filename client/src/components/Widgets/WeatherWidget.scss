@@ -1,0 +1,383 @@
+@import '../../styles/animations/weather';
+@import 'react-resizable/css/styles.css';
+
+.weather-widget {
+  position: relative;
+  width: 100%;
+  transition: all 0.3s ease;
+  cursor: grab;
+  background: rgba(255, 255, 255, 0.1);  // Base background
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+
+  // Resizable handles
+  .react-resizable-handle {
+    position: absolute;
+    background-image: url('data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2IDYiIHN0eWxlPSJiYWNrZ3JvdW5kLWNvbG9yOiNmZmZmZmYxMSIgd2lkdGg9IjYiIGhlaWdodD0iNiI+CiAgPHBhdGggZD0iTSA2IDYgTCAwIDYgTCAwIDQuMiBMIDQgNC4yIEwgNC4yIDQuMiBMIDQuMiAwIEwgNiAwIEwgNiA2IEwgNiA2IFoiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC40KSIvPgo8L3N2Zz4=');
+    background-position: bottom right;
+    padding: 0 3px 3px 0;
+    background-repeat: no-repeat;
+    background-origin: content-box;
+    box-sizing: border-box;
+    cursor: se-resize;
+    opacity: 0.5;
+    transition: opacity 0.3s;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .react-resizable-handle-se {
+    bottom: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+  }
+
+  @include weather-animations;
+
+  // Theme variations with stronger opacity to be visible over transparency
+  &--morning::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom right,
+      rgba(255, 215, 0, 0.3),
+      rgba(255, 140, 0, 0.3)
+    );
+    z-index: 1;
+    border-radius: 8px;
+  }
+
+  &--afternoon::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom right,
+      rgba(135, 206, 235, 0.3),
+      rgba(70, 130, 180, 0.3)
+    );
+    z-index: 1;
+    border-radius: 8px;
+  }
+
+  &--evening::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom right,
+      rgba(255, 127, 80, 0.3),
+      rgba(75, 0, 130, 0.3)
+    );
+    z-index: 1;
+    border-radius: 8px;
+  }
+
+  &--night::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom right,
+      rgba(25, 25, 112, 0.3),
+      rgba(0, 0, 51, 0.3)
+    );
+    z-index: 1;
+    border-radius: 8px;
+  }
+
+  // Weather animations with increased opacity
+  &__rain {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      transparent 0%,
+      rgba(255, 255, 255, 0.4) 90%,
+      transparent 100%
+    );
+    animation: rain 0.8s linear infinite;
+    background-size: 200% 200%;
+    z-index: 2;
+    pointer-events: none;
+    border-radius: 8px;
+  }
+
+  &__snow {
+    position: absolute;
+    inset: 0;
+    height: calc(100% + 50px);
+    background: 
+      radial-gradient(circle at 50% 50%, white 0%, transparent 8%),
+      radial-gradient(circle at 30% 40%, white 0%, transparent 6%),
+      radial-gradient(circle at 70% 60%, white 0%, transparent 8%);
+    background-size: 20px 20px;
+    animation: snow 4s linear infinite;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.7;
+    border-radius: 8px;
+  }
+
+  &__fog {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      rgba(255, 255, 255, 0.4)
+    );
+    animation: fog 4s ease infinite;
+    z-index: 2;
+    pointer-events: none;
+    border-radius: 8px;
+  }
+
+  &__sun-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(
+      circle at center,
+      rgba(255, 255, 0, 0.4) 0%,
+      transparent 70%
+    );
+    animation: glow 2s ease-in-out infinite;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  &__main {
+    position: relative;
+    z-index: 3;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  &__toggle {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    padding: 4px 8px;
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+    
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__temp {
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  &__desc {
+    font-size: 1rem;
+  }
+
+  &__message, &__season {
+    font-size: 0.9rem;
+  }
+
+  &__sun-times {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 0.85rem;
+  }
+
+  &__sun-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    
+    span:first-child {
+      font-size: 1.1rem;
+    }
+  }
+
+  // Expanded content
+  &__expanded-view {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    padding: 20px;
+    height: 300px; // Fixed height
+    z-index: 1000;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    &--active {
+      transform: translateY(0);
+    }
+  }
+
+  &__expanded-content {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 100%;
+    color: var(--text-primary);
+
+    h3 {
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+    }
+  }
+
+  &__current,
+  &__sun-details,
+  &__recommendations {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  &__expand-trigger {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-primary);
+    z-index: 2;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  &__recommendation {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  &--expanded {
+    .weather-widget__expanded-content {
+      max-height: 300px;
+      opacity: 1;
+      padding: 16px;
+    }
+
+    .weather-widget__toggle {
+      transform: rotate(180deg);
+    }
+  }
+
+  &__forecast {
+    h4 {
+      margin-bottom: 16px;
+      font-size: 1rem;
+    }
+  }
+
+  &__forecast-days {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  &__forecast-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.9rem;
+
+    span:nth-child(2) {
+      font-size: 1.2rem;
+    }
+  }
+
+  &__time-message {
+    margin-top: 1rem;
+    padding: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    font-size: 0.9rem;
+  }
+
+  &__task-suggestion {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    font-size: 0.9rem;
+  }
+}
+
+// Animation keyframes
+@keyframes rain {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 100%;
+  }
+}
+
+@keyframes snow {
+  0% {
+    transform: translateY(-50px);
+  }
+  100% {
+    transform: translateY(50px);
+  }
+}
+
+@keyframes fog {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.6;
+  }
+} 

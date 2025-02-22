@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import TaskForm from '../components/Tasks/TaskForm';
-import '../pages/TaskDetails.scss';
+import './TaskDetails.scss';
 
 function TaskDetails({ tasks, tags, updateTask, deleteTask }) {
   const { taskId } = useParams();
@@ -14,7 +14,7 @@ function TaskDetails({ tasks, tags, updateTask, deleteTask }) {
     return <div>Task not found</div>;
   }
 
-  const formatDate = (dateString) => {
+  const formatRelativeDate = (dateString) => {
     if (!dateString) return 'No due date';
     
     const date = new Date(dateString);
@@ -22,38 +22,43 @@ function TaskDetails({ tasks, tags, updateTask, deleteTask }) {
     const diffTime = date - now;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
+    // Format the actual date
     const formattedDate = date.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
       year: now.getFullYear() !== date.getFullYear() ? 'numeric' : undefined
     });
 
+    // Add relative time description
     let relativeTime;
     if (diffDays === 0) {
-      relativeTime = '(Today)';
+      relativeTime = 'Due today';
     } else if (diffDays === 1) {
-      relativeTime = '(Tomorrow)';
+      relativeTime = 'Due tomorrow';
     } else if (diffDays === -1) {
-      relativeTime = '(Yesterday)';
-    } else if (diffDays < -1) {
-      relativeTime = `(${Math.abs(diffDays)} days overdue)`;
-    } else if (diffDays <= 7) {
-      relativeTime = `(in ${diffDays} days)`;
+      relativeTime = 'Due yesterday';
+    } else if (diffDays > 1 && diffDays <= 7) {
+      relativeTime = `Due in ${diffDays} days`;
+    } else if (diffDays < -1 && diffDays >= -7) {
+      relativeTime = `Due ${Math.abs(diffDays)} days ago`;
+    } else if (diffDays > 7 && diffDays <= 14) {
+      relativeTime = 'Due next week';
+    } else if (diffDays < -7 && diffDays >= -14) {
+      relativeTime = 'Due last week';
+    } else if (diffDays > 14) {
+      relativeTime = `Due on ${formattedDate}`;
     } else {
-      relativeTime = '';
+      relativeTime = `Was due on ${formattedDate}`;
     }
 
-    return `${formattedDate} ${relativeTime}`.trim();
+    return relativeTime;
   };
 
   const handleDelete = () => {
-    deleteTask(task.id);
-    navigate('/tasks');
-  };
-
-  const handleUpdate = async (updatedTaskData) => {
-    await updateTask(task.id, updatedTaskData);
-    setIsEditing(false);
+    if (window.confirm('Are you sure you want to delete this task?')) {
+      deleteTask(task.id);
+      navigate('/tasks');
+    }
   };
 
   return (
@@ -61,28 +66,28 @@ function TaskDetails({ tasks, tags, updateTask, deleteTask }) {
       {isEditing ? (
         <TaskForm 
           task={task}
-          addTask={handleUpdate}
           tags={tags}
+          onSubmit={(updatedTask) => {
+            updateTask(updatedTask);
+            setIsEditing(false);
+          }}
           onCancel={() => setIsEditing(false)}
         />
       ) : (
         <>
           <div className="task-details__header">
-            <h2 className="task-details__title">{task.title}</h2>
-            <span className={`task-details__status task-details__status--${task.status.replace(' ', '-')}`}>
-              {task.status}
-            </span>
+            <h1>{task.title}</h1>
           </div>
-          
+
           <div className="task-details__info">
-            <p className="task-details__info-item">
-              <strong>Description:</strong> {task.description}
+            <p className="task-details__date">
+              {formatRelativeDate(task.due_date)}
             </p>
-            <p className="task-details__info-item">
-              <strong>Due Date:</strong> {formatDate(task.due_date)}
+            <p className="task-details__description">
+              {task.description || 'No description provided'}
             </p>
-            <p className="task-details__info-item">
-              <strong>Status:</strong> {task.status}
+            <p className="task-details__status">
+              Status: {task.status}
             </p>
           </div>
 
@@ -91,19 +96,31 @@ function TaskDetails({ tasks, tags, updateTask, deleteTask }) {
               className="task-details__button task-details__button--edit"
               onClick={() => setIsEditing(true)}
             >
-              Edit Task
+              Edit
             </button>
             <button 
               className="task-details__button task-details__button--delete"
               onClick={handleDelete}
             >
-              Delete Task
+              Delete
             </button>
             <button 
-              className="task-details__button task-details__button--back"
-              onClick={() => navigate('/tasks')}
+              className="task-details__button task-details__button--status"
+              onClick={() => updateTask({ ...task, status: 'in progress' })}
             >
-              Back to Tasks
+              Set In Progress
+            </button>
+            <button 
+              className="task-details__button task-details__button--status"
+              onClick={() => updateTask({ ...task, status: 'completed' })}
+            >
+              Complete
+            </button>
+            <button 
+              className="task-details__button task-details__button--status"
+              onClick={() => updateTask({ ...task, status: 'blocked' })}
+            >
+              Block
             </button>
           </div>
         </>
