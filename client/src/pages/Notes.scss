@@ -1,79 +1,145 @@
 .notes {
-  padding: 20px;
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
 
   &__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+  }
 
-    h2 {
-      margin: 0;
-      color: #333;
-      font-size: 20px;
-    }
+  &__title {
+    margin: 0;
+    color: #2c3e50;
+  }
 
-    .add-note {
-      background: #4285f4;
+  &__button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+
+    &--primary {
+      background: #3498db;
       color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
-      font-size: 14px;
-      cursor: pointer;
+
+      &:hover {
+        background: #2980b9;
+      }
     }
   }
 
-  &__controls {
-    background: white;
-    padding: 16px;
-    border-radius: 4px;
-    margin-bottom: 20px;
-
-    .search-input {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      margin-bottom: 12px;
-      font-size: 14px;
-    }
+  &__form {
+    margin-bottom: 24px;
   }
 
   &__filters {
-    display: flex;
-    gap: 12px;
+    background: white;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 24px;
 
-    select {
-      padding: 6px 8px;
+    &-search {
+      width: 98%;
+      margin: 0 auto 16px;
+      
+      &-input {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        background: white;
+
+        &:focus {
+          border-color: #3498db;
+          box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+      }
+    }
+
+    &-options {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    &-select {
+      padding: 8px;
       border: 1px solid #ddd;
       border-radius: 4px;
-      font-size: 14px;
-      min-width: 120px;
+      background: white;
+      min-width: 150px;
+      cursor: pointer;
+
+      &:focus {
+        border-color: #3498db;
+      }
+    }
+
+    &-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    &-tag {
+      padding: 4px 12px;
+      border: 1px solid #ddd;
+      border-radius: 16px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover {
+        background: #f8f9fa;
+      }
+
+      &--selected {
+        background: #3498db;
+        color: white;
+        border-color: #3498db;
+      }
     }
   }
 
-  &__item {
+  &__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  &__card {
     background: white;
     border-radius: 4px;
-    padding: 16px;
-    border-left: 3px solid #4285f4;
-    margin-bottom: 12px;
+    padding: 20px;
+    border-left: 4px solid #3498db;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 16px;
 
     &-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
-    }
+      margin-bottom: 12px;
 
-    &-title {
-      color: #4285f4;
-      text-decoration: none;
-      font-size: 16px;
+      h3 {
+        margin: 0;
+        font-size: 16px;
+        
+        a {
+          color: #2196f3;
+          text-decoration: none;
+          font-weight: 500;
 
-      &:hover {
-        text-decoration: underline;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
       }
     }
 
@@ -91,35 +157,54 @@
 
     &-actions {
       display: flex;
-      justify-content: flex-end;
       gap: 8px;
+      margin-top: 12px;
 
       button {
-        padding: 4px 12px;
-        border: none;
+        padding: 6px 16px;
         border-radius: 4px;
-        font-size: 14px;
-        cursor: pointer;
-        color: white;
+        font-size: 13px;
 
         &.edit {
-          background: #5f9ea0;
-        }
-
-        &.export {
-          background: #4285f4;
+          background: #4db6ac;
         }
 
         &.delete {
-          background: #dc3545;
+          background: #ef5350;
+        }
+
+        &:hover {
+          opacity: 0.9;
         }
       }
     }
   }
-}
 
-// Override any conflicting styles from NoteItem
-.note-item {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  margin-bottom: 0; // Remove margin since we're using gap in the list
-}
+  &__empty {
+    text-align: center;
+    padding: 32px;
+    background: white;
+    border-radius: 8px;
+    color: #666;
+
+    &-message {
+      color: #6c757d;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px;
+
+    .filter-options {
+      flex-direction: column;
+      
+      select {
+        width: 100%;
+      }
+    }
+
+    .notes-list {
+      grid-template-columns: 1fr;
+    }
+  }
+} 

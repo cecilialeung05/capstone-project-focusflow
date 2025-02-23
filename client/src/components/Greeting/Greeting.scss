@@ -1,7 +1,7 @@
 .greeting {
   position: relative;
   width: 100%;
-  max-width: 240px;
+  max-width: 300px;
   margin: 0 auto;
   
   &--collapsed {
@@ -10,9 +10,9 @@
 
   &__toggle {
     position: absolute;
-    top: 0;
-    right: 0;
-    padding: 4px 8px;
+    top: 8px;
+    right: 8px;
+    padding: 4px;
     background: transparent;
     border: none;
     cursor: pointer;
@@ -25,11 +25,17 @@
   }
 
   &__resizable {
-    border: 3px solid #000000;
+    border: 2px solid #000000;
     border-radius: 8px;
     background: #ffffff;
-    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.12);
     position: relative;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.15);
+    }
 
     &::after {
       content: '';
@@ -38,14 +44,14 @@
       left: 8px;
       right: 8px;
       bottom: 8px;
-      border: 2px solid #000000;
-      border-radius: 4px;
+      border: 1.5px solid #000000;
+      border-radius: 5px;
       pointer-events: none;
     }
   }
 
   &__content {
-    padding: 0.75rem 1rem;
+    padding: 1.25rem 1rem;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -58,38 +64,47 @@
   }
 
   &__text {
-    font-size: 1.25rem;
+    font-size: 1.4rem;
     font-family: "Times New Roman", serif;
     font-weight: bold;
     font-style: italic;
     margin-bottom: 0.75rem;
     letter-spacing: 0.05em;
+    text-align: center;
+    white-space: nowrap;
+    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.05);
   }
 
   &__date {
     font-family: "Courier New", monospace;
-    font-size: 0.95rem;
-    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    margin-bottom: 0.35rem;
     letter-spacing: 0.2em;
+    opacity: 0.85;
   }
 
   &__time {
     font-family: "Courier New", monospace;
-    font-size: 0.95rem;
+    font-size: 1rem;
     letter-spacing: 0.2em;
+    opacity: 0.85;
   }
 
-  // Styles for react-resizable handle
   .react-resizable-handle {
     position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 20px;
-    height: 20px;
-    background: url('data:image/svg+xml,...') no-repeat center;
-    background-size: 10px;
-    padding: 0 3px 3px 0;
+    bottom: 3px;
+    right: 3px;
+    width: 14px;
+    height: 14px;
+    background-size: 7px;
+    padding: 0 2px 2px 0;
     cursor: se-resize;
     z-index: 2;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 } 

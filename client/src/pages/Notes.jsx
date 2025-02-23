@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import NoteItem from '../components/Notes/NoteItem';
 import Modal from '../components/Common/Modal';
 import { FaFileExport, FaPlus } from 'react-icons/fa';
+import TagSuggestions from '../components/Tags/TagSuggestions';
 import './Notes.scss';
 
 function Notes({ notes = [], tasks = [], tags = [], addNote, updateNote, deleteNote }) {
@@ -12,6 +13,7 @@ function Notes({ notes = [], tasks = [], tags = [], addNote, updateNote, deleteN
   const [filterTask, setFilterTask] = useState('all');
   const [sortBy, setSortBy] = useState('created');
   const navigate = useNavigate();
+  const [relatedNotes, setRelatedNotes] = useState([]);
 
   const filteredNotes = notes
     .filter(note => {
@@ -64,30 +66,63 @@ function Notes({ notes = [], tasks = [], tags = [], addNote, updateNote, deleteN
         </select>
       </div>
 
-      <div className="notes__grid">
-        {filteredNotes.map(note => (
-          <div key={note.id} className="notes__card">
-            <div className="notes__card-header">
-              <h3>
-                <Link to={`/notes/${note.id}`}>{note.title}</Link>
-              </h3>
-              <div className="notes__card-date">
-                {new Date(note.created_at).toLocaleString()}
+      <div className="notes__content">
+        <div className="notes__main">
+          <div className="notes__grid">
+            {filteredNotes.map(note => (
+              <div key={note.id} className="notes__card">
+                <div className="notes__card-header">
+                  <h3>
+                    <Link to={`/notes/${note.id}`}>{note.title}</Link>
+                  </h3>
+                  <div className="notes__card-date">
+                    {new Date(note.created_at).toLocaleString()}
+                  </div>
+                </div>
+                <div className="notes__card-content">
+                  {note.content}
+                </div>
+                <div className="notes__card-actions">
+                  <button className="edit" onClick={() => navigate(`/notes/${note.id}`)}>
+                    Edit
+                  </button>
+                  <button className="delete" onClick={() => deleteNote(note.id)}>
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <div className="notes__sidebar">
+          <TagSuggestions 
+            tags={tags}
+            onTagSelect={(tag) => {
+              const notesWithTag = notes.filter(note => 
+                note.tags.includes(tag.id)
+              );
+              setRelatedNotes(notesWithTag);
+            }}
+          />
+          
+          {relatedNotes.length > 0 && (
+            <div className="notes__related">
+              <h3>Related Notes</h3>
+              <div className="notes__related-list">
+                {relatedNotes.map(note => (
+                  <Link 
+                    key={note.id}
+                    to={`/notes/${note.id}`}
+                    className="notes__related-item"
+                  >
+                    {note.title}
+                  </Link>
+                ))}
               </div>
             </div>
-            <div className="notes__card-content">
-              {note.content}
-            </div>
-            <div className="notes__card-actions">
-              <button className="edit" onClick={() => navigate(`/notes/${note.id}`)}>
-                Edit
-              </button>
-              <button className="delete" onClick={() => deleteNote(note.id)}>
-                Delete
-              </button>
-            </div>
-          </div>
-        ))}
+          )}
+        </div>
       </div>
 
       {showExport && selectedNote && (

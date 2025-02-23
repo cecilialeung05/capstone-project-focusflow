@@ -43,7 +43,7 @@ export async function seed(knex) {
       id: 1,
       title: 'Plan Website Redesign',
       description: 'Outline the new design for the company website.',
-      status: 'in_progress',
+      status: 'in progress',
       due_date: '2025-01-15',
       created_at: new Date(),
       updated_at: new Date()
@@ -61,7 +61,7 @@ export async function seed(knex) {
       id: 3,
       title: 'Brand Positioning',
       description: 'Determine unique selling points and key messaging for the project.',
-      status: 'in_progress',
+      status: 'in progress',
       due_date: '2025-01-20',
       created_at: new Date(),
       updated_at: new Date()
@@ -97,7 +97,7 @@ export async function seed(knex) {
       id: 7,
       title: 'API Development',
       description: 'Create RESTful API endpoints for tasks, notes, and users.',
-      status: 'in_progress',
+      status: 'in progress',
       due_date: '2025-02-10',
       created_at: new Date(),
       updated_at: new Date()
@@ -106,7 +106,7 @@ export async function seed(knex) {
       id: 8,
       title: 'Frontend Component Structure',
       description: 'Set up reusable React components and layout structure.',
-      status: 'in_progress',
+      status: 'in progress',
       due_date: '2025-02-12',
       created_at: new Date(),
       updated_at: new Date()
@@ -142,7 +142,7 @@ export async function seed(knex) {
       id: 12,
       title: 'Drag and Drop Functionality',
       description: 'Enable users to reorder tasks and move notes between tasks.',
-      status: 'in_progress',
+      status: 'in progress',
       due_date: '2025-02-22',
       created_at: new Date(),
       updated_at: new Date()
@@ -178,7 +178,7 @@ export async function seed(knex) {
       id: 16,
       title: 'Weekly Tasks',
       description: 'Plan and organize weekly development tasks for the project.',
-      status: 'in_progress',
+      status: 'in progress',
       due_date: '2025-03-01',
       created_at: new Date(),
       updated_at: new Date()

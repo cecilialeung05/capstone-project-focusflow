@@ -7,7 +7,7 @@ export function up(knex) {
       table.increments('id').primary();
       table.string('title').notNullable();
       table.text('description');
-      table.enum('status', ['open', 'in_progress', 'completed']).defaultTo('open');
+      table.string('status').defaultTo('open');
       table.date('due_date').nullable();
       table.timestamp('created_at').defaultTo(knex.fn.now());
       table.timestamp('updated_at').defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));

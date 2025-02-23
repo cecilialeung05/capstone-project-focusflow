@@ -27,6 +27,10 @@
             color: var(--text-primary);
             margin-bottom: 16px;
         }
+
+        &--full {
+            grid-column: 1 / -1;  // Make widget span full width
+        }
     }
 
     // Task and Note Stats
@@ -523,6 +527,88 @@
         &--in-progress { background: #2196F3; }
         &--blocked { background: #f44336; }
         &--todo { background: #9e9e9e; }
+    }
+
+    &__upcoming {
+        margin-bottom: 24px;
+
+        &-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+
+            @media (max-width: 768px) {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        &-section {
+            h3 {
+                font-size: 1rem;
+                color: var(--text-secondary);
+                margin-bottom: 16px;
+            }
+        }
+
+        &-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        &-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-primary);
+            border-radius: 6px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.2s;
+
+            &:hover {
+                background: var(--bg-hover);
+                transform: translateX(4px);
+            }
+        }
+
+        &-title {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        &-date {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        &-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            text-transform: capitalize;
+
+            &--completed {
+                background: var(--success-color);
+                color: white;
+            }
+
+            &--in-progress {
+                background: var(--info-color);
+                color: white;
+            }
+
+            &--blocked {
+                background: var(--danger-color);
+                color: white;
+            }
+
+            &--open {
+                background: var(--bg-hover);
+                color: var(--text-secondary);
+            }
+        }
     }
 }
 

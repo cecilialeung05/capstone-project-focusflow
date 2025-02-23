@@ -1,20 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FaEdit, FaCheck, FaEllipsisH, FaClock } from 'react-icons/fa';
 import { formatDate } from '../../utils/dateUtils';
 import './TaskItem.scss';
+import { useDroppable } from '@dnd-kit/core';
 
-function TaskItem({ task, updateTask, deleteTask }) {
+function TaskItem({ task, onUpdate, onDelete, onSelect, isSelected }) {
+  const [showStatusMenu, setShowStatusMenu] = useState(false);
+
+  const statusOptions = [
+    { value: 'open', label: 'Open' },
+    { value: 'in progress', label: 'In Progress' },
+    { value: 'blocked', label: 'Blocked' },
+    { value: 'completed', label: 'Completed' }
+  ];
+
+  const handleStatusChange = (newStatus) => {
+    onUpdate({
+      ...task,
+      status: newStatus
+    });
+    setShowStatusMenu(false);
+  };
+
   const getStatusColor = (status) => {
-    switch (status.toLowerCase()) {
+    switch (status?.toLowerCase()) {
       case 'completed': return 'status-completed';
       case 'in progress': return 'status-in-progress';
       case 'blocked': return 'status-blocked';
       default: return 'status-open';
     }
-  };
-
-  const handleStatusChange = (newStatus) => {
-    updateTask(task.id, { ...task, status: newStatus });
   };
 
   const formatRelativeDate = (dateString) => {
@@ -51,98 +66,109 @@ function TaskItem({ task, updateTask, deleteTask }) {
 
   const dueDate = formatRelativeDate(task.due_date);
 
+  console.log('Task tags:', task.tags);
+
+  const { setNodeRef, isOver } = useDroppable({
+    id: task.id,
+    data: {
+      type: 'task',
+    },
+  });
+
   return (
-    <div className={`task-item task-item--${task.status?.toLowerCase().replace(' ', '-') || 'open'}`}>
+    <div
+      ref={setNodeRef}
+      className={`task-item ${isOver ? 'task-item--drag-over' : ''}`}
+    >
       <div className="task-item__content">
         <div className="task-item__header">
           <h3 className="task-item__title">
             <Link to={`/tasks/${task.id}`}>{task.title}</Link>
           </h3>
-          <span className={`status-badge ${task.status?.toLowerCase().replace(' ', '-') || 'open'}`}>
-            {task.status || 'Open'}
-          </span>
+          
+          <div className="task-item__controls">
+            {/* Timer button */}
+            {task.status !== 'completed' && (
+              <button 
+                className={`task-item__button task-item__button--timer ${isSelected ? 'task-item__button--timer-active' : ''}`}
+                onClick={() => onSelect(task)}
+                title={isSelected ? "Stop focusing" : "Start focus timer"}
+              >
+                <FaClock /> {isSelected ? 'Focusing' : 'Focus'}
+              </button>
+            )}
+            
+            {/* Existing status control */}
+            <div className="task-item__status-control">
+              <button 
+                className={`status-badge ${getStatusColor(task.status)}`}
+                onClick={() => setShowStatusMenu(!showStatusMenu)}
+              >
+                {task.status || 'Open'} <FaEllipsisH size={12} />
+              </button>
+              
+              {showStatusMenu && (
+                <div className="task-item__status-menu">
+                  {statusOptions.map(option => (
+                    <button
+                      key={option.value}
+                      className={`task-item__status-option ${getStatusColor(option.value)}`}
+                      onClick={() => handleStatusChange(option.value)}
+                    >
+                      {option.label}
+                      {task.status === option.value && <FaCheck size={12} />}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
+        {task.description && (
+          <p className="task-item__description">{task.description}</p>
+        )}
+        
         <div className="task-item__details">
-          {task.description && (
-            <p className="task-item__description">{task.description}</p>
-          )}
           <p className="task-item__due-date">
             <span className="task-item__due-date-label">Due:</span> 
             {dueDate.date} ({dueDate.relative})
           </p>
-        </div>
 
-        {task.tags && task.tags.length > 0 && (
-          <div className="task-item__tags">
-            {task.tags.map((tag, index) => (
-              <span 
-                key={`task-${task.id}-tag-${tag.id || index}`} 
-                className="task-item__tag"
-              >
-                {tag.name}
-              </span>
-            ))}
-          </div>
-        )}
+          {task.tags && task.tags.length > 0 && (
+            <div className="task-item__tags">
+              {task.tags.map((tag, index) => (
+                <span 
+                  key={`${task.id}-tag-${index}`}
+                  className="task-item__tag"
+                >
+                  {tag.name}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="task-item__actions">
-        <div className="task-item__status-buttons">
-          {task.status !== 'open' && (
-            <button 
-              className="task-item__button task-item__button--open"
-              onClick={() => handleStatusChange('open')}
-            >
-              Set Open
-            </button>
-          )}
-          {task.status !== 'in progress' && (
-            <button 
-              className="task-item__button task-item__button--progress"
-              onClick={() => handleStatusChange('in progress')}
-            >
-              Set In Progress
-            </button>
-          )}
-          {task.status !== 'completed' && (
-            <button 
-              className="task-item__button task-item__button--complete"
-              onClick={() => handleStatusChange('completed')}
-            >
-              Set Completed
-            </button>
-          )}
-          {task.status !== 'blocked' && (
-            <button 
-              className="task-item__button task-item__button--block"
-              onClick={() => handleStatusChange('blocked')}
-            >
-              Set Blocked
-            </button>
-          )}
-        </div>
-
-        <div className="task-item__management">
-          <Link 
-            to={`/tasks/${task.id}`} 
-            className="task-item__button task-item__button--edit"
-            title="Edit task details"
-          >
-            Edit Details
-          </Link>
-          <button 
-            className="task-item__button task-item__button--delete"
-            onClick={() => {
-              if (window.confirm('Are you sure you want to delete this task?')) {
-                deleteTask(task.id);
-              }
-            }}
-            title="Delete task"
-          >
-            Delete
-          </button>
-        </div>
+        <Link 
+          to={`/tasks/${task.id}`} 
+          className="task-item__button task-item__button--edit"
+          title="Edit task details"
+        >
+          <FaEdit /> Edit
+        </Link>
+        <button 
+          className="task-item__button task-item__button--delete"
+          onClick={() => {
+            if (window.confirm('Are you sure you want to delete this task?')) {
+              onDelete(task.id);
+            }
+          }}
+          title="Delete task"
+        >
+          Delete
+        </button>
       </div>
     </div>
   );

@@ -1,105 +1,132 @@
 .task-form {
-  background: white;
-  padding: 24px;
+  position: relative;
+  background: var(--surface-primary);
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 
-  &__group {
-    margin-bottom: 16px;
-  }
-
-  &__group-row {
+  &__main {
+    padding: 16px;
     display: flex;
-    gap: 16px;
-    margin-bottom: 16px;
-
-    @media (max-width: 768px) {
-      flex-direction: column;
-      gap: 16px;
-    }
+    flex-direction: column;
+    gap: 12px;
   }
 
-  &__label {
-    display: block;
-    margin-bottom: 8px;
-    color: #2c3e50;
-    font-weight: 500;
+  &__row {
+    display: flex;
+    gap: 12px;
+    padding: 0 16px 16px;
+  }
+
+  &__field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
   }
 
   &__input {
     width: 100%;
     padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
+    border: 1px solid var(--border-primary);
+    border-radius: 6px;
+    background: var(--surface-secondary);
+    color: var(--text-primary);
+    transition: all 0.2s ease;
 
     &:focus {
+      border-color: var(--accent-color);
       outline: none;
-      border-color: #3498db;
-      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
     }
 
-    &--textarea {
-      resize: vertical;
-      min-height: 80px;
+    &--title {
+      font-size: 1.1em;
+      font-weight: 500;
+    }
+
+    &--description {
+      resize: none;
+      min-height: 60px;
+    }
+
+    &--date, &--status {
+      flex: 1;
     }
   }
 
-  &__select {
-    width: 100%;
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background: white;
+  &__tags {
+    padding: 0 16px 16px;
 
-    &:focus {
-      outline: none;
-      border-color: #3498db;
-    }
-
-    &--multiple {
-      height: auto;
-      min-height: 100px;
+    &-header {
+      margin-bottom: 8px;
     }
   }
 
-  &__help {
-    display: block;
-    margin-top: 4px;
-    font-size: 12px;
-    color: #666;
+  &__suggested-tags {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  &__suggested-label {
+    font-size: 0.9em;
+    color: var(--text-secondary);
+  }
+
+  &__tag-pill {
+    padding: 4px 8px;
+    border-radius: 12px;
+    background: var(--surface-secondary);
+    border: 1px solid var(--border-primary);
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--surface-primary);
+      color: var(--text-primary);
+    }
   }
 
   &__actions {
+    position: sticky;
+    bottom: 0;
+    padding: 12px 16px;
+    background: var(--surface-primary);
+    border-top: 1px solid var(--border-primary);
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     gap: 12px;
-    margin-top: 24px;
   }
 
   &__button {
     padding: 8px 16px;
+    border-radius: 6px;
     border: none;
-    border-radius: 4px;
     cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.2s;
+    transition: all 0.2s ease;
 
-    &--primary {
-      background: #3498db;
-      color: white;
+    &--submit {
+      background: var(--surface-secondary);
+      color: var(--text-primary);
+      flex: 1;
 
       &:hover {
-        background: #2980b9;
+        background: var(--surface-secondary-hover);
       }
     }
 
-    &--secondary {
-      background: #e9ecef;
-      color: #2c3e50;
+    &--cancel {
+      padding: 8px;
+      background: transparent;
+      color: var(--text-secondary);
 
       &:hover {
-        background: #dee2e6;
+        background: var(--surface-secondary);
+        color: var(--text-primary);
       }
     }
   }
-} 
+}

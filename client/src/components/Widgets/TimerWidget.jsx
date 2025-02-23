@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-// import './TimerWidget.scss';
+import { FaPlay, FaPause, FaUndo } from 'react-icons/fa';
+import './TimerWidget.scss';
 
 function TimerWidget() {
   const [time, setTime] = useState(0);
@@ -9,7 +10,7 @@ function TimerWidget() {
     let interval;
     if (isRunning) {
       interval = setInterval(() => {
-        setTime(prev => prev + 1);
+        setTime(prevTime => prevTime + 1);
       }, 1000);
     }
     return () => clearInterval(interval);
@@ -21,23 +22,36 @@ function TimerWidget() {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const handleReset = () => {
+    setTime(0);
+    setIsRunning(false);
+  };
+
   return (
     <div className="timer-widget">
-      <h3 className="timer-widget__title">Timer</h3>
       <div className="timer-widget__content">
         <div className="timer-widget__display">{formatTime(time)}</div>
         <div className="timer-widget__controls">
           <button 
-            className="timer-widget__button"
+            className={`timer-widget__button ${isRunning ? 'timer-widget__button--stop' : 'timer-widget__button--start'}`}
             onClick={() => setIsRunning(!isRunning)}
           >
-            {isRunning ? 'Pause' : 'Start'}
+            {isRunning ? (
+              <>
+                <FaPause /> Pause
+              </>
+            ) : (
+              <>
+                <FaPlay /> Start
+              </>
+            )}
           </button>
+          
           <button 
-            className="timer-widget__button"
-            onClick={() => setTime(0)}
+            className="timer-widget__button timer-widget__button--reset"
+            onClick={handleReset}
           >
-            Reset
+            <FaUndo /> Reset
           </button>
         </div>
       </div>

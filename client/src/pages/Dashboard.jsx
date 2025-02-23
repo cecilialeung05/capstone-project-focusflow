@@ -68,6 +68,31 @@ function Dashboard({ notes = [], tasks = [], tags = [] }) {
       .slice(0, 5);
   }, [tasks, notes]);
 
+  // Add new computed values for today's and upcoming tasks
+  const upcomingTasks = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    const nextWeek = new Date(today);
+    nextWeek.setDate(nextWeek.getDate() + 7);
+
+    return {
+      today: tasks.filter(task => {
+        const taskDate = new Date(task.due_date);
+        taskDate.setHours(0, 0, 0, 0);
+        return taskDate.getTime() === today.getTime();
+      }),
+      upcoming: tasks.filter(task => {
+        const taskDate = new Date(task.due_date);
+        taskDate.setHours(0, 0, 0, 0);
+        return taskDate > today && taskDate <= nextWeek;
+      })
+    };
+  }, [tasks]);
+
   const renderComponentContent = (componentId) => {
     switch (componentId) {
       case 'tasks':
@@ -150,6 +175,65 @@ function Dashboard({ notes = [], tasks = [], tags = [] }) {
           </div>
         </div>
         
+        {/* Add Upcoming Tasks widget at the top */}
+        <div className="dashboard__upcoming">
+          <div className="dashboard__widget dashboard__widget--full">
+            <h2>Upcoming Tasks</h2>
+            <div className="dashboard__upcoming-grid">
+              {/* Today's Tasks */}
+              <div className="dashboard__upcoming-section">
+                <h3>Due Today</h3>
+                <div className="dashboard__upcoming-list">
+                  {upcomingTasks.today.length > 0 ? (
+                    upcomingTasks.today.map(task => (
+                      <Link
+                        key={task.id}
+                        to={`/tasks/${task.id}`}
+                        className="dashboard__upcoming-item"
+                      >
+                        <div className={`dashboard__status dashboard__status--${task.status}`} />
+                        <span className="dashboard__upcoming-title">{task.title}</span>
+                        <span className={`dashboard__upcoming-badge dashboard__upcoming-badge--${task.status}`}>
+                          {task.status}
+                        </span>
+                      </Link>
+                    ))
+                  ) : (
+                    <p className="dashboard__empty">No tasks due today</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Upcoming Tasks */}
+              <div className="dashboard__upcoming-section">
+                <h3>Coming Up</h3>
+                <div className="dashboard__upcoming-list">
+                  {upcomingTasks.upcoming.length > 0 ? (
+                    upcomingTasks.upcoming.map(task => (
+                      <Link
+                        key={task.id}
+                        to={`/tasks/${task.id}`}
+                        className="dashboard__upcoming-item"
+                      >
+                        <div className={`dashboard__status dashboard__status--${task.status}`} />
+                        <span className="dashboard__upcoming-title">{task.title}</span>
+                        <span className="dashboard__upcoming-date">
+                          {formatDate(new Date(task.due_date))}
+                        </span>
+                        <span className={`dashboard__upcoming-badge dashboard__upcoming-badge--${task.status}`}>
+                          {task.status}
+                        </span>
+                      </Link>
+                    ))
+                  ) : (
+                    <p className="dashboard__empty">No upcoming tasks</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="dashboard__grid">
           {/* Tasks Overview */}
           <div className="dashboard__widget">

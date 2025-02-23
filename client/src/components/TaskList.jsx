@@ -1,49 +1,55 @@
-import { useState } from "react";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import React from "react";
+import PropTypes from 'prop-types';
+import TaskItem from './Tasks/TaskItem';
+import './TaskList.scss';
 
-const initialTasks = [
-  { id: "1", title: "Finish React project" },
-  { id: "2", title: "Read an article on AI" },
-  { id: "3", title: "Go for a walk" },
-];
-
-const TaskList = () => {
-  const [tasks, setTasks] = useState(initialTasks);
-
-  const handleDragEnd = (result) => {
-    if (!result.destination) return;
-
-    const reorderedTasks = [...tasks];
-    const [movedTask] = reorderedTasks.splice(result.source.index, 1);
-    reorderedTasks.splice(result.destination.index, 0, movedTask);
-    setTasks(reorderedTasks);
-  };
-
+const TaskList = ({ 
+  tasks, 
+  onTaskUpdate, 
+  onTaskDelete,
+  onTaskSelect,
+  selectedTaskId,
+  tags 
+}) => {
   return (
-    <DragDropContext onDragEnd={handleDragEnd}>
-      <Droppable droppableId="taskList">
-        {(provided) => (
-          <ul {...provided.droppableProps} ref={provided.innerRef} className="task-list">
-            {tasks.map((task, index) => (
-              <Draggable key={task.id} draggableId={task.id} index={index}>
-                {(provided) => (
-                  <li
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    className="task-item"
-                  >
-                    {task.title}
-                  </li>
-                )}
-              </Draggable>
-            ))}
-            {provided.placeholder}
-          </ul>
-        )}
-      </Droppable>
-    </DragDropContext>
+    <div className="task-list">
+      {tasks.map((task) => (
+        <TaskItem
+          key={task.id}
+          task={task}
+          onUpdate={onTaskUpdate}
+          onDelete={onTaskDelete}
+          onSelect={onTaskSelect}
+          isSelected={selectedTaskId === task.id}
+          tags={tags}
+        />
+      ))}
+      {tasks.length === 0 && (
+        <div className="task-list__empty">
+          <p>No tasks found</p>
+        </div>
+      )}
+    </div>
   );
 };
 
-export default TaskList;
+TaskList.propTypes = {
+  tasks: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string,
+    status: PropTypes.string,
+    due_date: PropTypes.string,
+    tags: PropTypes.arrayOf(PropTypes.number)
+  })).isRequired,
+  onTaskUpdate: PropTypes.func.isRequired,
+  onTaskDelete: PropTypes.func.isRequired,
+  onTaskSelect: PropTypes.func.isRequired,
+  selectedTaskId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  tags: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired
+  }))
+};
+
+export default TaskList; 

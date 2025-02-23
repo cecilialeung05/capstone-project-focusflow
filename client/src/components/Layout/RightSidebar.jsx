@@ -4,20 +4,28 @@ import WeatherWidget from '../Widgets/WeatherWidget';
 import TimerWidget from '../Widgets/TimerWidget';
 import PinnedItemsWidget from '../Widgets/PinnedItemsWidget';
 import Greeting from '../Greeting/Greeting';
-import { FaChevronLeft, FaChevronRight, FaChevronUp, FaChevronDown, FaEllipsisH } from 'react-icons/fa';
+import { FaEllipsisH } from 'react-icons/fa';
+import { WiDaySunny } from 'react-icons/wi';
 import './RightSidebar.scss';
 
 function RightSidebar({ tasks = [], notes = [], updateTask, updateNote, isAuthenticated }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [selectedTask, setSelectedTask] = useState(null);
   const [widgets, setWidgets] = useState([
     { id: 'greeting', title: 'Welcome', component: Greeting, isExpanded: true },
-    { id: 'weather', title: 'Weather', component: WeatherWidget, isExpanded: true },
-    { id: 'timer', title: 'Timer', component: TimerWidget, isExpanded: true },
+    { id: 'weather', title: 'Weather', icon: <WiDaySunny size={16} />, component: WeatherWidget, isExpanded: true },
+    { id: 'timer', title: 'Timer', component: () => (
+      <TimerWidget 
+        selectedTask={selectedTask} 
+        onTimerComplete={handleTimerComplete}
+        onTaskDeselect={() => setSelectedTask(null)}
+      />
+    ), isExpanded: true },
     { id: 'pinned', title: 'Pinned Items', component: PinnedItemsWidget, isExpanded: true }
   ]);
 
-  // Get pinned items
+  // Get pinned items d
   const pinnedItems = {
     tasks: tasks.filter(task => task.isPinned),
     notes: notes.filter(note => note.isPinned)
@@ -49,6 +57,26 @@ function RightSidebar({ tasks = [], notes = [], updateTask, updateNote, isAuthen
     ));
   };
 
+  const handleTaskSelect = (task) => {
+    console.log('Task selected:', task); // Debug log
+    if (selectedTask?.id === task.id) {
+      setSelectedTask(null);
+    } else {
+      setSelectedTask(task);
+      // Scroll to timer widget
+      document.getElementById('timer-widget')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleTimerComplete = (taskId, duration) => {
+    // Update task when timer completes
+    updateTask(taskId, { 
+      status: 'completed',
+      duration: duration 
+    });
+    setSelectedTask(null); // Clear selected task
+  };
+
   return (
     <aside className={`right-sidebar ${isCollapsed ? 'right-sidebar--collapsed' : ''}`}>
       <button 
@@ -57,8 +85,8 @@ function RightSidebar({ tasks = [], notes = [], updateTask, updateNote, isAuthen
         aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
       >
         {isMobile 
-          ? (isCollapsed ? <FaChevronUp /> : <FaChevronDown />)
-          : (isCollapsed ? <FaChevronLeft /> : <FaChevronRight />)
+          ? (isCollapsed ? '↑' : '↓')
+          : (isCollapsed ? '←' : '→')
         }
       </button>
 
@@ -90,6 +118,7 @@ function RightSidebar({ tasks = [], notes = [], updateTask, updateNote, isAuthen
                           <FaEllipsisH />
                         </div>
                         <h3 className="right-sidebar__widget-title">
+                          {widget.icon && <span className="right-sidebar__widget-icon">{widget.icon}</span>}
                           {widget.title}
                         </h3>
                         <button
@@ -97,7 +126,7 @@ function RightSidebar({ tasks = [], notes = [], updateTask, updateNote, isAuthen
                           onClick={() => toggleWidget(widget.id)}
                           aria-label={widget.isExpanded ? 'Collapse widget' : 'Expand widget'}
                         >
-                          {widget.isExpanded ? '−' : '+'}
+                          {widget.isExpanded ? '-' : '+'}
                         </button>
                       </div>
                       <div className="right-sidebar__widget-content">

@@ -1,77 +1,64 @@
 .task-item {
-  background: #fff;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-left: 4px solid #ddd;
-  transition: all 0.2s ease;
-
-  &--open {
-    border-left-color: #95a5a6;
-  }
-
-  &--in-progress {
-    border-left-color: #3498db;
-  }
-
-  &--completed {
-    border-left-color: #2ecc71;
-  }
-
-  &--blocked {
-    border-left-color: #e74c3c;
-  }
-
-  &:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
+  background: white;
+  border-radius: 4px;
+  padding: 16px;
+  border-left: 3px solid #4285f4;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
   &__content {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    margin-bottom: 16px;
   }
 
   &__header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
+    align-items: center;
+    margin-bottom: 12px;
   }
 
   &__title {
-    margin: 0;
-    font-size: 1.2rem;
-    
-    a {
-      color: #2c3e50;
-      text-decoration: none;
-      
-      &:hover {
-        color: #3498db;
-      }
+    color: #4285f4;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: normal;
+
+    &:hover {
+      text-decoration: underline;
     }
   }
 
-  &__details {
-    color: #666;
-    font-size: 0.9rem;
-  }
-
   &__description {
-    margin: 8px 0;
+    color: #333;
+    margin: 0 0 12px 0;
     line-height: 1.4;
+    font-size: 14px;
   }
 
-  &__due-date {
-    margin: 4px 0;
-    font-size: 0.85rem;
-    color: #666;
+  &__status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
 
-    &-label {
-      font-weight: 600;
-      margin-right: 4px;
+    &--pending {
+      background: #ffd700;
+      color: #856404;
+    }
+
+    &--in-progress {
+      background: #b8e6ff;
+      color: #004085;
+    }
+
+    &--completed {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    &--blocked {
+      background: #f8d7da;
+      color: #721c24;
     }
   }
 
@@ -79,116 +66,130 @@
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-top: 8px;
+    margin-top: 12px;
   }
 
   &__tag {
-    background: #f0f0f0;
-    color: #666;
+    background: #e8eaed;
+    color: #3c4043;
     padding: 4px 12px;
     border-radius: 12px;
-    font-size: 0.85rem;
-    transition: background-color 0.2s ease;
-
-    &:hover {
-      background: #e0e0e0;
-    }
+    font-size: 12px;
+    font-weight: 500;
   }
 
   &__actions {
     display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #e2e8f0;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      color: white;
+
+      &.action-button {
+        background: #0099ff;
+      }
+
+      &.edit-button {
+        background: #5f9ea0;
+      }
+
+      &.delete-button {
+        background: #dc3545;
+      }
+
+      &:hover {
+        opacity: 0.9;
+      }
+    }
   }
 
-  &__status-buttons {
-    display: flex;
-    gap: 0.5rem;
+  &__status-control {
+    position: relative;
   }
 
-  &__button {
-    padding: 0.5rem 1rem;
+  &__status-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 10;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
-    border: none;
+    box-shadow: 0 2px 8px rgba(186, 49, 49, 0.1);
+    margin-top: 4px;
+    min-width: 150px;
+  }
+
+  &__status-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    color: var(--text-primary);
+    text-align: left;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid transparent;
     cursor: pointer;
-    font-size: 0.875rem;
+    font-size: 14px;
+    font-weight: 500;
     transition: all 0.2s ease;
+    background: #f5f5f5;
+    color: #ede4e4;
 
-    // Management buttons (Edit/Delete)
-    &--edit {
-      background-color: #64a6a6;
-      color: white;
-      &:hover { background-color: #558e8e; }
+    &:hover {
+      background: var(--bg-hover);
     }
 
-    &--delete {
-      background-color: #dc3545;
-      color: white;
-      &:hover { background-color: #c82333; }
-    }
+    &.status-completed { color: var(--success-color); }
+    &.status-in-progress { color: var(--info-color); }
+    &.status-blocked { color: var(--danger-color); }
+    &.status-open { color: var(--text-secondary); }
+  }
 
-    // Status buttons with softer colors
-    &--open {
-      background-color: #e8f5e9;
-      color: #2e7d32;
-      border: 1px solid #c8e6c9;
-      &:hover { background-color: #c8e6c9; }
-    }
-
-    &--progress {
-      background-color: #e3f2fd;
-      color: #1976d2;
-      border: 1px solid #bbdefb;
-      &:hover { background-color: #bbdefb; }
-    }
-
-    &--complete {
-      background-color: #f1f8e9;
-      color: #558b2f;
-      border: 1px solid #dcedc8;
-      &:hover { background-color: #dcedc8; }
-    }
-
-    &--block {
-      background-color: #ffebee;
-      color: #c62828;
-      border: 1px solid #ffcdd2;
-      &:hover { background-color: #ffcdd2; }
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    background: #f5f5f5;
+    color: #ece4e4;
+    &.status-completed { color: var(--success-color); }
+    &.status-in-progress { color: var(--info-color); }
+    &.status-blocked { color: var(--danger-color); }
+    &.status-open { color: var(--text-secondary); }
+    &:hover {
+      opacity: 0.9;
     }
   }
 }
 
-.status-badge {
+.tasks__tag-button {
+  background: #e8eaed;
+  color: #3c4043;
   padding: 4px 12px;
   border-radius: 12px;
-  font-size: 0.8rem;
+  font-size: 12px;
   font-weight: 500;
-  text-transform: capitalize;
+  border: none;
+  cursor: pointer;
+  margin-right: 8px;
+  margin-bottom: 8px;
 
-  &.open {
-    background-color: #e8f5e9;
-    color: #2e7d32;
-    border: 1px solid #c8e6c9;
-  }
-
-  &.in-progress {
-    background-color: #e3f2fd;
-    color: #1976d2;
-    border: 1px solid #bbdefb;
-  }
-
-  &.completed {
-    background-color: #f1f8e9;
-    color: #558b2f;
-    border: 1px solid #dcedc8;
-  }
-
-  &.blocked {
-    background-color: #ffebee;
-    color: #c62828;
-    border: 1px solid #ffcdd2;
+  &:hover {
+    background: #dadce0;
   }
 }

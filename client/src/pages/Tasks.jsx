@@ -1,21 +1,49 @@
 import React, { useState, useMemo } from 'react';
+import { DndContext } from '@dnd-kit/core';
+import { FaPlus } from 'react-icons/fa';
 import TaskForm from '../components/Tasks/TaskForm';
-import TaskItem from '../components/Tasks/TaskItem';
+import TaskList from '../components/TaskList';
+import TagSuggestions from '../components/Tags/TagSuggestions';
+import DraggableTagList from '../components/Tags/DraggableTagList';
 import './Tasks.scss';
 
 function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
   const [showForm, setShowForm] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedTags, setSelectedTags] = useState([]);
-  const [sortBy, setSortBy] = useState('created'); 
+  const [sortBy, setSortBy] = useState('created');
   const [searchTerm, setSearchTerm] = useState('');
+
+  console.log("showForm:", showForm);
+
+  // Calculate tag usage counts
+  const tagsWithCounts = useMemo(() => {
+    return tags.map(tag => ({
+      ...tag,
+      taskCount: tasks.filter(task => task.tags?.includes(tag.id)).length
+    }));
+  }, [tags, tasks]);
+
+  // Handle tag selection
+  const handleTagSelect = (tag) => {
+    setSelectedTags(prev => 
+      prev.includes(tag.id)
+        ? prev.filter(id => id !== tag.id)
+        : [...prev, tag.id]
+    );
+  };
+
+  const handleAddTask = (taskData) => {
+    addTask(taskData);
+    setShowForm(false);
+  };
 
   const filteredTasks = useMemo(() => {
     return tasks
       .filter(task => {
         const matchesStatus = statusFilter === 'all' || task.status === statusFilter;
         const matchesTags = selectedTags.length === 0 || 
-          selectedTags.every(tagId => task.tags?.some(tag => tag.id === tagId));
+          selectedTags.every(tagId => task.tags?.includes(tagId));
         const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
           task.description?.toLowerCase().includes(searchTerm.toLowerCase());
         
@@ -40,102 +68,121 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
     }, {});
   }, [tasks]);
 
-  const handleTagToggle = (tagId) => {
-    setSelectedTags(prev => 
-      prev.includes(tagId) 
-        ? prev.filter(id => id !== tagId)
-        : [...prev, tagId]
-    );
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    
+    if (over && active.id !== over.id) {
+      const tagId = active.id;
+      const taskId = over.id;
+      
+      const task = tasks.find(t => t.id === taskId);
+      if (task) {
+        const updatedTags = task.tags.includes(tagId)
+          ? task.tags.filter(id => id !== tagId)
+          : [...task.tags, tagId];
+        
+        updateTask(taskId, { ...task, tags: updatedTags });
+      }
+    }
   };
 
   return (
-    <div className="tasks">
-      <div className="tasks__header">
-        <h1 className="tasks__title">Tasks</h1>
-        <button 
-          onClick={() => setShowForm(!showForm)}
-          className="tasks__button tasks__button--primary"
-        >
-          {showForm ? 'Cancel' : 'Add New Task'}
-        </button>
-      </div>
-
-      {showForm && (
-        <div className="tasks__form">
-        <TaskForm 
-          addTask={addTask}
-          tags={tags}
-          onCancel={() => setShowForm(false)}
-        />
-        </div>
-      )}
-
-      <div className="tasks__filters">
-        <div className="tasks__filters-search">
-          <input
-            type="text"
-            className="tasks__filters-search-input"
-            placeholder="Search tasks..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-
-        <div className="tasks__filters-options">
-          <select 
-            className="tasks__filters-select"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+    <DndContext onDragEnd={handleDragEnd}>
+      <div className="tasks">
+        <div className="tasks__header">
+          <h1>Tasks</h1>
+          <button 
+            onClick={() => setShowForm(!showForm)}
+            className="tasks__button tasks__button--primary"
           >
-            <option value="all">All Status ({tasks.length})</option>
-            <option value="open">Open ({statusCounts.open || 0})</option>
-            <option value="in progress">In Progress ({statusCounts['in progress'] || 0})</option>
-            <option value="completed">Completed ({statusCounts.completed || 0})</option>
-            <option value="blocked">Blocked ({statusCounts.blocked || 0})</option>
-          </select>
-
-          <select
-            className="tasks__filters-select"
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-          >
-            <option value="created">Sort by Created Date</option>
-            <option value="due">Sort by Due Date</option>
-            <option value="status">Sort by Status</option>
-          </select>
+            <FaPlus /> <span>+ Task</span>
+          </button>
         </div>
 
-        <div className="tasks__tags">
-          {tags.map(tag => (
-            <button
-              key={tag.id}
-              className={`tasks__tag-button ${selectedTags.includes(tag.id) ? 'tasks__tag-button--selected' : ''}`}
-              onClick={() => handleTagToggle(tag.id)}
+        <div className="tasks__filters">
+          <div className="tasks__filters-row">
+            <div className="tasks__filters-search">
+              <input
+                type="text"
+                placeholder="Search tasks..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="tasks__filters-search-input"
+              />
+            </div>
+
+            <select 
+              className="tasks__filters-select"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
             >
-              {tag.name}
+              <option value="created">Sort by Created Date</option>
+              <option value="due">Sort by Due Date</option>
+              <option value="title">Sort by Title</option>
+            </select>
+          </div>
+
+          <div className="tasks__status-filters">
+            <button
+              className={`tasks__status-button ${statusFilter === 'all' ? 'tasks__status-button--selected all' : ''}`}
+              onClick={() => setStatusFilter('all')}
+            >
+              All ({tasks.length})
             </button>
-          ))}
+            <button
+              className={`tasks__status-button ${statusFilter === 'open' ? 'tasks__status-button--selected open' : ''}`}
+              onClick={() => setStatusFilter('open')}
+            >
+              Open ({tasks.filter(t => t.status === 'open').length})
+            </button>
+            <button
+              className={`tasks__status-button ${statusFilter === 'in-progress' ? 'tasks__status-button--selected in-progress' : ''}`}
+              onClick={() => setStatusFilter('in-progress')}
+            >
+              In Progress ({tasks.filter(t => t.status === 'in-progress').length})
+            </button>
+            <button
+              className={`tasks__status-button ${statusFilter === 'completed' ? 'tasks__status-button--selected completed' : ''}`}
+              onClick={() => setStatusFilter('completed')}
+            >
+              Completed ({tasks.filter(t => t.status === 'completed').length})
+            </button>
+            <button
+              className={`tasks__status-button ${statusFilter === 'blocked' ? 'tasks__status-button--selected blocked' : ''}`}
+              onClick={() => setStatusFilter('blocked')}
+            >
+              Blocked ({tasks.filter(t => t.status === 'blocked').length})
+            </button>
+          </div>
+        </div>
+
+        {showForm && (
+          <TaskForm
+            onSubmit={handleAddTask}
+            onCancel={() => setShowForm(false)}
+            tags={tags}
+          />
+        )}
+
+        <div className="tasks__content">
+          <div className="tasks__main">
+            <TaskList
+              tasks={filteredTasks}
+              onTaskUpdate={updateTask}
+              onTaskDelete={deleteTask}
+              tags={tags}
+            />
+          </div>
+
+          <div className="tasks__sidebar">
+            <DraggableTagList
+              tags={tagsWithCounts}
+              onTagDrop={handleTagDrop}
+            />
+          </div>
         </div>
       </div>
-
-      <div className="tasks__list">
-        {filteredTasks.length > 0 ? (
-          filteredTasks.map(task => (
-            <TaskItem
-              key={task.id}
-              task={task}
-              updateTask={updateTask}
-              deleteTask={deleteTask}
-              className="tasks__item"
-            />
-          ))
-        ) : (
-          <div className="tasks__empty">
-            <p className="tasks__empty-message">No tasks found matching your filters</p>
-          </div>
-        )}
-      </div>
-    </div>
+    </DndContext>
   );
 }
 
