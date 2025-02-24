@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
+import { DataProvider } from './context/DataContext';
 import Container from './components/Layout/Container';
 import ErrorBoundary from './components/ErrorBoundary';
 import './styles/variables.scss';
@@ -12,10 +13,8 @@ const DEV_MODE = true;
 
 // If in dev mode, clear any existing data and set up sample data
 if (DEV_MODE) {
-  // Clear existing data
+  console.log('Clearing localStorage for dev mode');
   localStorage.clear();
-  
-  // Set dev flag
   localStorage.setItem('devMode', 'true');
 }
 
@@ -23,11 +22,13 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider>
-        <Router>
-          <div className="app">
-            <Container devMode={DEV_MODE} />
-          </div>
-        </Router>
+        <DataProvider>
+          <Router>
+            <div className="app">
+              <Container devMode={DEV_MODE} />
+            </div>
+          </Router>
+        </DataProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

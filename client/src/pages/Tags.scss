@@ -217,6 +217,15 @@
       }
     }
   }
+
+  &__graph {
+    margin-bottom: 24px;
+    background: #1e1e1e;
+    border-radius: 8px;
+    padding: 16px;
+    height: 600px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
 }
 
 .status-dot {

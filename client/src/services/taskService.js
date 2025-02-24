@@ -6,8 +6,11 @@ const API_ENDPOINT = `${API_BASE_URL}/tasks`;
 const taskService = {
   getAllTasks: async (tagId = null) => {
     try {
-      const params = tagId ? { tagId } : {};
-      const response = await axios.get(API_ENDPOINT, { params });
+      const url = tagId 
+        ? `${API_ENDPOINT}?tagId=${tagId}`
+        : API_ENDPOINT;
+      const response = await axios.get(url);
+      // Response should include task_tags array for each task
       return response.data;
     } catch (error) {
       console.error('Error fetching tasks:', error);

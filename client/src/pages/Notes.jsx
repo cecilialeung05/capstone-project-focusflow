@@ -6,8 +6,11 @@ import { FaFileExport, FaPlus } from 'react-icons/fa';
 import TagSuggestions from '../components/Tags/TagSuggestions';
 import TagList from '../components/Tags/TagList';
 import './Notes.scss';
+import { useData } from '../context/DataContext';
+import TagBadges from '../components/Tags/TagBadges';
 
-function Notes({ notes = [], tasks = [], tags = [], addNote, updateNote, deleteNote }) {
+function Notes() {
+  const { notes, tags, tasks } = useData();
   const [showExport, setShowExport] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -106,7 +109,11 @@ function Notes({ notes = [], tasks = [], tags = [], addNote, updateNote, deleteN
                   </div>
                 </div>
                 <div className="notes__card-content">
-                  {note.content}
+                  <TagBadges 
+                    tags={tags} 
+                    itemTags={note.note_tags} 
+                  />
+                  {note.content.substring(0, 100)}...
                 </div>
                 <div className="notes__card-actions">
                   <button className="edit" onClick={() => navigate(`/notes/${note.id}`)}>

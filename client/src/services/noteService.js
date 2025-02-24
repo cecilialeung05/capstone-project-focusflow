@@ -6,9 +6,11 @@ const API_ENDPOINT = `${API_BASE_URL}/notes`;
 const noteService = {
   getAllNotes: async (tagId = null) => {
     try {
-      const params = tagId ? { tagId } : {};
-      const response = await axios.get(API_ENDPOINT, { params });
-      console.log('Note service response:', response.data); 
+      const url = tagId 
+        ? `${API_ENDPOINT}?tagId=${tagId}`
+        : API_ENDPOINT;
+      const response = await axios.get(url);
+      // Response should include note_tags array for each note
       return response.data;
     } catch (error) {
       console.error('Error fetching notes:', error);

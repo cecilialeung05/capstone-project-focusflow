@@ -1,20 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import TagList from '../components/Tags/TagList';
+import TagGraph from '../components/Graph/TagGraph';
 import tagService from '../services/tagService';
+import { useData } from '../context/DataContext';
 import './Tags.scss';
 
-function Tags({ tags, addTag, updateTag, deleteTag }) {
+function Tags({ addTag, updateTag, deleteTag }) {
+  const { tags, notes, tasks, setNotes, setTasks, setTags } = useData();
   const [newTagName, setNewTagName] = useState('');
-  const [selectedTag, setSelectedTag] = useState(null);
+  const [selectedTagId, setSelectedTagId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [taggedItems, setTaggedItems] = useState({ tasks: [], notes: [] });
 
+  console.log('Tags Component Data:', { tags, notes, tasks });
+
   useEffect(() => {
     const fetchTaggedItems = async () => {
-      if (selectedTag) {
+      if (selectedTagId) {
         try {
-          const items = await tagService.getTaggedItems(selectedTag.id);
+          const items = await tagService.getTaggedItems(selectedTagId);
           setTaggedItems(items);
         } catch (error) {
           console.error('Error fetching tagged items:', error);
@@ -25,7 +30,24 @@ function Tags({ tags, addTag, updateTag, deleteTag }) {
     };
 
     fetchTaggedItems();
-  }, [selectedTag]);
+  }, [selectedTagId]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await tagService.getAllTags();
+        // Update all the data in context
+        setTags(data.tags);
+        setNotes(data.notes);
+        setTasks(data.tasks);
+        console.log('Tag relationships:', data);
+      } catch (error) {
+        console.error('Error fetching tag data:', error);
+      }
+    };
+
+    fetchData();
+  }, [setTags, setNotes, setTasks]);
 
   const handleAddTag = (e) => {
     e.preventDefault();
@@ -38,6 +60,11 @@ function Tags({ tags, addTag, updateTag, deleteTag }) {
   const filteredTags = tags.filter(tag =>
     tag.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleTagSelect = (tag) => {
+    setSelectedTagId(tag.id);
+    // This will highlight the tag in both the list and the graph
+  };
 
   return (
     <div className="tags">
@@ -55,6 +82,16 @@ function Tags({ tags, addTag, updateTag, deleteTag }) {
         </form>
       </div>
 
+      <div className="tags__graph">
+        <TagGraph 
+          tags={tags}
+          notes={notes}
+          tasks={tasks}
+          selectedTagId={selectedTagId}
+          onTagSelect={handleTagSelect}
+        />
+      </div>
+
       <div className="tags__search">
         <input
           type="text"
@@ -69,20 +106,18 @@ function Tags({ tags, addTag, updateTag, deleteTag }) {
         <div className="tags__list">
           <TagList
             tags={filteredTags}
-            selectedTags={selectedTag ? [selectedTag] : []}
-            onTagClick={(tag) => setSelectedTag(
-              selectedTag?.id === tag.id ? null : tag
-            )}
+            selectedTags={selectedTagId ? [selectedTagId] : []}
+            onTagClick={(tag) => handleTagSelect(tag)}
             updateTag={updateTag}
           />
         </div>
 
-        {selectedTag && (
+        {selectedTagId && (
           <div className="tags__details">
             <div className="tags__details-header">
-              <h2>Items tagged with "{selectedTag.name}"</h2>
+              <h2>Items tagged with "{tags.find(t => t.id === selectedTagId)?.name}"</h2>
               <button 
-                onClick={() => deleteTag(selectedTag.id)}
+                onClick={() => deleteTag(selectedTagId)}
                 className="tags__button tags__button--danger"
               >
                 Delete Tag

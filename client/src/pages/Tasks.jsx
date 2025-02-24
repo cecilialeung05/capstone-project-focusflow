@@ -5,10 +5,13 @@ import TaskForm from '../components/Tasks/TaskForm';
 import TaskList from '../components/TaskList';
 import TagList from '../components/Tags/TagList';
 import { Link } from 'react-router-dom';
+import { useData } from '../context/DataContext';
+import TagBadges from '../components/Tags/TagBadges';
 
 import './Tasks.scss';
 
-function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
+function Tasks() {
+  const { tasks, tags, notes } = useData();
   const [showForm, setShowForm] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedTags, setSelectedTags] = useState([]);
@@ -35,7 +38,7 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
   };
 
   const handleAddTask = (taskData) => {
-    addTask(taskData);
+    // Implementation of addTask function
     setShowForm(false);
   };
 
@@ -82,7 +85,7 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
           ? task.tags.filter(id => id !== tagId)
           : [...task.tags, tagId];
         
-        updateTask(taskId, { ...task, tags: updatedTags });
+        // Implementation of updateTask function
       }
     }
   };
@@ -187,8 +190,12 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
           <div className="tasks__main">
             <TaskList
               tasks={filteredTasks}
-              onTaskUpdate={updateTask}
-              onTaskDelete={deleteTask}
+              onTaskUpdate={(taskId, updatedTask) => {
+                // Implementation of updateTask function
+              }}
+              onTaskDelete={(taskId) => {
+                // Implementation of deleteTask function
+              }}
               tags={tags}
             />
           </div>

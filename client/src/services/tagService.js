@@ -1,6 +1,7 @@
 import axios from 'axios';
 import taskService from './taskService';
 import noteService from './noteService';
+import { sampleTags, sampleNotes, sampleTasks } from '../components/Layout/sampleData';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080"; 
 const API_ENDPOINT = `${API_BASE_URL}/tags`;
@@ -9,9 +10,18 @@ const tagService = {
   getAllTags: async () => {
     try {
       const response = await axios.get(API_ENDPOINT);
-      return response.data;
+      return response.data;  // Now includes tags, notes, and tasks with relationships
     } catch (error) {
       console.error('Error fetching tags:', error);
+      // If API fails in dev mode, return sample data
+      if (localStorage.getItem('devMode') === 'true') {
+        console.log('Falling back to sample data');
+        return {
+          tags: sampleTags,
+          notes: sampleNotes,
+          tasks: sampleTasks
+        };
+      }
       throw error;
     }
   },
@@ -71,6 +81,12 @@ const tagService = {
       console.error(`Error fetching items for tag ${tagId}:`, error);
       return { tasks: [], notes: [] };
     }
+  },
+
+  getTagsWithRelationships: async () => {
+    const response = await fetch('/api/tags/relationships');
+    const data = await response.json();
+    return data;
   }
 };
 
