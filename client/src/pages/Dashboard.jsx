@@ -1,12 +1,9 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { FaPlus, FaTasks, FaFileAlt } from 'react-icons/fa';
 import AnimatedPage from '../components/AnimatedPage';
 import SplitFlapDisplay from '../components/Dashboard/DashboardHeader';
 import './Dashboard.scss';
 import { formatDate } from '../utils/dateUtils';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { ResizableBox } from 'react-resizable';
 import 'react-resizable/css/styles.css';
 
 function Dashboard({ notes = [], tasks = [], tags = [] }) {
