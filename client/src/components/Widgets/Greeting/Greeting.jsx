@@ -3,7 +3,7 @@ import { ResizableBox } from 'react-resizable';
 import 'react-resizable/css/styles.css';
 import './Greeting.scss';
 
-function Greeting({ username = 'USER' }) {
+function Greeting({ username = 'NAME' }) {
   const [dateTime, setDateTime] = useState(new Date());
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [dimensions, setDimensions] = useState({ width: 300, height: 150 });

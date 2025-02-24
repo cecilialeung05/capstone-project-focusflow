@@ -6,11 +6,12 @@ import { useData } from '../context/DataContext';
 import TaskForm from '../components/Tasks/TaskForm';
 import TaskCard from '../components/Tasks/TaskCard';
 import TagList from '../components/Tags/TagList';
+import TaskFilters from '../components/Tasks/TaskFilters';
 
 import './Tasks.scss';
 
 function Tasks() {
-  const { tasks, tags, notes } = useData();
+  const { tasks, tags, notes, addTask, updateTask, deleteTask } = useData();
   const [showForm, setShowForm] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedTags, setSelectedTags] = useState([]);
@@ -18,6 +19,7 @@ function Tasks() {
   const [searchTerm, setSearchTerm] = useState('');
 
   console.log("showForm:", showForm);
+  console.log('Current tasks:', tasks);
 
   // Calculate tag usage counts
   const tagsWithCounts = useMemo(() => {
@@ -36,12 +38,35 @@ function Tasks() {
     );
   };
 
-  const handleAddTask = (taskData) => {
-    // Implementation of addTask function
-    setShowForm(false);
+  const handleAddTask = async (taskData) => {
+    try {
+      console.log('Adding task with data:', taskData);
+      await addTask(taskData);
+      console.log('Task added successfully');
+      setShowForm(false);
+    } catch (error) {
+      console.error('Failed to add task:', error);
+    }
+  };
+
+  const handleUpdateTask = async (updatedTask) => {
+    try {
+      await updateTask(updatedTask);
+    } catch (error) {
+      console.error('Failed to update task:', error);
+    }
+  };
+
+  const handleDeleteTask = async (taskId) => {
+    try {
+      await deleteTask(taskId);
+    } catch (error) {
+      console.error('Failed to delete task:', error);
+    }
   };
 
   const filteredTasks = useMemo(() => {
+    console.log('Filtered tasks:', tasks);
     return tasks
       .filter(task => {
         const matchesStatus = statusFilter === 'all' || task.status === statusFilter;
@@ -83,8 +108,6 @@ function Tasks() {
         const updatedTags = task.tags.includes(tagId)
           ? task.tags.filter(id => id !== tagId)
           : [...task.tags, tagId];
-        
-        // Implementation of updateTask function
       }
     }
   };
@@ -102,80 +125,14 @@ function Tasks() {
           </button>
         </div>
 
-        <div className="tasks__filters">
-          <div className="tasks__filters-row">
-            <div className="tasks__filters-search">
-              <input
-                type="text"
-                placeholder="Search tasks..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="tasks__filters-search-input"
-              />
-            </div>
-
-            <select 
-              className="tasks__filters-select"
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-            >
-              <option value="created">Sort by Created Date</option>
-              <option value="due">Sort by Due Date</option>
-              <option value="title">Sort by Title</option>
-            </select>
-          </div>
-
-          <div className="tasks__status-filters">
-            <button
-              className={`tasks__status-button ${statusFilter === 'all' ? 'tasks__status-button--selected all' : ''}`}
-              onClick={() => setStatusFilter('all')}
-            >
-              All ({tasks.length})
-            </button>
-            <button
-              className={`tasks__status-button ${statusFilter === 'open' ? 'tasks__status-button--selected open' : ''}`}
-              onClick={() => setStatusFilter('open')}
-            >
-              Open ({tasks.filter(t => t.status === 'open').length})
-            </button>
-            <button
-              className={`tasks__status-button ${statusFilter === 'in-progress' ? 'tasks__status-button--selected in-progress' : ''}`}
-              onClick={() => setStatusFilter('in-progress')}
-            >
-              In Progress ({tasks.filter(t => t.status === 'in-progress').length})
-            </button>
-            <button
-              className={`tasks__status-button ${statusFilter === 'completed' ? 'tasks__status-button--selected completed' : ''}`}
-              onClick={() => setStatusFilter('completed')}
-            >
-              Completed ({tasks.filter(t => t.status === 'completed').length})
-            </button>
-            <button
-              className={`tasks__status-button ${statusFilter === 'blocked' ? 'tasks__status-button--selected blocked' : ''}`}
-              onClick={() => setStatusFilter('blocked')}
-            >
-              Blocked ({tasks.filter(t => t.status === 'blocked').length})
-            </button>
-          </div>
-
-          <div className="tasks__tag-section">
-            <div className="tasks__tag-section-header">
-              Recently Used Tags
-            </div>
-            <div className="tasks__tag-section-content">
-              <TagList
-                tags={tagsWithCounts}
-                selectedTags={selectedTags}
-                onTagClick={handleTagSelect}
-              />
-            </div>
-            <div className="tasks__tag-section-footer">
-              <Link to="/tags" className="tasks__manage-tags">
-                Manage Tags →
-              </Link>
-            </div>
-          </div>
-        </div>
+        <TaskFilters 
+          statusFilter={statusFilter}
+          onStatusChange={setStatusFilter}
+          sortBy={sortBy}
+          onSortChange={setSortBy}
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+        />
 
         {showForm && (
           <TaskForm
@@ -198,12 +155,8 @@ function Tasks() {
                     key={task.id}
                     task={task}
                     tags={tags}
-                    onUpdate={(updatedTask) => {
-                      // Implementation of updateTask function
-                    }}
-                    onDelete={(taskId) => {
-                      // Implementation of deleteTask function
-                    }}
+                    onUpdate={handleUpdateTask}
+                    onDelete={handleDeleteTask}
                     variant="list"
                   />
                 ))}

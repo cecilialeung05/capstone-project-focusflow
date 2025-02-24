@@ -5,7 +5,7 @@ function Header() {
   return (
     <header className="header">
       <div className="header__content">
-        <h1 className="header__title">Productivity App</h1>
+        <h1 className="header__title">-----</h1>
       </div>
     </header>
   );

@@ -1,27 +1,15 @@
 import axios from 'axios';
-import taskService from './taskService';
-import noteService from './noteService';
-import { sampleTags, sampleNotes, sampleTasks } from '../components/Layout/sampleData';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080"; 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 const API_ENDPOINT = `${API_BASE_URL}/tags`;
 
-const tagService = {
+export const tagService = {
   getAllTags: async () => {
     try {
       const response = await axios.get(API_ENDPOINT);
-      return response.data;  // Now includes tags, notes, and tasks with relationships
+      return response.data;
     } catch (error) {
       console.error('Error fetching tags:', error);
-      // If API fails in dev mode, return sample data
-      if (localStorage.getItem('devMode') === 'true') {
-        console.log('Falling back to sample data');
-        return {
-          tags: sampleTags,
-          notes: sampleNotes,
-          tasks: sampleTasks
-        };
-      }
       throw error;
     }
   },
@@ -67,15 +55,15 @@ const tagService = {
 
   getTaggedItems: async (tagId) => {
     try {
-      // Use existing services that already handle tag filtering
-      const [tasks, notes] = await Promise.all([
-        taskService.getAllTasks(tagId),
-        noteService.getAllNotes(tagId)
+      // Direct API calls instead of using other services
+      const [tasksResponse, notesResponse] = await Promise.all([
+        axios.get(`${API_BASE_URL}/tasks?tagId=${tagId}`),
+        axios.get(`${API_BASE_URL}/notes?tagId=${tagId}`)
       ]);
       
       return {
-        tasks,
-        notes
+        tasks: tasksResponse.data,
+        notes: notesResponse.data
       };
     } catch (error) {
       console.error(`Error fetching items for tag ${tagId}:`, error);

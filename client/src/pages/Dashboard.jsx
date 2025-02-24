@@ -161,11 +161,11 @@ function Dashboard({ notes = [], tasks = [], tags = [] }) {
         <div className="dashboard__header">
           <h1 className="dashboard__title">Overview</h1>
           <div className="dashboard__quick-actions">
-            <Link to="/tasks/new" className="dashboard__action-button">
+            <Link to="/tasks/" className="dashboard__action-button">
               <span role="img" aria-label="New Task">📋</span>
               New Task
             </Link>
-            <Link to="/notes/new" className="dashboard__action-button">
+            <Link to="/notes/" className="dashboard__action-button">
               <span role="img" aria-label="New Note">📝</span>
               New Note
             </Link>

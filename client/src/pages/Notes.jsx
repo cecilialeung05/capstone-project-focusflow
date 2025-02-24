@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import NoteItem from '../components/Notes/NoteItem';
 import Modal from '../components/Layout/Modal';
-import { FaFileExport, FaPlus } from 'react-icons/fa';
+import { FaPlus } from 'react-icons/fa';
 import { TagList, TagBadges } from '../components/Tags/Tags';
 import './Notes.scss';
 import { useData } from '../context/DataContext';
@@ -112,7 +112,6 @@ function Notes() {
                     tags={tags} 
                     itemTags={note.note_tags} 
                   />
-                  {note.content.substring(0, 100)}...
                 </div>
                 <div className="notes__card-actions">
                   <button className="edit" onClick={() => navigate(`/notes/${note.id}`)}>

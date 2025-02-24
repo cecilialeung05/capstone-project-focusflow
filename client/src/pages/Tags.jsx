@@ -36,7 +36,6 @@ function Tags({ addTag, updateTag, deleteTag }) {
     const fetchData = async () => {
       try {
         const data = await tagService.getAllTags();
-        // Update all the data in context
         setTags(data.tags);
         setNotes(data.notes);
         setTasks(data.tasks);

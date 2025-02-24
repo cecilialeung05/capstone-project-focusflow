@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080"; 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 const API_ENDPOINT = `${API_BASE_URL}/tasks`;
 
-const taskService = {
+export const taskService = {
   getAllTasks: async (tagId = null) => {
     try {
       const url = tagId 

@@ -7,11 +7,10 @@ function NoteDetails({ notes = [], tasks = [], tags = [], updateNote, deleteNote
   const navigate = useNavigate();
   const note = notes.find(n => n.id === parseInt(id));
 
-  // If note not found, redirect to notes list
   if (!note) {
     return <Navigate to="/notes" replace />;
   }
-
+  
   const handleSubmit = async (updatedNote) => {
     try {
       await updateNote(updatedNote);

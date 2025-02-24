@@ -13,7 +13,6 @@
   padding: var(--spacing-lg);
   animation: fadeIn 0.2s ease-out;
 }
-
 .modal {
   background: var(--bg-elevated);
   border-radius: var(--border-radius-lg);
@@ -24,25 +23,21 @@
   overflow-y: auto;
   position: relative;
   animation: slideUp 0.3s ease-out;
-
   &__header {
     padding: var(--spacing-md) var(--spacing-lg);
     border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
-
     h2 {
       margin: 0;
       font-size: 1.25rem;
       color: var(--text-primary);
     }
   }
-
   &__content {
     padding: var(--spacing-lg);
   }
-
   &__close {
     background: none;
     border: none;
@@ -56,12 +51,10 @@
     }
   }
 }
-
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
 @keyframes slideUp {
   from {
     opacity: 0;

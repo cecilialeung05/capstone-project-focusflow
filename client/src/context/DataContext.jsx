@@ -16,6 +16,19 @@ export function DataProvider({ children }) {
     setTags
   };
 
+  const addTask = async (taskData) => {
+    try {
+      console.log('Before adding - tasks:', tasks);
+      // Your existing addTask logic
+      setTasks(prev => [...prev, taskData]);
+      console.log('After adding - tasks:', tasks);
+      return taskData;
+    } catch (error) {
+      console.error('Error in addTask:', error);
+      throw error;
+    }
+  };
+
   return (
     <DataContext.Provider value={value}>
       {children}

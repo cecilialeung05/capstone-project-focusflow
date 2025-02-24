@@ -1,15 +1,11 @@
 # MVP FocusFlow: Your All-in-One Productivity Manager 
 
 ## Overview
-
-FocusFlow is a modern productivity tool designed to allows users to create, organize, and track their tasks and notes, helping them stay focused and productive. Key featuresinclude  tag linking and filtering, as well as a standalone timer.
-
+ 
 ## Problem Space
-
 Existing task managers can be too complex or lack proper note-taking integration. FocusFlow solves this by combining both in a seamless experience, eliminating the need for multiple apps.
 
 ## User Profile
-
 This app is designed for individuals who:
 - Need an intuitive task management system.
 - Want to combine notes and tasks in one platform.
@@ -33,8 +29,6 @@ The user can...
 The user can...
 *   use a timer to track work sessions to improve focus and productivity.
 
-
-
 ## Implementation
 
 ### Tech Stack
@@ -51,6 +45,7 @@ The user can...
     *   MySQL (relational database)
     *   dotenv (for managing environment variables)
     *   cors (for handling Cross-Origin Resource Sharing)
+    *   socket.io (for real-time communication between the client and server)
 
 ### Libraries
 *   Framer Motion (animations)
@@ -62,7 +57,6 @@ The user can...
 
 ### Sitemap
 *   **/dashboard:** Overview of tasks, notes and focus timer.
-
 *   **/tasks:** Manage tasks (list, add, edit, delete).
         A form on this page allows creating/editing a task.
 *   **/notes:** Manage notes (list, add, edit, delete).
@@ -74,7 +68,6 @@ The user can...
 ![](./assets/images/mockups/img1.png)
 #### Tasks Page (list, add, edit, delete)
 ![](./assets/images/mockups/img2.png)
-
 #### Notes List Page (list, add, edit, delete)
 ![](./assets/images/mockups/img3.png)
 
