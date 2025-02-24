@@ -1,57 +1,55 @@
 @use '../../styles/mixins' as *;
 
-// Reusable tag components that can be used anywhere
+// Base tag styles
 .tag {
   display: inline-flex;
   align-items: center;
-  padding: calc(var(--spacing) * 0.5) calc(var(--spacing) * 1.5);
-  border-radius: calc(var(--radius) * 3);
-  background: var(--bg);
-  border: 1px solid var(--border);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-lg);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   font-size: 0.85rem;
-  color: var(--text);
+  color: var(--text-primary);
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
-    background: var(--bg-subtle);
+    background: var(--bg-hover);
   }
 
   &--selected {
-    background: var(--primary);
+    background: var(--accent-color);
     color: white;
   }
 }
-
-// Other reusable tag components...
 
 // Tag List
 .tag-list {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing);
+  gap: var(--spacing-sm);
 
   &__item {
     display: flex;
     align-items: center;
-    gap: calc(var(--spacing) * 0.75);
-    padding: calc(var(--spacing) * 0.5) calc(var(--spacing) * 1.5);
-    border-radius: calc(var(--radius) * 3);
-    background: var(--bg-subtle);
-    border: 1px solid var(--border);
-    color: var(--text);
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-lg);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
     cursor: pointer;
     transition: all 0.2s;
 
     &:hover {
-      background: var(--bg);
+      background: var(--bg-hover);
       transform: translateY(-1px);
     }
 
     &--selected {
-      background: var(--primary);
+      background: var(--accent-color);
       color: white;
-      border-color: var(--primary);
+      border-color: var(--accent-color);
     }
   }
 
@@ -63,70 +61,83 @@
     font-size: 0.75rem;
     opacity: 0.8;
   }
+
+  &__input {
+    background: transparent;
+    border: none;
+    color: inherit;
+    font-size: inherit;
+    padding: 0;
+    width: 100%;
+    
+    &:focus {
+      outline: none;
+    }
+  }
 }
 
 // Tag Badges
 .tag-badges {
   display: flex;
   flex-wrap: wrap;
-  gap: calc(var(--spacing) * 0.5);
+  gap: var(--spacing-xs);
 
   &__item {
-    background: var(--bg-subtle);
-    padding: calc(var(--spacing) * 0.25) var(--spacing);
-    border-radius: calc(var(--radius) * 3);
+    background: var(--bg-secondary);
+    padding: 2px var(--spacing-sm);
+    border-radius: var(--radius-lg);
     font-size: 0.8em;
-    color: var(--text-subtle);
+    color: var(--text-secondary);
   }
 }
 
 // Tag Suggestions
 .tag-suggestions {
   @include card;
-  margin-bottom: calc(var(--spacing) * 2);
+  margin-bottom: var(--spacing-lg);
 
   &__title {
     font-size: 0.9rem;
     font-weight: 500;
-    margin-bottom: var(--spacing);
-    color: var(--text-subtle);
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-secondary);
   }
 
   &__list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: calc(var(--spacing) * 0.75);
+    gap: var(--spacing-xs);
   }
 
   &__item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: calc(var(--spacing) * 0.5) var(--spacing);
-    border-radius: var(--radius);
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--text);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-md);
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
     font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.2s;
 
     &:hover {
-      background: var(--bg-subtle);
+      background: var(--bg-hover);
     }
 
     &--selected {
-      background: var(--primary);
+      background: var(--accent-color);
       color: white;
-      border-color: var(--primary);
+      border-color: var(--accent-color);
     }
   }
 
   &__count {
     font-size: 0.75rem;
     background: rgba(0,0,0,0.1);
-    padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 0.5);
-    border-radius: var(--radius);
+    padding: 2px var(--spacing-xs);
+    border-radius: var(--radius-sm);
     min-width: 20px;
     text-align: center;
   }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import TagList from '../components/Tags/TagList';
+import { TagList, TagBadges, TagSuggestions } from '../components/Tags/Tags';
 import TagGraph from '../components/Graph/TagGraph';
 import tagService from '../services/tagService';
 import { useData } from '../context/DataContext';

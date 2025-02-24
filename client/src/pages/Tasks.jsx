@@ -3,10 +3,11 @@ import { DndContext } from '@dnd-kit/core';
 import { FaPlus } from 'react-icons/fa';
 import TaskForm from '../components/Tasks/TaskForm';
 import TaskList from '../components/TaskList';
-import TagList from '../components/Tags/TagList';
+// import TagList from '../components/Tags/TagList';
 import { Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
-import TagBadges from '../components/Tags/TagBadges';
+// import TagBadges from '../components/Tags/TagBadges';
+import { TagList, TagBadges, TagSuggestions } from '../components/Tags/Tags';
 
 import './Tasks.scss';
 
