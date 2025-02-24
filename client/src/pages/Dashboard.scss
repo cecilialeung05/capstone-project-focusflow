@@ -3,19 +3,16 @@
     max-width: 1200px;
     margin: 0 auto;
     width: 100%;
-
     h1 {
         font-size: 1.5rem;
         color: var(--text-primary);
         margin-bottom: 24px;
     }
-
     &__grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 24px;
     }
-
     &__widget {
         background: var(--bg-secondary);
         border-radius: 12px;
@@ -32,14 +29,12 @@
             grid-column: 1 / -1;  // Make widget span full width
         }
     }
-
-    // Task and Note Stats
     &__stats {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+        margin-bottom: 32px;
     }
-
     &__stat {
         display: flex;
         justify-content: space-between;
@@ -49,178 +44,19 @@
         background: #f8f9fa;
 
         &--completed {
-            background: rgba(40, 167, 69, 0.1);  // More transparent green
+            background: rgba(40, 167, 69, 0.1);  
         }
-
         &--in-progress {
-            background: rgba(0, 123, 255, 0.1);  // More transparent blue
+            background: rgba(0, 123, 255, 0.1); 
         }
-
         &--blocked {
-            background: rgba(220, 53, 69, 0.1);  // More transparent red
+            background: rgba(220, 53, 69, 0.1);  
         }
-
         span {
             font-size: 0.9rem;
             color: var(--text-primary);
         }
     }
-
-    // Recent Activity
-    &__recent {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    &__item {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 12px;
-        background: var(--bg-primary);
-        border-radius: 8px;
-        text-decoration: none;
-        color: var(--text-primary);
-        transition: all 0.2s;
-
-        svg {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-        }
-
-        &:hover {
-            background: var(--bg-hover);
-        }
-
-        &-date {
-            margin-left: auto;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        &-status {
-            margin-left: auto;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            text-transform: capitalize;
-
-            &--completed {
-                background: var(--success-color);
-                color: white;
-            }
-
-            &--in-progress {
-                background: var(--info-color);
-                color: white;
-            }
-
-            &--blocked {
-                background: var(--danger-color);
-                color: white;
-            }
-
-            &--todo {
-                background: var(--bg-hover);
-                color: var(--text-secondary);
-            }
-        }
-    }
-
-    // Quick Action Buttons
-    &__actions {
-        position: fixed;
-        right: 24px;
-        top: 50%;
-        transform: translateY(-50%);
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        z-index: 100;
-    }
-
-    &__action-button {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 12px 20px;
-        background: var(--accent-color);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        text-decoration: none;
-        font-size: 0.9rem;
-        font-weight: 500;
-        transition: all 0.2s;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-        svg {
-            font-size: 1rem;
-        }
-
-        &:hover {
-            transform: translateX(-4px);
-            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1);
-        }
-    }
-
-    // Filter Tags
-    &__tags {
-        margin-top: 24px;
-        padding: 16px;
-        background: var(--bg-secondary);
-        border-radius: 12px;
-
-        h2 {
-            font-size: 1.2rem;
-            color: var(--text-primary);
-            margin-bottom: 16px;
-        }
-
-        &-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        &-tag {
-            padding: 6px 12px;
-            border-radius: 16px;
-            background: var(--bg-primary);
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.2s;
-
-            &:hover {
-                background: var(--bg-hover);
-                color: var(--text-primary);
-            }
-
-            &--active {
-                background: var(--accent-color);
-                color: white;
-            }
-        }
-    }
-
-    // Responsive
-    @media (max-width: 768px) {
-        &__grid {
-            grid-template-columns: 1fr;
-        }
-
-        &__actions {
-            position: static;
-            transform: none;
-            flex-direction: row;
-            margin-top: 24px;
-            justify-content: center;
-        }
-    }
-
-    // Header block
     &__header {
         display: flex;
         justify-content: space-between;
@@ -231,187 +67,16 @@
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-
     &__title {
         margin: 0;
         color: var(--text-primary);
         font-size: 24px;
     }
-
-    // Card block (reusable for both stats and recent sections)
-    &__card {
-        background: var(--bg-secondary);
-        border-radius: 8px;
-        border: 1px solid var(--border-color);
-        height: 100%;
-        cursor: move;
-        user-select: none;
-
-        &:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        &-title {
-            margin: 0 0 20px 0;
-            color: var(--text-primary);
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        &-content {
-            display: grid;
-            gap: 16px;
-        }
-    }
-
-    &__card-header {
-        padding: 15px;
-        border-bottom: 1px solid var(--border-color);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: grab;
-        &:active {
-            cursor: grabbing;
-        }
-
-        h3 {
-            margin: 0;
-            color: var(--text-primary);
-            font-size: 1.1rem;
-        }
-    }
-
-    &__card-content {
-        padding: 15px;
-        overflow-y: auto;
-    }
-
-    // Styles for react-resizable
-    .react-resizable {
-        position: relative;
-    }
-
-    .react-resizable-handle {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        width: 20px;
-        height: 20px;
-        background: url('data:image/svg+xml,...') no-repeat center;
-        background-size: 10px;
-        padding: 0 3px 3px 0;
-        cursor: se-resize;
-    }
-
-    // Stats section
-    &__stats {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 24px;
-        margin-bottom: 32px;
-
-        &-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-
-        &-item {
-            padding: 16px;
-            background: var(--bg-primary);
-            border-radius: 6px;
-            transition: background-color 0.2s;
-
-            &:hover {
-                background: var(--bg-hover);
-            }
-        }
-
-        &-label {
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-
-        &-value {
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-    }
-
-    // Recent items section
     &__recent {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 24px;
-
-        &-list {
-            margin-top: 16px;
-        }
-
-        &-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px;
-            background: var(--bg-primary);
-            border-radius: 6px;
-            margin-bottom: 8px;
-            text-decoration: none;
-            color: var(--text-primary);
-            transition: all 0.2s;
-
-            &:hover {
-                background: var(--bg-hover);
-                transform: translateX(4px);
-            }
-        }
-
-        &-icon {
-            font-size: 1.2rem;
-            min-width: 24px;
-        }
-
-        &-title {
-            flex: 1;
-            font-weight: 500;
-        }
-
-        &-status {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            text-transform: capitalize;
-
-            &--completed {
-                background: rgba(40, 167, 69, 0.1);
-            }
-
-            &--in-progress {
-                background: rgba(0, 123, 255, 0.1);
-            }
-
-            &--blocked {
-                background: rgba(220, 53, 69, 0.1);
-            }
-
-            &--open {
-                background: var(--bg-hover);
-            }
-        }
-
-        &-date {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            min-width: 100px;
-            text-align: right;
-        }
     }
-
-    // Status indicators
     &__status {
         width: 8px;
         height: 8px;
@@ -423,23 +88,6 @@
         &--completed { background: var(--success-color); }
         &--blocked { background: var(--danger-color); }
     }
-
-    &__welcome {
-        text-align: center;
-        margin-bottom: 32px;
-
-        h1 {
-            font-size: 2rem;
-            margin-bottom: 12px;
-            color: var(--text-primary);
-        }
-
-        p {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-        }
-    }
-
     &__quick-actions {
         display: flex;
         gap: 16px;
@@ -447,88 +95,11 @@
         flex-wrap: wrap;
         margin-bottom: 40px;
     }
-
-    &__guest-info {
-        width: 100%;
-        text-align: center;
-        margin-top: 16px;
-        padding: 16px;
-        background: var(--bg-secondary);
-        border-radius: 6px;
-
-        p {
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-        }
-    }
-
-    &__login-link {
-        color: var(--accent-color);
-        text-decoration: none;
-
-        &:hover {
-            text-decoration: underline;
-        }
-    }
-
-    &__content {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 24px;
-    }
-
-    &__section {
-        background: var(--bg-secondary);
-        border-radius: 8px;
-        padding: 20px;
-
-        h2 {
-            margin-bottom: 16px;
-            color: var(--text-primary);
-        }
-    }
-
-    &__list {
-        list-style: none;
-        padding: 0;
-
-        &-item {
-            margin-bottom: 12px;
-
-            a {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                color: var(--text-primary);
-                text-decoration: none;
-                padding: 8px;
-                border-radius: 4px;
-                transition: background 0.2s;
-
-                &:hover {
-                    background: var(--bg-primary);
-                }
-            }
-        }
-    }
-
     &__empty {
         text-align: center;
         color: var(--text-secondary);
         padding: 20px;
     }
-
-    .status {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-
-        &--completed { background: #4CAF50; }
-        &--in-progress { background: #2196F3; }
-        &--blocked { background: #f44336; }
-        &--todo { background: #9e9e9e; }
-    }
-
     &__upcoming {
         margin-bottom: 24px;
 
@@ -541,7 +112,6 @@
                 grid-template-columns: 1fr;
             }
         }
-
         &-section {
             h3 {
                 font-size: 1rem;
@@ -549,13 +119,11 @@
                 margin-bottom: 16px;
             }
         }
-
         &-list {
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
-
         &-item {
             display: flex;
             align-items: center;
@@ -572,17 +140,14 @@
                 transform: translateX(4px);
             }
         }
-
         &-title {
             flex: 1;
             font-weight: 500;
         }
-
         &-date {
             color: var(--text-secondary);
             font-size: 0.9rem;
         }
-
         &-badge {
             padding: 4px 8px;
             border-radius: 12px;
@@ -610,7 +175,6 @@
             }
         }
     }
-
     &__stats-overview {
         display: flex;
         gap: 24px;
@@ -620,7 +184,6 @@
             flex-direction: column;
         }
     }
-
     &__stat-card {
         flex: 1;
         background: var(--bg-secondary);
@@ -628,47 +191,20 @@
         padding: 20px;
         text-align: center;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-
         h3 {
             font-size: 1rem;
             color: var(--text-secondary);
             margin-bottom: 16px;
         }
-
-        .split-flap {
-            display: inline-flex;  // Center the display
-            margin: 0 auto;
-        }
     }
 }
 
-// Media queries
 @media (max-width: 768px) {
     .dashboard {
         padding: 16px;
-
-        &__welcome {
-            h1 {
-                font-size: 1.5rem;
-            }
-        }
-
-        &__content {
-            grid-template-columns: 1fr;
-        }
-
         &__stats,
         &__recent {
             grid-template-columns: 1fr;
         }
     }
-}
-
-// Dragging styles
-.dragging {
-    opacity: 0.5;
-}
-
-.dragging-over {
-    background-color: var(--bg-hover);
 }

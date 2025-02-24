@@ -61,12 +61,11 @@ function Dashboard({ notes = [], tasks = [], tags = [] }) {
     ];
 
     return allItems
-      .filter(item => item.id) // Only include items with valid IDs
+      .filter(item => item.id) 
       .sort((a, b) => b.date - a.date)
       .slice(0, 5);
   }, [tasks, notes]);
 
-  // Add new computed values for today's and upcoming tasks
   const upcomingTasks = useMemo(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -240,13 +239,10 @@ function Dashboard({ notes = [], tasks = [], tags = [] }) {
         </div>
 
         <div className="dashboard__grid">
-          {/* Tasks Overview */}
           <div className="dashboard__widget">
             <h2>Tasks</h2>
             {renderComponentContent('tasks')}
           </div>
-
-          {/* Notes Overview */}
           <div className="dashboard__widget">
             <h2>Notes</h2>
             <div className="dashboard__stats">
@@ -257,24 +253,12 @@ function Dashboard({ notes = [], tasks = [], tags = [] }) {
             </div>
           </div>
 
-          {/* Recent Activity */}
           <div className="dashboard__widget">
             <h2>Recent Activity</h2>
             {renderComponentContent('recent')}
           </div>
         </div>
 
-        {/* Add floating action buttons */}
-        <div className="dashboard__floating-actions">
-          <Link to="/tasks/new" className="dashboard__floating-button">
-            <span role="img" aria-label="New Task">📋</span>
-            New Task
-          </Link>
-          <Link to="/notes/new" className="dashboard__floating-button">
-            <span role="img" aria-label="New Note">📝</span>
-            New Note
-          </Link>
-        </div>
       </div>
     </AnimatedPage>
   );
