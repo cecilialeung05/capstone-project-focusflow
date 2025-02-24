@@ -172,11 +172,9 @@ function Dashboard({ notes = [], tasks = [], tags = [] }) {
             </Link>
           </div>
         </div>
-        
-        {/* Add Stats with SplitFlapDisplay */}
         <div className="dashboard__stats-overview">
           <div className="dashboard__stat-card">
-            <h3>Total Tasks</h3>
+            <h3>Total Tasks and Notes</h3>
             <SplitFlapDisplay 
               value={taskStats.total} 
               digits={2}
@@ -184,18 +182,7 @@ function Dashboard({ notes = [], tasks = [], tags = [] }) {
               textColor="var(--text-primary)"
             />
           </div>
-          <div className="dashboard__stat-card">
-            <h3>Total Notes</h3>
-            <SplitFlapDisplay 
-              value={notes.length} 
-              digits={2}
-              backgroundColor="var(--bg-primary)"
-              textColor="var(--text-primary)"
-            />
-          </div>
         </div>
-
-        {/* Add Upcoming Tasks widget at the top */}
         <div className="dashboard__upcoming">
           <div className="dashboard__widget dashboard__widget--full">
             <h2>Upcoming Tasks</h2>
@@ -223,8 +210,6 @@ function Dashboard({ notes = [], tasks = [], tags = [] }) {
                   )}
                 </div>
               </div>
-
-              {/* Upcoming Tasks */}
               <div className="dashboard__upcoming-section">
                 <h3>Coming Up</h3>
                 <div className="dashboard__upcoming-list">
