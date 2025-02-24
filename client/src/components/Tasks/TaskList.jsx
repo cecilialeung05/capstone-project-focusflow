@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import TaskItem from './Tasks/TaskItem';
+import TaskCard from './Tasks/TaskCard';
 import './TaskList.scss';
 
 const TaskList = ({ 
