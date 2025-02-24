@@ -1,0 +1,31 @@
+@import '../../styles/shared';
+
+.dashboard-header {
+  @include panel;
+  margin-bottom: var(--spacing-lg);
+
+  &__stats {
+    display: flex;
+    gap: var(--spacing-xl);
+    justify-content: center;
+    padding: var(--spacing-lg);
+  }
+
+  .stat-card {
+    @include card;
+    text-align: center;
+    min-width: 200px;
+    
+    h3 {
+      @include heading;
+      margin-bottom: var(--spacing-md);
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+    }
+
+    .split-flap {
+      transform: scale(1.2);
+      margin: var(--spacing-md) 0;
+    }
+  }
+} 

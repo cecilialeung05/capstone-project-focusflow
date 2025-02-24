@@ -1,0 +1,75 @@
+@import '../../styles/shared';
+
+.task-card {
+  @include card;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: transform var(--transition-normal);
+  border-left: 4px solid var(--primary-color);
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  &__title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-primary);
+  }
+
+  &__status {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    color: white;
+    text-transform: capitalize;
+  }
+
+  &__description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: var(--spacing-md);
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+  }
+
+  &__due-date {
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+  }
+
+  &__tags {
+    display: flex;
+    gap: var(--spacing-xs);
+  }
+
+  &__tag {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    color: white;
+  }
+
+  // Dark mode support
+  [data-theme="dark"] & {
+    background: var(--panel-bg);
+    
+    &:hover {
+      background: #404040;
+    }
+  }
+} 

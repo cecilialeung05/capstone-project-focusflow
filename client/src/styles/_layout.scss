@@ -1,0 +1,76 @@
+.app-layout {
+  display: grid;
+  grid-template-areas:
+    "nav header header"
+    "nav main sidebar";
+  grid-template-columns: var(--nav-width) 1fr var(--sidebar-width);
+  grid-template-rows: var(--header-height) 1fr;
+  min-height: 100vh;
+  background: var(--bg-default);
+  
+  @media (max-width: 1024px) {
+    grid-template-areas:
+      "header header"
+      "nav main";
+    grid-template-columns: var(--nav-width) 1fr;
+    
+    .layout__sidebar {
+      display: none;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    grid-template-areas:
+      "header"
+      "main";
+    grid-template-columns: 1fr;
+    
+    .layout__nav {
+      display: none;
+    }
+  }
+}
+
+.layout {
+  &__header {
+    grid-area: header;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  &__nav {
+    grid-area: nav;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    border-right: 1px solid var(--border-color);
+  }
+
+  &__main {
+    grid-area: main;
+    padding: var(--spacing-lg);
+    min-height: calc(100vh - var(--header-height));
+  }
+
+  &__sidebar {
+    grid-area: sidebar;
+    padding: var(--spacing-lg);
+    border-left: 1px solid var(--border-color);
+  }
+}
+
+// Floating action button that appears on all pages
+.floating-action-button {
+  position: fixed;
+  bottom: var(--spacing-xl);
+  right: var(--spacing-xl);
+  z-index: 100;
+  
+  @media (max-width: 768px) {
+    bottom: var(--spacing-lg);
+    right: var(--spacing-lg);
+  }
+} 

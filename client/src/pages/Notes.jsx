@@ -4,6 +4,7 @@ import NoteItem from '../components/Notes/NoteItem';
 import Modal from '../components/Common/Modal';
 import { FaFileExport, FaPlus } from 'react-icons/fa';
 import TagSuggestions from '../components/Tags/TagSuggestions';
+import TagList from '../components/Tags/TagList';
 import './Notes.scss';
 
 function Notes({ notes = [], tasks = [], tags = [], addNote, updateNote, deleteNote }) {
@@ -33,37 +34,56 @@ function Notes({ notes = [], tasks = [], tags = [], addNote, updateNote, deleteN
     <div className="notes">
       <div className="notes__header">
         <h1>Notes</h1>
-        <Link to="/notes/new" className="add-note">
+        <Link to="/notes/new" className="notes__button notes__button--primary">
           <FaPlus /> Add Note
         </Link>
       </div>
 
-      <div className="notes__controls">
-        <input
-          type="text"
-          placeholder="Search notes..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
-        <select 
-          value={filterTask}
-          onChange={(e) => setFilterTask(e.target.value)}
-          className="filter-select"
-        >
-          <option value="all">All Tasks</option>
-          {tasks.map(task => (
-            <option key={task.id} value={task.id}>{task.title}</option>
-          ))}
-        </select>
-        <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-          className="filter-select"
-        >
-          <option value="created">Sort by Created Date</option>
-          <option value="updated">Sort by Updated Date</option>
-        </select>
+      <div className="notes__filters">
+        <div className="notes__filters-row">
+          <input
+            type="text"
+            placeholder="Search notes..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="notes__search-input"
+          />
+          <select 
+            value={filterTask}
+            onChange={(e) => setFilterTask(e.target.value)}
+            className="notes__select"
+          >
+            <option value="all">All Tasks</option>
+            {tasks.map(task => (
+              <option key={task.id} value={task.id}>{task.title}</option>
+            ))}
+          </select>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="notes__select"
+          >
+            <option value="created">Sort by Created Date</option>
+            <option value="updated">Sort by Updated Date</option>
+          </select>
+        </div>
+
+        <div className="notes__tag-filter">
+          <h3 className="notes__tag-title">Recently Used Tags</h3>
+          <TagList 
+            tags={tags}
+            selectedTags={[]}
+            onTagClick={(tag) => {
+              const notesWithTag = notes.filter(note => 
+                note.tags.includes(tag.id)
+              );
+              setRelatedNotes(notesWithTag);
+            }}
+          />
+          <Link to="/tags" className="notes__manage-tags">
+            Manage Tags →
+          </Link>
+        </div>
       </div>
 
       <div className="notes__content">
@@ -96,16 +116,6 @@ function Notes({ notes = [], tasks = [], tags = [], addNote, updateNote, deleteN
         </div>
         
         <div className="notes__sidebar">
-          <TagSuggestions 
-            tags={tags}
-            onTagSelect={(tag) => {
-              const notesWithTag = notes.filter(note => 
-                note.tags.includes(tag.id)
-              );
-              setRelatedNotes(notesWithTag);
-            }}
-          />
-          
           {relatedNotes.length > 0 && (
             <div className="notes__related">
               <h3>Related Notes</h3>

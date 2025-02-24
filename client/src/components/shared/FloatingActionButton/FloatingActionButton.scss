@@ -1,0 +1,79 @@
+.floating-action-button {
+  position: fixed;
+  bottom: var(--spacing-xl);
+  right: var(--spacing-xl);
+  z-index: 100;
+  
+  .fab-main {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: var(--shadow-lg);
+    transition: transform var(--transition-normal);
+    
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+  
+  .fab-menu {
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all var(--transition-normal);
+    pointer-events: none;
+    
+    .fab-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
+      background: var(--bg-elevated);
+      border: none;
+      border-radius: 20px;
+      color: var(--text-primary);
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+      transition: transform var(--transition-fast);
+      
+      &:hover {
+        transform: translateX(-5px);
+      }
+      
+      span {
+        font-size: 14px;
+        font-weight: 500;
+      }
+    }
+  }
+  
+  &.is-open {
+    .fab-menu {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+    
+    .fab-main {
+      transform: rotate(45deg);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    bottom: var(--spacing-lg);
+    right: var(--spacing-lg);
+  }
+} 

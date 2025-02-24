@@ -3,8 +3,9 @@ import { DndContext } from '@dnd-kit/core';
 import { FaPlus } from 'react-icons/fa';
 import TaskForm from '../components/Tasks/TaskForm';
 import TaskList from '../components/TaskList';
-import TagSuggestions from '../components/Tags/TagSuggestions';
-import DraggableTagList from '../components/Tags/DraggableTagList';
+import TagList from '../components/Tags/TagList';
+import { Link } from 'react-router-dom';
+
 import './Tasks.scss';
 
 function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
@@ -154,6 +155,18 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
               Blocked ({tasks.filter(t => t.status === 'blocked').length})
             </button>
           </div>
+
+          <div className="tasks__tag-filter">
+            <h3 className="tasks__tag-title">Recently Used Tags</h3>
+            <TagList
+              tags={tagsWithCounts}
+              selectedTags={selectedTags}
+              onTagClick={handleTagSelect}
+            />
+            <Link to="/tags" className="tasks__manage-tags">
+              Manage Tags →
+            </Link>
+          </div>
         </div>
 
         {showForm && (
@@ -171,13 +184,6 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
               onTaskUpdate={updateTask}
               onTaskDelete={deleteTask}
               tags={tags}
-            />
-          </div>
-
-          <div className="tasks__sidebar">
-            <DraggableTagList
-              tags={tagsWithCounts}
-              onTagDrop={handleTagDrop}
             />
           </div>
         </div>
