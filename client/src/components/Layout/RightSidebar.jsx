@@ -3,7 +3,7 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import WeatherWidget from '../Widgets/WeatherWidget';
 import TimerWidget from '../Widgets/TimerWidget';
 import PinnedItemsWidget from '../Widgets/PinnedItemsWidget';
-import Greeting from '../Greeting/Greeting';
+import Greeting from '../Widgets/Greeting/Greeting';
 import { FaEllipsisH } from 'react-icons/fa';
 import { WiDaySunny } from 'react-icons/wi';
 import './RightSidebar.scss';
