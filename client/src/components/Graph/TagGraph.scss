@@ -1,12 +1,78 @@
 .tag-graph {
+  position: relative;
   background: #1e1e1e;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 100%;
   height: 600px;
-  border: 1px solid #eee;
   margin: 20px 0;
+
+  &__controls {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 15px;
+    border-radius: 8px;
+    color: white;
+  }
+
+  &__search {
+    width: 200px;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    border: 1px solid #444;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  &__filters {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+
+      input {
+        margin-right: 8px;
+      }
+    }
+  }
+
+  &__legend {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 4px;
+    color: white;
+  }
+
+  &__legend-item {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+    
+    .dot {
+      margin-right: 8px;
+      font-size: 20px;
+
+      &.tag { color: #1976d2; }
+      &.note { color: #4CAF50; }
+      &.task { color: #ff9800; }
+    }
+  }
 
   canvas {
     cursor: grab;

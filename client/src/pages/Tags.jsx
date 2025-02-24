@@ -16,10 +16,10 @@ function Tags({ addTag, updateTag, deleteTag }) {
   console.log('Tags Component Data:', { tags, notes, tasks });
 
   useEffect(() => {
-    const fetchTaggedItems = async () => {
-      if (selectedTagId) {
+    const fetchTaggedItems = async (tagId) => {
+      if (tagId) {
         try {
-          const items = await tagService.getTaggedItems(selectedTagId);
+          const items = await tagService.getTaggedItems(tagId);
           setTaggedItems(items);
         } catch (error) {
           console.error('Error fetching tagged items:', error);
@@ -29,7 +29,7 @@ function Tags({ addTag, updateTag, deleteTag }) {
       }
     };
 
-    fetchTaggedItems();
+    fetchTaggedItems(selectedTagId);
   }, [selectedTagId]);
 
   useEffect(() => {
@@ -61,9 +61,12 @@ function Tags({ addTag, updateTag, deleteTag }) {
     tag.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleTagSelect = (tag) => {
-    setSelectedTagId(tag.id);
-    // This will highlight the tag in both the list and the graph
+  const handleGraphInteraction = (node) => {
+    if (node.type === 'tag') {
+      setSelectedTagId(node.id);
+      // Fetch related items
+      fetchTaggedItems(node.id);
+    }
   };
 
   return (
@@ -88,7 +91,7 @@ function Tags({ addTag, updateTag, deleteTag }) {
           notes={notes}
           tasks={tasks}
           selectedTagId={selectedTagId}
-          onTagSelect={handleTagSelect}
+          onTagSelect={handleGraphInteraction}
         />
       </div>
 
@@ -107,7 +110,7 @@ function Tags({ addTag, updateTag, deleteTag }) {
           <TagList
             tags={filteredTags}
             selectedTags={selectedTagId ? [selectedTagId] : []}
-            onTagClick={(tag) => handleTagSelect(tag)}
+            onTagClick={(tag) => setSelectedTagId(tag.id)}
             updateTag={updateTag}
           />
         </div>
