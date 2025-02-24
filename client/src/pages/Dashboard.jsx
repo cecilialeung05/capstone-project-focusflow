@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { FaPlus, FaTasks, FaFileAlt } from 'react-icons/fa';
 import AnimatedPage from '../components/AnimatedPage';
+import SplitFlapDisplay from '../components/Dashboard/DashboardHeader';
 import './Dashboard.scss';
 import { formatDate } from '../utils/dateUtils';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
@@ -175,6 +176,28 @@ function Dashboard({ notes = [], tasks = [], tags = [] }) {
           </div>
         </div>
         
+        {/* Add Stats with SplitFlapDisplay */}
+        <div className="dashboard__stats-overview">
+          <div className="dashboard__stat-card">
+            <h3>Total Tasks</h3>
+            <SplitFlapDisplay 
+              value={taskStats.total} 
+              digits={2}
+              backgroundColor="var(--bg-primary)"
+              textColor="var(--text-primary)"
+            />
+          </div>
+          <div className="dashboard__stat-card">
+            <h3>Total Notes</h3>
+            <SplitFlapDisplay 
+              value={notes.length} 
+              digits={2}
+              backgroundColor="var(--bg-primary)"
+              textColor="var(--text-primary)"
+            />
+          </div>
+        </div>
+
         {/* Add Upcoming Tasks widget at the top */}
         <div className="dashboard__upcoming">
           <div className="dashboard__widget dashboard__widget--full">

@@ -610,6 +610,36 @@
             }
         }
     }
+
+    &__stats-overview {
+        display: flex;
+        gap: 24px;
+        margin-bottom: 32px;
+        
+        @media (max-width: 768px) {
+            flex-direction: column;
+        }
+    }
+
+    &__stat-card {
+        flex: 1;
+        background: var(--bg-secondary);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+        h3 {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .split-flap {
+            display: inline-flex;  // Center the display
+            margin: 0 auto;
+        }
+    }
 }
 
 // Media queries

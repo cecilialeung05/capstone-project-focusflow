@@ -15,6 +15,11 @@
     @include card;
     text-align: center;
     min-width: 200px;
+    transition: transform 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+    }
     
     h3 {
       @include heading;
@@ -22,10 +27,93 @@
       font-size: 1.2rem;
       color: var(--text-secondary);
     }
+  }
+}
 
-    .split-flap {
-      transform: scale(1.2);
-      margin: var(--spacing-md) 0;
+// Integrated SplitFlapDisplay styles
+.split-flap {
+  display: inline-flex;
+  gap: 4px;
+  padding: 16px;
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  background: var(--bg-primary);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+  
+  &__digit {
+    font-size: 2.5rem;
+    font-weight: bold;
+    width: 1.5ch;
+    height: 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    perspective: 400px;
+    transform-style: preserve-3d;
+    border-radius: 4px;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.2);
+      top: 50%;
+      transform: rotateX(45deg);
+    }
+
+    @keyframes flipDown {
+      0% {
+        transform: rotateX(0);
+      }
+      100% {
+        transform: rotateX(-90deg);
+      }
+    }
+
+    &.changing {
+      animation: flipDown 0.3s ease-in-out;
+    }
+  }
+}
+
+// Responsive styles
+@media (max-width: 768px) {
+  .dashboard-header {
+    &__stats {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .stat-card {
+      width: 100%;
+      max-width: 300px;
+    }
+  }
+}
+
+.dashboard-stats {
+  display: flex;
+  gap: 2rem;
+  margin: 1.5rem 0;
+  
+  .stat-card {
+    background: var(--bg-secondary);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
+    h3 {
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+      color: var(--text-secondary);
     }
   }
 } 
