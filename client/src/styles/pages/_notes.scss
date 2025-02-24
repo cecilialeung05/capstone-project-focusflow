@@ -1,0 +1,45 @@
+@use '../mixins' as *;
+
+.notes {
+  padding: calc(var(--spacing) * 3);
+  max-width: 1200px;
+  margin: 0 auto;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: calc(var(--spacing) * 3);
+  }
+
+  &__filters {
+    @include card;
+    margin-bottom: calc(var(--spacing) * 3);
+  }
+
+  &__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: calc(var(--spacing) * 2);
+  }
+
+  &__empty {
+    @include card;
+    text-align: center;
+    color: var(--text-subtle);
+  }
+
+  &__button {
+    @include button;
+    
+    &--primary {
+      background: var(--primary);
+      color: white;
+      
+      &:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+      }
+    }
+  }
+} 

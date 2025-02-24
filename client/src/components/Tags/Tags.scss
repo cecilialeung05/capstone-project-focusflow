@@ -1,0 +1,133 @@
+@use '../../styles/mixins' as *;
+
+// Reusable tag components that can be used anywhere
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: calc(var(--spacing) * 0.5) calc(var(--spacing) * 1.5);
+  border-radius: calc(var(--radius) * 3);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  font-size: 0.85rem;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: var(--bg-subtle);
+  }
+
+  &--selected {
+    background: var(--primary);
+    color: white;
+  }
+}
+
+// Other reusable tag components...
+
+// Tag List
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing);
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing) * 0.75);
+    padding: calc(var(--spacing) * 0.5) calc(var(--spacing) * 1.5);
+    border-radius: calc(var(--radius) * 3);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background: var(--bg);
+      transform: translateY(-1px);
+    }
+
+    &--selected {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+  }
+
+  &__name {
+    font-size: 0.875rem;
+  }
+
+  &__count {
+    font-size: 0.75rem;
+    opacity: 0.8;
+  }
+}
+
+// Tag Badges
+.tag-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--spacing) * 0.5);
+
+  &__item {
+    background: var(--bg-subtle);
+    padding: calc(var(--spacing) * 0.25) var(--spacing);
+    border-radius: calc(var(--radius) * 3);
+    font-size: 0.8em;
+    color: var(--text-subtle);
+  }
+}
+
+// Tag Suggestions
+.tag-suggestions {
+  @include card;
+  margin-bottom: calc(var(--spacing) * 2);
+
+  &__title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: var(--spacing);
+    color: var(--text-subtle);
+  }
+
+  &__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: calc(var(--spacing) * 0.75);
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: calc(var(--spacing) * 0.5) var(--spacing);
+    border-radius: var(--radius);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background: var(--bg-subtle);
+    }
+
+    &--selected {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+  }
+
+  &__count {
+    font-size: 0.75rem;
+    background: rgba(0,0,0,0.1);
+    padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 0.5);
+    border-radius: var(--radius);
+    min-width: 20px;
+    text-align: center;
+  }
+} 

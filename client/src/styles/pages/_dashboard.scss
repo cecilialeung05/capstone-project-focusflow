@@ -1,0 +1,32 @@
+@use '../mixins' as *;
+
+.dashboard {
+  padding: calc(var(--spacing) * 3);
+  max-width: 1200px;
+  margin: 0 auto;
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: calc(var(--spacing) * 3);
+  }
+
+  &__card {
+    @include card;
+    
+    &-header {
+      margin-bottom: calc(var(--spacing) * 2);
+      h2 {
+        color: var(--text);
+        margin: 0;
+      }
+    }
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: calc(var(--spacing) * 2);
+  }
+
+} 

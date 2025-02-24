@@ -1,0 +1,42 @@
+// Button
+.button {
+  padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2);
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  
+  &--primary {
+    background: var(--primary);
+    color: white;
+    &:hover { background: var(--primary-dark); }
+  }
+  
+  &--secondary {
+    background: var(--bg-subtle);
+    color: var(--text);
+    &:hover { background: var(--border); }
+  }
+}
+
+// Input
+.input {
+  padding: var(--spacing);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  
+  &:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+}
+
+// Card
+.card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: calc(var(--spacing) * 2);
+} 

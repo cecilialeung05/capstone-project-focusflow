@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import ForceGraph2D from 'react-force-graph-2d';
 import './TagGraph.scss';
 
 function TagGraph({ tags = [], notes = [], tasks = [], selectedTagId, onTagSelect }) {
+  const graphRef = useRef();
   const [filters, setFilters] = useState({
     showNotes: true,
     showTasks: true,
@@ -80,6 +81,19 @@ function TagGraph({ tags = [], notes = [], tasks = [], selectedTagId, onTagSelec
     )
   ];
 
+  // Add resize handler
+  useEffect(() => {
+    const handleResize = () => {
+      if (graphRef.current) {
+        graphRef.current.centerAt();
+        graphRef.current.zoom(graphRef.current.zoom());
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <div className="tag-graph">
       <div className="tag-graph__controls">
@@ -116,6 +130,7 @@ function TagGraph({ tags = [], notes = [], tasks = [], selectedTagId, onTagSelec
       </div>
 
       <ForceGraph2D
+        ref={graphRef}
         graphData={{ nodes, links }}
         nodeLabel={node => node.name}
         nodeColor={node => {
@@ -158,13 +173,13 @@ function TagGraph({ tags = [], notes = [], tasks = [], selectedTagId, onTagSelec
 
       <div className="tag-graph__legend">
         <div className="tag-graph__legend-item">
-          <span className="dot tag">●</span> Tags 🏷️
+          <span className="dot tag">●</span> Tags
         </div>
         <div className="tag-graph__legend-item">
-          <span className="dot note">●</span> Notes 📝
+          <span className="dot note">●</span> Notes
         </div>
         <div className="tag-graph__legend-item">
-          <span className="dot task">●</span> Tasks (⭕ ⏳ ✅)
+          <span className="dot task">●</span> Tasks
         </div>
       </div>
     </div>

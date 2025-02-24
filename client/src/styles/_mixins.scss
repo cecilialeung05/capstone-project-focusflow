@@ -1,0 +1,44 @@
+// Common mixins
+@mixin card {
+  background: var(--bg);
+  border-radius: var(--radius);
+  padding: calc(var(--spacing) * 2);
+  border: 1px solid var(--border);
+}
+
+@mixin button {
+  padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2);
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+@mixin input {
+  width: 100%;
+  padding: var(--spacing);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  
+  &:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+}
+
+@mixin modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+} 

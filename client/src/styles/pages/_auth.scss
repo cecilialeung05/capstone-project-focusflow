@@ -1,0 +1,73 @@
+@use '../mixins' as *;
+
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: calc(var(--spacing) * 2);
+  background: var(--bg);
+}
+
+.auth-container {
+  @include card;
+  width: 100%;
+  max-width: 400px;
+
+  h1 {
+    margin-bottom: calc(var(--spacing) * 3);
+    text-align: center;
+    color: var(--text);
+  }
+
+  .form-group {
+    margin-bottom: calc(var(--spacing) * 2);
+
+    label {
+      display: block;
+      margin-bottom: var(--spacing);
+      color: var(--text);
+    }
+
+    input {
+      @include input;
+    }
+  }
+
+  button {
+    @include button;
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    margin-bottom: calc(var(--spacing) * 2);
+
+    &:hover {
+      background: var(--primary-dark);
+    }
+  }
+}
+
+.auth-error {
+  padding: calc(var(--spacing) * 1.5);
+  margin-bottom: calc(var(--spacing) * 2);
+  background: var(--error);
+  color: white;
+  border-radius: var(--radius);
+  text-align: center;
+}
+
+.auth-links {
+  text-align: center;
+  margin-top: calc(var(--spacing) * 2);
+  color: var(--text-subtle);
+
+  a {
+    color: var(--primary);
+    text-decoration: none;
+    margin-left: var(--spacing);
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+} 
