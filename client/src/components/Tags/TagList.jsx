@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './TagList.scss';
 
 function TagList({ tags, selectedTags, onTagClick, updateTag }) {
   const [editingTagId, setEditingTagId] = useState(null);

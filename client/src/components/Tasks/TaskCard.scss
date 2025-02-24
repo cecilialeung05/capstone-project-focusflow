@@ -6,6 +6,7 @@
   color: var(--text-primary);
   transition: transform var(--transition-normal);
   border-left: 4px solid var(--primary-color);
+  margin-bottom: var(--spacing-sm);
   
   &:hover {
     transform: translateY(-2px);
@@ -23,6 +24,15 @@
     font-weight: 600;
     margin: 0;
     color: var(--text-primary);
+    
+    a {
+      color: inherit;
+      text-decoration: none;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
 
   &__status {
@@ -71,5 +81,90 @@
     &:hover {
       background: #404040;
     }
+  }
+
+  // Status styling
+  &__status-control {
+    position: relative;
+  }
+
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    
+    @each $status in (completed, in-progress, blocked, open) {
+      &.status-#{$status} {
+        background: var(--#{$status}-light);
+        color: var(--#{$status}-color);
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+    margin-top: var(--spacing-md);
+
+    .task-card__button {
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &--edit {
+        background: var(--info-color);
+        color: white;
+        text-decoration: none;
+
+        &:hover {
+          background: var(--info-dark);
+        }
+      }
+
+      &--delete {
+        background: var(--danger-color);
+        color: white;
+        border: none;
+
+        &:hover {
+          background: var(--danger-dark);
+        }
+      }
+    }
+  }
+
+  // List variant styles
+  &--list {
+    cursor: default;
+    
+    &:hover {
+      transform: none;
+      background: var(--surface-hover);
+    }
+  }
+}
+
+// Task list container
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+
+  &__empty {
+    text-align: center;
+    padding: var(--spacing-lg);
+    color: var(--text-secondary);
+    background: var(--surface-secondary);
+    border-radius: var(--radius-md);
   }
 } 
