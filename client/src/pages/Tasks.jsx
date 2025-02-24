@@ -156,16 +156,22 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
             </button>
           </div>
 
-          <div className="tasks__tag-filter">
-            <h3 className="tasks__tag-title">Recently Used Tags</h3>
-            <TagList
-              tags={tagsWithCounts}
-              selectedTags={selectedTags}
-              onTagClick={handleTagSelect}
-            />
-            <Link to="/tags" className="tasks__manage-tags">
-              Manage Tags →
-            </Link>
+          <div className="tasks__tag-section">
+            <div className="tasks__tag-section-header">
+              Recently Used Tags
+            </div>
+            <div className="tasks__tag-section-content">
+              <TagList
+                tags={tagsWithCounts}
+                selectedTags={selectedTags}
+                onTagClick={handleTagSelect}
+              />
+            </div>
+            <div className="tasks__tag-section-footer">
+              <Link to="/tags" className="tasks__manage-tags">
+                Manage Tags →
+              </Link>
+            </div>
           </div>
         </div>
 

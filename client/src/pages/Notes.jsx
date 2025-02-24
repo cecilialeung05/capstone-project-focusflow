@@ -68,21 +68,27 @@ function Notes({ notes = [], tasks = [], tags = [], addNote, updateNote, deleteN
           </select>
         </div>
 
-        <div className="notes__tag-filter">
-          <h3 className="notes__tag-title">Recently Used Tags</h3>
-          <TagList 
-            tags={tags}
-            selectedTags={[]}
-            onTagClick={(tag) => {
-              const notesWithTag = notes.filter(note => 
-                note.tags.includes(tag.id)
-              );
-              setRelatedNotes(notesWithTag);
-            }}
-          />
-          <Link to="/tags" className="notes__manage-tags">
-            Manage Tags →
-          </Link>
+        <div className="notes__tag-section">
+          <div className="notes__tag-section-header">
+            Recently Used Tags
+          </div>
+          <div className="notes__tag-section-content">
+            <TagList 
+              tags={tags}
+              selectedTags={[]}
+              onTagClick={(tag) => {
+                const notesWithTag = notes.filter(note => 
+                  note.tags.includes(tag.id)
+                );
+                setRelatedNotes(notesWithTag);
+              }}
+            />
+          </div>
+          <div className="notes__tag-section-footer">
+            <Link to="/tags" className="notes__manage-tags">
+              Manage Tags →
+            </Link>
+          </div>
         </div>
       </div>
 

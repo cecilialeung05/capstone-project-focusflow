@@ -148,7 +148,6 @@
     &--selected {
       transform: translateY(-1px);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      background-opacity: 0.2;
     }
   }
 
@@ -196,25 +195,6 @@
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-  }
-
-  &__tag-button {
-    padding: 4px 12px;
-    border: 1px solid #ddd;
-    border-radius: 16px;
-    background: white;
-    cursor: pointer;
-    transition: all 0.2s;
-
-    &:hover {
-      background: #f8f9fa;
-    }
-
-    &--selected {
-      background: #3498db;
-      color: white;
-      border-color: #3498db;
-    }
   }
 
   &__list  {
@@ -583,22 +563,80 @@
     }
   }
 
-  &__tag-filter {
-    margin-top: 1rem;
-    padding: 1rem;
+  &__tag-section {
+    margin-top: 16px;
+    padding: 16px;
     background: var(--bg-secondary);
     border-radius: 8px;
+
+    &-header {
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    &-content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    &-footer {
+      text-align: center;
+      margin-top: 16px;
+    }
+  }
+
+  &__tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 16px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background: var(--bg-hover);
+    }
+
+    &-count {
+      margin-left: 4px;
+      color: var(--text-secondary);
+    }
+
+    &--selected {
+      background: var(--accent-color);
+      color: white;
+      border-color: var(--accent-color);
+
+      .tasks__tag-count {
+        color: rgba(255, 255, 255, 0.8);
+      }
+    }
   }
 
   &__manage-tags {
-    display: inline-block;
-    margin-top: 0.5rem;
+    display: inline-flex;
+    align-items: center;
     font-size: 0.9rem;
-    color: var(--accent-color);
+    color: #2196f3;
     text-decoration: none;
+    transition: color 0.2s;
 
     &:hover {
+      color: #1976d2;
       text-decoration: underline;
+    }
+
+    &::after {
+      content: "→";
+      margin-left: 4px;
     }
   }
 } 
