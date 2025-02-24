@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import NoteItem from '../components/Notes/NoteItem';
-import Modal from '../components/Common/Modal';
+import Modal from '../components/Layout/Modal';
 import { FaFileExport, FaPlus } from 'react-icons/fa';
 import TagSuggestions from '../components/Tags/TagSuggestions';
 import TagList from '../components/Tags/TagList';

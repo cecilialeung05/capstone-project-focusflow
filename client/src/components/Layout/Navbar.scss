@@ -172,21 +172,6 @@
     font-size: 1.25rem;
     color: var(--text-primary);
   }
-
-  // Theme variations
-  &--light {
-    background-color: #f0f0f0;
-    color: #333;
-  }
-
-  &--dark {
-    background-color: #333;
-    color: #f0f0f0;
-
-    .navbar__link {
-      color: #f0f0f0;
-    }
-  }
 }
 
 .search-modal {
