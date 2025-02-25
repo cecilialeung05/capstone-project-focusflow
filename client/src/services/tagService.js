@@ -52,8 +52,6 @@ const tagService = {
       throw error;
     }
   },
-<<<<<<< HEAD
-=======
 
   // Get all items associated with a tag
   getTaggedItems: async (tagId) => {
@@ -72,7 +70,6 @@ const tagService = {
       throw error;
     }
   },
->>>>>>> 2d968fb (commit finalized copy)
 };
 
 export default tagService;
