@@ -1,8 +1,10 @@
 # FocusFlow
 
-FocusFlow is a modern productivity application that empowers users to create, manage, and track tasks and notes in one seamless interface. Built with a focus on simplicity, efficiency, and overall well-being, FocusFlow integrates an intuitive task manager, linked note-taking, a focus timer which prompts you to take a break every 25 minutes, and wellness motivational boost prompts to help you stay on track and inspired throughout your day.
+FocusFlow is a modern productivity application that empowers users to create, manage, and track tasks and notes in one seamless interface. Built with a focus on simplicity, efficiency, and overall well-being, FocusFlow integrates an intuitive task manager, linked note-taking, a Pomodoro-style focus timer that prompts breaks every 25 minutes, and motivational wellness prompts to keep users on track and inspired.
 
-"FocusFlow is designed for individuals who struggle with focus, motivation, and task organization. Whether you're a student, professional, or someone seeking a structured yet flexible workflow, FocusFlow helps you manage tasks, take meaningful breaks, and track progress without feeling overwhelmed."
+## Who is FocusFlow For?
+
+FocusFlow is designed for individuals who struggle with focus, motivation, and task organization. Whether you're a student, professional, or someone seeking a structured yet flexible workflow, FocusFlow helps you manage tasks, take meaningful breaks, and track progress without feeling overwhelmed.
 ---
 
 ## Features
@@ -16,14 +18,14 @@ FocusFlow is a modern productivity application that empowers users to create, ma
 
 ### Task Management
 - **Create, Edit, Delete Tasks:** Manage tasks with titles, descriptions, due dates, and statuses (open, in progress, completed).
-- **Tagging and Filtering:** Easily categorize tasks with tags and filter them by category for better organization.
+- **Tagging and Filtering:** Easily categorize tasks with tags and filter them for better organization.
 
-### Notes Integration
-- **Task-Linked Notes:** Attach and manage notes related to specific tasks to keep relevant information in one place.
-- **Organize and Search:** Quickly search and filter notes using the tagging system.
+### Smart Notes (Linked to Tasks)
+- **Task-Linked Notes:**  Attach and manage notes related to specific tasks to keep relevant information in one place.
+- **Organize and Search:** Quickly find notes using the tagging system.
 
-### Focus Timer
-- **Built-in Timer:** Use the integrated focus timer to track work sessions. Receive prompts to take a break every 25 minutes.
+### Pomodoro-Style Focus Timer
+- **Built-in Timer:** Work in structured sessions with break reminders every 25 minutes.
 
 ### Wellness & Motivational Boost Prompts
 - **Stay Inspired:** Receive periodic wellness and motivational prompts designed to provide a mental and emotional boost during work sessions.
@@ -33,7 +35,6 @@ FocusFlow is a modern productivity application that empowers users to create, ma
 ## Implementation Details
 
 ### Architecture Overview
-
 FocusFlow is designed with a modern, full-stack architecture:
 
 #### Frontend
@@ -112,3 +113,4 @@ npm run dev
 Accessing FocusFlow
 Open your browser and navigate to http://localhost:5173 to begin using the application.
 
+Thanks for visiting!
