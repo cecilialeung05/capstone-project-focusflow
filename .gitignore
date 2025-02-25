@@ -10,7 +10,7 @@ client/.env
 server/node_modules/
 server/.env
 server/.DS_Store
-server/knexfile.js
+
 
 # Logs
 logs
