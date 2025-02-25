@@ -1,0 +1,92 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  // Main background colors
+  --bg-primary: #f0f5f9;    // Light blue-gray background
+  --bg-secondary: #e1e8ef;  // Slightly darker blue-gray
+  --bg-elevated: #ffffff;   // White for elevated elements
+
+  // Text colors
+  --text-primary: #2c3e50;   // Dark blue-gray for main text
+  --text-secondary: #64748b; // Lighter text for less emphasis
+
+  // Accent colors
+  --accent-primary: #7ba7cc;   // Soft blue for primary actions
+  --accent-hover: #6691b5;     // Darker blue for hover states
+  --accent-muted: #cad7e1;     // Very light blue for subtle elements
+
+  // Border colors
+  --border-light: #dde5ed;     // Light blue-gray for borders
+  --border-focus: #7ba7cc;     // Accent blue for focus states
+
+  // Status colors (keeping them soft)
+  --status-success: #9dbfa4;   // Soft green
+  --status-progress: #7ba7cc;  // Soft blue
+  --status-warning: #e2c07f;   // Soft yellow
+  --status-error: #d49999;     // Soft red
+}
+
+a {
+  font-weight: 500;
+  color: var(--accent-primary);
+  text-decoration: inherit;
+}
+a:hover {
+  color: var(--accent-hover);
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--accent-primary);
+  cursor: pointer;
+  transition: border-color 0.25s;
+  color: white;
+}
+button:hover {
+  border-color: var(--accent-hover);
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+  }
+  a:hover {
+    color: var(--accent-hover);
+  }
+  button {
+    background-color: var(--accent-primary);
+    color: white;
+  }
+}

@@ -1,0 +1,31 @@
+# General
+node_modules/         
+.env                
+
+# Front-end (client)
+client/node_modules/
+client/.env
+
+# Back-end (server)
+server/node_modules/
+server/.env
+server/.DS_Store
+server/knexfile.js
+
+# Logs
+logs
+*.log
+debug.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.DS_Store

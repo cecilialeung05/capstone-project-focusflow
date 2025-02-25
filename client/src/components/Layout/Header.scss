@@ -1,0 +1,19 @@
+.header {
+    background-color: #f0f0f0;
+    padding: 0.5rem;
+    border-bottom: 1px solid #ddd;
+
+    &__container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    &__logo {
+        font-size: 1.2rem;
+        margin: 0;
+        text-align: center;
+    }
+}
