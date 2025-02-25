@@ -1,373 +1,106 @@
-# MVP FocusFlow: Your All-in-One Productivity Manager 
+# FocusFlow
 
-## Overview
-
-FocusFlow is a modern productivity tool designed to allows users to create, organize, and track their tasks and notes, helping them stay focused and productive. Key featuresinclude  tag linking and filtering, as well as a standalone timer.
-
-## Problem Space
-
-Existing task managers can be too complex or lack proper note-taking integration. FocusFlow solves this by combining both in a seamless experience, eliminating the need for multiple apps.
-
-## User Profile
-
-This app is designed for individuals who:
-- Need an intuitive task management system.
-- Want to combine notes and tasks in one platform.
-
-## Features
-
-1️. **Task Management (To-Do List)**
-The user can...
-*   Create, Edit, Delete Tasks: Manage tasks with titles, descriptions, duedates and the task's status (open, in progress, completed).
-*   Tagging System: Assign categories to tasks (e.g., Work, Personal, Study).
-*   Update A Tasks' Status: Track progress and completion rates.
-*   Tag Filtering & Search: Filter tasks by tags.
-
-2. **Notes Organization (Linked to Tasks)**
-The user can...
-*   Create, Edit, Organize Notes: Change the context of the notes associated with a task.
-*   Task-Linked Notes: Attach notes to specific tasks to keep related information in one place.
-*   Tag Filtering & Search: Search and filter notes based on tasks and tags.
-
-3. **Focus Timer**
-The user can...
-*   use a timer to track work sessions to improve focus and productivity.
-
-
-
-## Implementation
-
-### Tech Stack
-*   **Frontend:** 
-    *   React (JavaScript library for building user interfaces)
-    *   React Router DOM (for navigation)
-    *   Axios (for making HTTP requests to the backend)
-    *   Sass (for CSS pre-processing)
-
-*   **Backend:** 
-    *   Node.js (JavaScript runtime environment)
-    *   Express.js (web application framework for Node.js)
-    *   Knex.js (SQL query builder)
-    *   MySQL (relational database)
-    *   dotenv (for managing environment variables)
-    *   cors (for handling Cross-Origin Resource Sharing)
-
-### Libraries
-*   Framer Motion (animations)
-*   Recharts (data visualization)
-*   React-Beautiful-DND (drag-and-drop tasks)
-
-### APIs
-*   This application does not rely on external APIs. All data is managed within the internal database.
-
-### Sitemap
-*   **/dashboard:** Overview of tasks, notes and focus timer.
-
-*   **/tasks:** Manage tasks (list, add, edit, delete).
-        A form on this page allows creating/editing a task.
-*   **/notes:** Manage notes (list, add, edit, delete).
-        A form on this page allows creating/editing a note.
-*   **/tags:** Allows users to manage tags (create, edit, delete).
-
-### Mockups
-#### Dashboard Page (all tags, tasks, notes and timer)
-![](./assets/images/mockups/img1.png)
-#### Tasks Page (list, add, edit, delete)
-![](./assets/images/mockups/img2.png)
-
-#### Notes List Page (list, add, edit, delete)
-![](./assets/images/mockups/img3.png)
-
-## Database Schema
-![DatabaseSchema](./assets/images/mockups/image-db.png)
-- Tasks relate One-to-Many with Notes.
-- Tasks and Tags relate Many-to-Many via task_tags.
-- Notes and Tags relate Many-to-Many via note_tags.
-- Timer is a standalone table.
-
-### Data
-*   **Tasks:**
-    *   `id` (INT, Primary Key, Auto-Increment)
-    *   `title` (VARCHAR, Not Null)
-    *   `description` (TEXT)
-    *   `status` (ENUM ['open', 'in progress', 'completed' ], Default: 'open')
-    *   `due_date` (TIMESTAMP, Nullable)
-    *   `created_at` (TIMESTAMP)
-    *   `updated_at` (TIMESTAMP)
-*   **Notes:**
-    *   `id` (INT, Primary Key, Auto-Increment)
-    *   `task_id` (INT, Foreign Key referencing `tasks.id`, Nullable)
-    *   `title` (VARCHAR, Not Null)
-    *   `content` (TEXT, Not Null)
-    *   `created_at` (TIMESTAMP)
-    *   `updated_at` (TIMESTAMP)
-*   **Tags:**
-    *   `id` (INT, Primary Key, Auto-Increment)
-    *   `name` (VARCHAR, Not Null, Unique)
-    *   `created_at` (TIMESTAMP)
-    *   `updated_at` (TIMESTAMP)
-*   **task\_tags (Join Table):**
-    *   `id` (INT, Primary Key, Auto-Increment)
-    *   `task_id` (INT, Foreign Key referencing `tasks.id`)
-    *   `tag_id` (INT, Foreign Key referencing `tags.id`)
-    *   `UNIQUE (task\_id, tag\_id)`
-    *    `created_at` (TIMESTAMP)
-*   **note\_tags (Join Table):**
-    *   `id` (INT, Primary Key, Auto-Increment)
-    *   `note_id` (INT, Foreign Key referencing `notes.id`)
-    *   `tag_id` (INT, Foreign Key referencing `tags.id`)
-    *   `UNIQUE (note\_id, tag\_id)`
-    *   `created_at` (TIMESTAMP)
-
-- **User Preferences**: { theme }.
-
-### Endpoints
-**Tasks:**
-*   `GET /api/tasks`
-    *   Description: Get all tasks,
-    *   Query Parameters: `tagId` (optional, to filter by tag)
-    *   Response:
-    ```json
-    [
-        {
-            "id": 1,
-            "title": "Plan Website Redesign",
-            "description": "Outline the new design for the company website.",
-            "status": "in progress",
-            "due_date": "2024-01-15",
-            "created_at": "2023-10-27T10:00:00.000Z",
-            "updated_at": "2023-10-27T10:00:00.000Z",
-            "tags": [ { "id": 1, "name": "Work" } ]
-        },
-        // ... other tasks
-    ]
-    ```
-
-*   `GET /api/tasks/:id`
-    *   Description: Get a specific task by ID, including associated tags.
-    *   Parameters: `id` (INT)
-    *   Response:
-    ```json
-    {
-        "id": 1,
-        "title": "Plan Website Redesign",
-        "description": "Outline the new design for the company website.",
-        "status": "in progress",
-        "due_date": "2024-03-15T00:00:00.000Z",
-        "created_at": "2023-10-27T10:00:00.000Z",
-        "updated_at": "2023-10-27T10:00:00.000Z",
-        "tags": [
-            {"id": 1, "name": "Work", "created_at": "...", "updated_at": "..."},
-            {"id": 5, "name": "Important", "created_at": "...", "updated_at": "..."}
-        ]
-    }
-    ```
-
-*   `POST /api/tasks`
-    *   Description: Create a new task.
-    *   Parameters: `title`, `description`, `status`, `due_date`, `tags` (array of tag IDs)
-    *   Response: (Newly created task)
-    ```json
-    {
-        "id": 6,
-        "title": "New Task Title",
-        "description": "...",
-        "status": "open",
-        "due_date": "2024-02-29T00:00:00.000Z",
-        "created_at": "2023-10-27T10:00:00.000Z",
-        "updated_at": "2023-10-27T10:00:00.000Z"
-    }
-    ```
-
-*   `PUT /api/tasks/:id`
-    *   Description: Update an existing task.
-    *   Parameters: `id`, `title`, `description`, `status`, `due_date`, `tags` (array of tag IDs)
-    *   Response: (Updated task)
-    ```json
-    {
-        "id": 1,
-        "title": "Updated Task Title",
-        "description": "...",
-        "status": "completed",
-        "due_date": "2024-03-01T00:00:00.000Z",
-        "created_at": "2023-10-27T10:00:00.000Z",
-        "updated_at": "2023-10-27T10:00:00.000Z"
-    }
-    ```
-
-*   `DELETE /api/tasks/:id`
-    *   Description: Delete a task. 
-    *   Parameters: `id`
-    *   Response: 204 No Content
-
-**Notes:**
-*   `GET /api/notes`
-    *   Description: Get all notes, can be filtered by `taskId`.
-    *   Parameters: `taskId` (optional), `tagId` (optional).
-    *   Response: (Array of notes)
-    ```json
-    [
-        {
-            "id": 1,
-            "task_id": 1,
-            "title": "Initial Ideas",
-            "content": "Brainstorming session notes",
-            "created_at": "2023-10-27T10:00:00.000Z",
-            "updated_at": "2023-10-27T10:00:00.000Z",
-            "tags": [ { "id": 1, "name": "Work" } ]
-        },
-        // ... other notes
-    ]
-    ```
-
-*   `GET /api/notes/:id`
-    *   Description: Get a specific note by ID, including associated tags.
-    *   Parameters: `id` (INT)
-    *   Response:
-    ```json
-    {
-        "id": 1,
-        "task_id": 1,
-        "title": "Initial Ideas",
-        "content": "Brainstorming session notes",
-        "created_at": "2023-10-27T10:00:00.000Z",
-        "updated_at": "2023-10-27T10:00:00.000Z",
-        "tags": [
-            {"id": 1, "name": "Work"}
-        ]
-    }
-    ```
-
-*   `POST /api/notes`
-    *   Description: Create a new note.
-    *   Parameters: `task_id` (optional), `title`, `content`, `tags` (array of tag IDs)
-    *   Response: (Newly created note)
-    ```json
-    {
-        "id": 7,
-        "task_id": null,
-        "title": "Note",
-        "content": "This is a note.",
-        "created_at": "2023-10-27T10:00:00.000Z",
-        "updated_at": "2023-10-27T10:00:00.000Z"
-    }
-    ```
-
-*   `PUT /api/notes/:id`
-    *   Description: Update an existing note.
-    *   Parameters: `id`, `task_id` (optional), `title`, `content`, `tags` (array of tag IDs)
-    *   Response: (Updated note)
-    ```json
-    {
-        "id": 1,
-        "task_id": 2,
-        "title": "Updated Note Title",
-        "content": "Updated note content.",
-        "created_at": "2023-10-27T10:00:00.000Z",
-        "updated_at": "2023-10-27T10:00:00.000Z"
-    }
-    ```
-
-*   `DELETE /api/notes/:id`
-    *   Description: Delete a note.
-    *   Parameters: `id`
-    *   Response: 204 No Content
-
-**Tags:**
-
-*   `GET /api/tags`
-    *   Description: Get all tags.
-    *   Response: (Array of tags)
-    ```json
-    [
-        {
-            "id": 1,
-            "name": "Work",
-            "created_at": "2023-10-27T10:00:00.000Z",
-            "updated_at": "2023-10-27T10:00:00.000Z"
-        },
-        // ... other tags
-    ]
-    ```
-
-*   `GET /api/tags/:id`
-    *   Description: Get a specific tag by ID.
-    *   Parameters: `id` (INT)
-    *   Response: (Tag object)
-    ```json
-    {
-        "id": 1,
-        "name": "Work",
-        "created_at": "2023-10-27T10:00:00.000Z",
-        "updated_at": "2023-10-27T10:00:00.000Z"
-    }
-    ```
-
-*   `POST /api/tags`
-    *   Description: Create a new tag.
-    *   Parameters: `name`
-    *   Response: (Newly created tag)
-    ```json
-    {
-        "id": 6,
-        "name": "New Tag",
-        "created_at": "2023-10-27T10:00:00.000Z",
-        "updated_at": "2023-10-27T10:00:00.000Z"
-    }
-    ```
-
-*   `PUT /api/tags/:id`
-    *   Description: Update an existing tag.
-    *   Parameters: `id`, `name`
-    *   Response: (Updated tag)
-    ```json
-    {
-        "id": 1,
-        "name": "Updated Tag Name",
-        "created_at": "2023-10-27T10:00:00.000Z",
-        "updated_at": "2023-10-27T10:00:00.000Z"
-    }
-    ```
-
-*   `DELETE /api/tags/:id`
-    *   Description: Delete a tag.
-    *   Parameters: `id`
-    *   Response: 204 No Content
-
-
-## Roadmap
-
-**Sprint (2 Weeks):**
-
-FEB 12 - Test tag links & set up front end.     
-*   **Week 1:**
-    *   Set up the React project and basic routing.
-    *   Implement routing and page navigation.
-    *   Build basic UI.
-    *   Implement the backend API endpoints. - complete - OUTSTANDING: test tag links.
-    *   Set up database schema and migrations.  - complete - OUTSTANDING: test tag links.
-*   **Week 2:**
-    *   Implement task filtering, tagging, and search functionality.
-    *   Develop note management (add, edit, delete, link to tasks).
-    *   Implement progress insights (charts and analytics for task completion rates).
-    *   Integrate focus timer.
-    *   Finalize settings and personalization features.
-    *   Test, refine, and deploy.
+FocusFlow is a modern productivity application that empowers users to create, manage, and track tasks and notes in one seamless interface. Built with a focus on simplicity, efficiency, and overall well-being, FocusFlow integrates an intuitive task manager, linked note-taking, a focus timer which prompts you to take a break every 25 minutes, and wellness motivational boost prompts to help you stay on track and inspired throughout your day.
 
 ---
 
-## Nice to haves 
-*   **Progress Insights**: Track task completion rate over time.
- *   **Custom Reminders**: Gentle nudges to encourage breaks or task transitions.
- *   **User Authentication:** Add user authentication for multi-user support. 
- *   **Weather Tracker:** Display prompts based on weather.
- *   **Settings:** Light and Dark theme. 
+## Features
 
+### Task Management
+- **Create, Edit, Delete Tasks:** Manage tasks with titles, descriptions, due dates, and statuses (open, in progress, completed).
+- **Tagging and Filtering:** Easily categorize tasks with tags and filter them by category for better organization.
 
-## Future Implementations
-*   **Responsive Design:** Ensure the app is fully responsive and works well on different devices.
-*   AI-based task recommendations.
-*   More advanced analytics for productivity insights.
+### Notes Integration
+- **Task-Linked Notes:** Attach and manage notes related to specific tasks to keep relevant information in one place.
+- **Organize and Search:** Quickly search and filter notes using the tagging system.
 
+### Focus Timer
+- **Built-in Timer:** Use the integrated focus timer to track work sessions. Receive prompts to take a break every 25 minutes.
 
+### Wellness & Motivational Boost Prompts
+- **Stay Inspired:** Receive periodic wellness and motivational prompts designed to provide a mental and emotional boost during work sessions.
+
+---
+
+## Implementation Details
+
+### Architecture Overview
+
+FocusFlow is designed with a modern, full-stack architecture:
+
+#### Frontend
+- **React:** A dynamic user interface built with React enables responsive and interactive design.
+- **React Router DOM:** Manages smooth navigation between pages (dashboard, tasks, notes, and wellness prompts).
+- **Axios & Sass:** For handling HTTP requests and style pre-processing respectively.
+
+#### Backend
+- **Node.js & Express:** A robust RESTful API built with Express.js handles server-side logic and routes.
+- **Knex & MySQL:** Utilized for database management, ensuring efficient data storage and retrieval through a structured relational schema.
+- **Security & Configuration:** `dotenv` manages environment variables while `cors` ensures secure cross-origin requests.
+
+### Key Libraries & Tools
+- **Framer Motion:** Adds smooth animations to enhance user experience.
+- **React-Beautiful-DND:** Enables intuitive drag-and-drop functionality within the right sidebar lists.
+
+### Data & Database Schema
+
+FocusFlow leverages a relational database with the following key entities:
+- **Tasks:** Stores task details including title, description, due date, status, and associated tags.
+- **Notes:** Maintains task-linked notes, which can be created, edited, and linked to specific tasks.
+- **Tags:** Supports categorization for both tasks and notes.
+
+#### Join Tables
+- **task_tags:** Associates tasks with multiple tags.
+- **note_tags:** Associates notes with multiple tags.
+
+*Visual representations of the database schema and application mockups are available in the `assets/images` directory.*
+
+### API Endpoints
+
+FocusFlow offers a set of RESTful endpoints for seamless interaction between the frontend and backend:
+
+#### Tasks Endpoints
+- **GET** `/tasks` – Retrieve a list of tasks (with optional tag filtering).
+- **POST** `/tasks` – Create a new task with details and tags.
+- **PUT** `/tasks/:id` – Update an existing task.
+- **DELETE** `/tasks/:id` – Remove a task from the system.
+
+#### Notes Endpoints
+- **GET** `/notes` – Fetch all notes (filterable by task or tag).
+- **POST** `/notes` – Add a new note, optionally linked to a task.
+- **PUT** `/notes/:id` – Edit an existing note.
+- **DELETE** `/notes/:id` – Delete a note.
+
+#### Tags Endpoints
+- **GET** `/tags` – Retrieve all available tags.
+- **POST** `/tags` – Create a new tag for categorizing tasks and notes.
+
+---
+
+## Usage Instructions
+
+### Installation
+Clone the repository and install dependencies for both the frontend and backend:
+```bash
+git clone https://github.com/cecilialeung05/focusflow.git
+cd focusflow
+npm install
+
+## Environment Setup
+Create a `.env` file in the backend directory with the required environment variables (database credentials, port, etc.).
+
+## Running the Application
+
+### Backend
+```bash
+npm run start-server
+```
+
+### Frontend
+```bash
+npm run dev
+```
+
+Accessing FocusFlow
+Open your browser and navigate to http://localhost:5173 to begin using the application.
 

@@ -1,95 +1,89 @@
 import React, { useState, useEffect } from 'react';
-import taskService from '../services/taskService';
-import noteService from '../services/noteService';
-import { Link, useParams } from 'react-router-dom';
 import './Tags.scss';
+import TaskItem from './TaskItem';
+import NoteItem from './NoteItem';
 
-function Tags({ tags, addTag, updateTag, deleteTag }) {
-  const [newTagName, setNewTagName] = useState('');
-  const [tasks, setTasks] = useState([]);
-  const [notes, setNotes] = useState([]); // Fetch tasks and notes
-//   const [selectedTagId, setSelectedTagId] = useState(null);
+function Tags({ tags, tasks, notes }) {
+  const [selectedTagId, setSelectedTagId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredTags, setFilteredTags] = useState(tags);
 
-const { tagId } = useParams(); // Get tagId from URL
-
-    useEffect(() => {
-    const fetchInitialData = async () => {
-        try {
-            const [tasksData, notesData] = await Promise.all([
-                taskService.getAllTasks(),
-                noteService.getAllNotes()
-              ]);
-              setTasks(tasksData);
-              setNotes(notesData);
-        } catch (error) {
-            console.error("Error fetching initial data:", error);
-            // Handle errors (e.g., display an error message to the user)
-        }
-    };
-    fetchInitialData();
-  }, []);
-
-//   const handleCreateTag = () => {
-//     addTag({ name: newTagName });
-//     setNewTagName('');
-//   };
-  const handleCreateTag = () => {
-    addTag({ name: newTagName });
-    setNewTagName('');
+  const handleTagClick = (tagId) => {
+    setSelectedTagId(tagId === selectedTagId ? null : tagId);
   };
 
-  // Filter tasks based on selected tag
-  const filteredTasks = selectedTagId
-    ? tasks.filter(task => task.tags && task.tags.some(tag => tag.id === selectedTagId))
-    : [];
+  useEffect(() => {
+    const filtered = tags.filter(tag => 
+      tag.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredTags(filtered);
+  }, [tags, searchTerm]);
 
-  // Filter notes based on selected tag
-  const filteredNotes = selectedTagId
-    ? notes.filter(note => note.tags && note.tags.some(tag => tag.id === selectedTagId))
-    : [];
+  const filteredNotes = selectedTagId ? notes.filter(note => note.tags?.some(tag => tag.id === selectedTagId)) : [];
+  const filteredTasks = selectedTagId ? tasks.filter(task => task.tags?.some(tag => tag.id === selectedTagId)) : [];
 
   return (
-    <div className="tags-page"> {/* Added a className for styling */}
-      <h1>Tags</h1>
-      <input
-        type="text"
-        value={newTagName}
-        onChange={(e) => setNewTagName(e.target.value)}
-        placeholder="New Tag Name"
-      />
-      <button onClick={handleCreateTag}>Create Tag</button>
-      <ul>
-      {tags.map(tag => (
-          <li key={tag.id} className="tags-page__list-item"> {/* Added className for list items */}
-            <button onClick={() => handleTagClick(tag.id)}>{tag.name}</button>
-          </li>
-        ))}
-      </ul>
-      {selectedTagId && (
-        <div className="tags-page__filtered-content"> {/* Add a className for this div */}
-          <h2>Tasks with Tag ID {selectedTagId}</h2>
-          {filteredTasks.length > 0 ? (
-            <ul>
-              {filteredTasks.map(task => (
-                <li key={task.id}>{task.title}</li>
-              ))}
-            </ul>
-          ) : (
-            <p>No tasks found with this tag.</p>
-          )}
+    <div className="tags__container">
+      <div className="tags__section">
+        <div className="tags__header">
+          <h2 className="tags__title">Tags</h2>
+          <div className="tags__search">
+            <input
+              type="text"
+              placeholder="Search tags..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="tags__search-input"
+            />
+          </div>
+        </div>
 
-          <h2>Notes with Tag ID {selectedTagId}</h2>
-          {filteredNotes.length > 0 ? (
-            <ul>
-              {filteredNotes.map(note => (
-                <li key={note.id}>{note.title}</li>
-              ))}
-            </ul>
-          ) : (
-            <p>No notes found with this tag.</p>
+        <div className="tags__list">
+          {filteredTags.map(tag => (
+            <div 
+              key={tag.id}
+              className={`tags__item ${selectedTagId === tag.id ? 'tags__item--selected' : ''}`}
+              onClick={() => handleTagClick(tag.id)}
+            >
+              <span className="tags__name">{tag.name}</span>
+              <span className="tags__count">
+                {filteredTasks.length + filteredNotes.length} items
+              </span>
+            </div>
+          ))}
+          {filteredTags.length === 0 && (
+            <p className="tags__empty">No tags found matching "{searchTerm}"</p>
           )}
         </div>
-      )}
+      </div>
+      
+      <div className="tags__content">
+        {selectedTagId && (
+          <>
+            <h3>Tasks with this tag:</h3>
+            <div className="tags__tasks">
+              {filteredTasks.length > 0 ? (
+                filteredTasks.map(task => (
+                  <TaskItem key={task.id} task={task} />
+                ))
+              ) : (
+                <p className="tags__empty">No tasks with this tag</p>
+              )}
+            </div>
+
+            <h3>Notes with this tag:</h3>
+            <div className="tags__notes">
+              {filteredNotes.length > 0 ? (
+                filteredNotes.map(note => (
+                  <NoteItem key={note.id} note={note} />
+                ))
+              ) : (
+                <p className="tags__empty">No notes with this tag</p>
+              )}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }

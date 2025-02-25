@@ -1,20 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route } from "react-router-dom";
-import Header from './components/Header';
 import Dashboard from "./pages/Dashboard";
 import Tasks from "./pages/Tasks";
 import TaskDetails from "./pages/TaskDetails";
 import Notes from "./pages/Notes";
 import NotesDetails from "./pages/NotesDetails";
 import Tags from './pages/Tags';
-import Settings from "./pages/Settings";
 import Layout from './components/Layout/Container';
 import taskService from './services/taskService';
 import noteService from './services/noteService';
 import tagService from './services/tagService';
-import Insights from './pages/Insights';
-import Weather from './pages/Weather';
-import Footer from './components/Footer';
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -29,6 +24,9 @@ function App() {
           noteService.getAllNotes(),
           tagService.getAllTags()
         ]);
+        console.log('Fetched Tasks:', tasksData);
+        console.log('Fetched Notes:', notesData);
+        console.log('Fetched Tags:', tagsData);
         setTasks(tasksData);
         setNotes(notesData);
         setTags(tagsData);
@@ -69,7 +67,9 @@ function App() {
 
   const addNote = async (note) => {
     try {
+      console.log('Creating note with data:', note);
       const newNote = await noteService.createNote(note);
+      console.log('Created note response:', newNote);
       setNotes(prevNotes => [...prevNotes, newNote]);
     } catch (error) {
       console.error('Error adding note:', error);
@@ -78,8 +78,12 @@ function App() {
 
   const updateNote = async (noteId, updatedNote) => {
     try {
+      console.log('Updating note with data:', updatedNote);
       const updatedNoteResponse = await noteService.updateNote(noteId, updatedNote);
-      setNotes(prevNotes => prevNotes.map(note => note.id === noteId ? updatedNoteResponse : note));
+      console.log('Updated note response:', updatedNoteResponse);
+      setNotes(prevNotes => prevNotes.map(note => 
+        note.id === noteId ? updatedNoteResponse : note
+      ));
     } catch (error) {
       console.error('Error updating note:', error);
     }
@@ -122,29 +126,62 @@ function App() {
     }
   };
 
-
-  // const [theme, setTheme] = useState('light');
-  // const toggleTheme = () => {
-  //   setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
-  // };
-
   return (
     <Layout>
       <Routes>
-          <Route path="/" element={<Header />} />
-          <Route path="/dashboard" element={<Dashboard tasks={tasks} notes={notes} tags={tags} />} />
-          <Route path="/tasks" element={<Tasks tasks={tasks} addTask={addTask} updateTask={updateTask} deleteTask={deleteTask} />} />
-          <Route path="/tasks/:taskId" element={<TaskDetails tasks={tasks} updateTask={updateTask} deleteTask={deleteTask} />} />
-          <Route path="/notes" element={<Notes notes={notes} addNote={addNote} updateNote={updateNote} deleteNote={deleteNote} />} />
-          <Route path="/notes/:noteId" element={<NotesDetails notes={notes} updateNote={updateNote} deleteNote={deleteNote}/>} />
-          <Route path="/tags" element={<Tags tags={tags} addTag={addTag} updateTag={updateTag} deleteTag={deleteTag} />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/insights" element={<Insights />} />
-          <Route path="/weather" element={<Weather />} />
-          <Route path="/" element={<Dashboard tasks={tasks} notes={notes}/>} />
-          <Route path="/" element={<Footer />} />
+        <Route path="/" element={
+          <>
+            <Dashboard tasks={tasks} notes={notes} tags={tags} />
+          </>
+        } />
+        <Route path="/tasks" element={
+          <Tasks 
+            tasks={tasks} 
+            tags={tags}
+            addTask={addTask} 
+            updateTask={updateTask} 
+            deleteTask={deleteTask} 
+          />
+        } />
+        <Route path="/tasks/:taskId" element={
+          <TaskDetails 
+            tasks={tasks}
+            tags={tags}
+            updateTask={updateTask} 
+            deleteTask={deleteTask}
+          />
+        } />
+        <Route path="/notes" element={
+          <Notes 
+            notes={notes}
+            tasks={tasks}
+            tags={tags}
+            addNote={addNote} 
+            updateNote={updateNote} 
+            deleteNote={deleteNote}
+          />
+        } />
+        <Route path="/notes/:noteId" element={
+          <NotesDetails 
+            notes={notes}
+            tasks={tasks}
+            tags={tags}
+            updateNote={updateNote} 
+            deleteNote={deleteNote}
+          />
+        } />
+        <Route path="/tags" element={
+          <Tags 
+            tags={tags}
+            notes={notes}
+            tasks={tasks}
+            addTag={addTag} 
+            updateTag={updateTag} 
+            deleteTag={deleteTag}
+          />
+        } />
       </Routes>
-   </Layout>
+    </Layout>
   );
 }
 

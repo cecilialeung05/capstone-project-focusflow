@@ -1,14 +1,63 @@
-
 nav {
-    width: 200px; // Fixed width for the sidebar
-    height: 100vh; /* Make it full height */
-    position: fixed; /* Stick to the left side */
+    width: 200px; 
+    height: 100vh; 
+    position: fixed;
     top: 0;
     left: 0;
-    background-color: #f0f0f0; // Light background color
+    background-color: #f0f0f0; 
     padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    z-index: 10; /* Ensure it's above other content */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); 
+    z-index: 10;
+  
+    @media (max-width: 768px) {
+      width: 60px;
+      padding: 10px;
+      height: 100%;
+      top: 60px;
+
+      .nav-link span {
+        display: none; 
+      }
+
+      .nav-icon {
+        font-size: 1.5rem; 
+      }
+
+      .timer-container {
+        padding: 0.5rem;
+        
+        .timer-label {
+          display: none;
+        }
+
+        // Rotate timer display
+        .timer-display {
+          writing-mode: vertical-rl;
+          text-orientation: upright;
+          letter-spacing: 0.2em;
+          font-size: 1.2rem;
+          margin: 1rem auto;
+          height: auto;
+        }
+
+        .timer-controls {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+          align-items: center;
+        }
+      }
+    }
+  
+    .motivational-quote {
+      white-space: nowrap;
+      margin: 1rem auto;
+      font-size: 0.8rem;
+      color: #64748b;
+      text-align: center;
+      max-height: 200px;
+      overflow: hidden;
+    }
   
     ul {
       list-style: none;
@@ -32,7 +81,7 @@ nav {
         }
   
         button {
-          background-color: #4CAF50; /* Green */
+          background-color: #4CAF50;
           border: none;
           color: white;
           padding: 10px 15px;
@@ -46,24 +95,57 @@ nav {
           transition: background-color 0.2s ease;
   
           &:hover {
-            background-color: #367c39;
+            background-color: lightgrey;
           }
         }
       }
     }
-  
-    /* Optional: Style for the 'theme' class (light/dark) */
-    &.light {
-      background-color: #f0f0f0;
-      color: #333;
+  }
+
+  .navbar__user-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #ede6de; 
+    border: 2px solid #000;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
-  
-    &.dark {
-      background-color: #333;
-      color: #f0f0f0;
-  
-      a {
-        color: #f0f0f0;
-      }
+    &:active {
+      transform: scale(0.95);
+      box-shadow: inset 0 2px 4px rgba(139, 119, 101, 0.3);
+      background: #d4c3b3;  // Neutral brown color
+    }
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .nav-icon {
+      font-size: 1rem;
+    }
+  }
+
+  .timer-container {
+    border: 2px solid #cbd5e1; 
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+    background: #f8fafc;        
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+    .timer-label {
+      display: block;
+      color: #64748b;
+      font-size: 0.875rem;
+      font-weight: 500;         
+      margin-bottom: 0.5rem;
     }
   }

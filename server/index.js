@@ -18,12 +18,10 @@ app.use("/notes", notesRoutes)
 app.use("/tags", tagsRoutes)
 app.use("/tasks", tasksRoutes)
 
-// Routes
 app.get("/", (req, res) => {
-  res.send("FocusFlow Backend Running! 🚀");
+  res.send("FocusFlow Backend Running!");
 });
 
-// Start Server
 app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });

@@ -1,0 +1,41 @@
+.motivational-quotes {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  background: #fff;
+  width: 100%;
+  
+  &__container {
+    text-align: center;
+    font-size: 1.4rem;
+    color: #465264;
+    line-height: 2;
+    padding: .5rem;
+    background: #f8fafc;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    min-height: 8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0.5rem;
+  }
+
+  &__cursor {
+    display: inline-block;
+    width: 0.7rem;
+    height: 1.4rem;
+    background: #64748b;
+    margin-left: 4px;
+    animation: blink 1s infinite;
+  }
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+} 

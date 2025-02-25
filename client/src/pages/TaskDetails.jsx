@@ -1,23 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useParams, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import TaskForm from '../components/Task/TaskForm';
 
-function TaskDetails({ tasks }) {
+function TaskDetails({ tasks, tags, updateTask, deleteTask }) {
   const { taskId } = useParams();
-  console.log("Tasks prop:", tasks); // Add this line
-  const task = tasks.find(task => task.id === parseInt(taskId));
+  const navigate = useNavigate();
+  const task = tasks.find(t => t.id === Number(taskId));
 
   if (!task) {
-    return <div>Task not found.</div>;
+    return <div>Task not found</div>;
   }
 
+  const handleUpdate = async (updatedTaskData) => {
+    await updateTask(task.id, updatedTaskData);
+    navigate('/tasks');
+  };
+
+  const handleDelete = () => {
+    deleteTask(task.id);
+    navigate('/tasks');
+  };
+
   return (
-    <div>
-      <h1>Task Details</h1>
-      <h2>{task.title}</h2>
-      <p>{task.description}</p>
-      <p>Status: {task.status}</p>
-      {/* Display other task details */}
+    <div className="task-details">
+      <TaskForm 
+        task={task}
+        addTask={handleUpdate}
+        tags={tags}
+        onCancel={() => navigate('/tasks')}
+      />
+      <button 
+        className="delete-btn"
+        onClick={handleDelete}
+      >
+        Delete Task
+      </button>
     </div>
   );
 }

@@ -1,0 +1,156 @@
+.dashboard-header {
+  &__stats {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .stat-card {
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    
+    h3 {
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+      color: #64748b;
+    }
+  }
+}
+
+.split-flap {
+  display: inline-flex;
+  gap: 4px;
+  padding: 6px;
+  font-family: var(--font-mono);
+  margin: 0.5rem auto;
+  
+  &__digit {
+    font-size: 2.5rem;
+    font-weight: bold;
+    width: 1.5ch;
+    height: 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    color: #477593;
+    background: #f8fafc;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(71, 117, 147, 0.1);
+      top: 50%;
+      transform: rotateX(45deg);
+    }
+
+    @keyframes flipDown {
+      0% {
+        transform: rotateX(0);
+      }
+      100% {
+        transform: rotateX(-90deg);
+      }
+    }
+
+    &.changing {
+      animation: flipDown 0.3s ease-in-out;
+    }
+  }
+}
+
+// Responsive styles
+@media (max-width: 768px) {
+  .dashboard-header {
+    &__stats {
+      padding: 0.5rem;
+    }
+
+    .stat-card {
+      max-width: 300px;
+    }
+  }
+}
+
+.dashboard-stats {
+  display: flex;
+  gap: 2rem;
+  margin: 1.5rem 0;
+  
+  .stat-card {
+    background: var(--bg-secondary);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
+    h3 {
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+      color: var(--text-secondary);
+    }
+  }
+}
+
+.motivational-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  
+  &__count {
+    font-size: 3.5rem;
+    font-weight: bold;
+    color: #477593;
+    font-family: 'Inter', sans-serif;
+    line-height: 1;
+  }
+  
+  &__message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: #64748b;
+    font-size: 1.1rem;
+    text-align: center;
+  }
+
+  &__subtitle {
+    font-size: 0.9rem;
+    color: #6b9e81;
+    font-style: italic;
+  }
+}
+
+.goal-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  
+  &__message {
+    text-align: center;
+    padding: 0.5rem;
+  }
+
+  &__label {
+    font-size: 1rem;
+    color: #94a3b8;
+    font-family: 'Inter', sans-serif;
+  }
+
+  &__motivation {
+    font-size: 0.9rem;
+    color: #64748b;
+    font-style: italic;
+    margin-top: 0.25rem;
+  }
+} 
