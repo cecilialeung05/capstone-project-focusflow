@@ -2,9 +2,17 @@
 
 FocusFlow is a modern productivity application that empowers users to create, manage, and track tasks and notes in one seamless interface. Built with a focus on simplicity, efficiency, and overall well-being, FocusFlow integrates an intuitive task manager, linked note-taking, a focus timer which prompts you to take a break every 25 minutes, and wellness motivational boost prompts to help you stay on track and inspired throughout your day.
 
+"FocusFlow is designed for individuals who struggle with focus, motivation, and task organization. Whether you're a student, professional, or someone seeking a structured yet flexible workflow, FocusFlow helps you manage tasks, take meaningful breaks, and track progress without feeling overwhelmed."
 ---
 
 ## Features
+
+### How It Works (A Day with FocusFlow)
+- **Start Your Day →** Add tasks and jot down quick notes.
+- **Stay on Track →** Use the Focus Timer to work in structured sessions.
+- **Reflect & Adjust →** Log energy levels, organize notes, and review insights.
+- **Stay Motivated →** Receive small motivational boosts and reminders.
+
 
 ### Task Management
 - **Create, Edit, Delete Tasks:** Manage tasks with titles, descriptions, due dates, and statuses (open, in progress, completed).
