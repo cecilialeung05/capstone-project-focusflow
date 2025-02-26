@@ -1,10 +1,35 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { formatDate } from '../utils/dateUtils';
 import SplitFlapDisplay from '../components/Dashboard/DashboardHeader';
+import { 
+  ListChecks, 
+  Timer, 
+  NotePencil,
+  Target,
+  HourglassHigh,
+  CheckCircle 
+} from "@phosphor-icons/react";
 import './Dashboard.scss';
 
-function Dashboard({ tasks, notes }) {
+function Dashboard({ tasks, notes, onTimerStart }) {
+  const [userName, setUserName] = useState(localStorage.getItem('userName') || 'Guest');
+
+  // Listen for name updates
+  useEffect(() => {
+    const handleNameUpdate = () => {
+      setUserName(localStorage.getItem('userName') || 'Guest');
+    };
+
+    window.addEventListener('nameUpdated', handleNameUpdate);
+    window.addEventListener('storage', handleNameUpdate);
+    
+    return () => {
+      window.removeEventListener('nameUpdated', handleNameUpdate);
+      window.removeEventListener('storage', handleNameUpdate);
+    };
+  }, []);
+
   const statistics = useMemo(() => {
     const taskStats = {
       total: tasks.length,
@@ -37,15 +62,74 @@ function Dashboard({ tasks, notes }) {
 
   return (
     <div className="dashboard">
-      <section className="stats-section">
-        <div className="stats-grid">
-          <div className="stat-card">
+      <section className="welcome-section">
+        <h1>{userName}'s Space</h1>
+        
+        <div className="goal-counter">
+          <div className="counter-display">
             <SplitFlapDisplay 
               value={statistics.taskStats.total} 
               digits={2}
               backgroundColor="var(--bg-primary)"
               textColor="var(--text-primary)"
             />
+          </div>
+        </div>
+
+        <div className="start-day-container">
+          <h2>Start Your Day</h2>
+          <div className="action-cards">
+            <Link to="/tasks" className="action-card">
+              <div className="card-icon">
+                <ListChecks size={40} weight="duotone" />
+              </div>
+              <h3>Plan Your Tasks</h3>
+              <p>Create and organize your daily tasks</p>
+            </Link>
+            <button 
+              className="action-card timer-card"
+              onClick={onTimerStart}
+            >
+              <div className="card-icon">
+                <Timer size={40} weight="duotone" />
+              </div>
+              <h3>Focus Timer</h3>
+              <p>Start a 25-minute focus session</p>
+            </button>
+            <Link to="/notes" className="action-card">
+              <div className="card-icon">
+                <NotePencil size={40} weight="duotone" />
+              </div>
+              <h3>Quick Notes</h3>
+              <p>Capture your thoughts and ideas</p>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="progress-section">
+        <h2>Today's Progress</h2>
+        <div className="progress-pills">
+          <div className="pill">
+            <span className="pill-icon">
+              <Target size={24} weight="duotone" />
+            </span>
+            <span className="pill-label">Open</span>
+            <span className="pill-value">{statistics.taskStats.open}</span>
+          </div>
+          <div className="pill">
+            <span className="pill-icon">
+              <HourglassHigh size={24} weight="duotone" />
+            </span>
+            <span className="pill-label">In Progress</span>
+            <span className="pill-value">{statistics.taskStats.inProgress}</span>
+          </div>
+          <div className="pill">
+            <span className="pill-icon">
+              <CheckCircle size={24} weight="duotone" />
+            </span>
+            <span className="pill-label">Completed</span>
+            <span className="pill-value">{statistics.taskStats.completed}</span>
           </div>
         </div>
       </section>

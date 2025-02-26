@@ -2,13 +2,18 @@ import React, { useState, useMemo } from 'react';
 import TaskForm from '../components/Task/TaskForm';
 import TaskItem from '../components/Task/TaskItem';
 import './Tasks.scss';
+import { useNavigate } from 'react-router-dom';
+import { Timer, NotePencil } from '@phosphor-icons/react';
 
-function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
+function Tasks({ tasks, tags, addTask, updateTask, deleteTask, onTimerStart }) {
   const [showForm, setShowForm] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedTags, setSelectedTags] = useState([]);
   const [sortBy, setSortBy] = useState('created'); 
   const [searchTerm, setSearchTerm] = useState('');
+  const [showPrompt, setShowPrompt] = useState(false);
+  const [lastAction, setLastAction] = useState(null);
+  const navigate = useNavigate();
 
   const filteredTasks = useMemo(() => {
     return tasks
@@ -49,6 +54,18 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
       open: tasks.filter(task => task.status?.toLowerCase() === 'open').length,
     };
   }, [tasks]);
+
+  const handleTaskAdd = async (task) => {
+    await addTask(task);
+    setLastAction('added');
+    setShowPrompt(true);
+  };
+
+  const handleTaskComplete = async (taskId, task) => {
+    await updateTask(taskId, { ...task, status: 'completed' });
+    setLastAction('completed');
+    setShowPrompt(true);
+  };
 
   return (
     <div className="tasks-page">
@@ -129,7 +146,7 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
         {showForm && (
           <div className="form-section">
             <TaskForm 
-              addTask={addTask}
+              addTask={handleTaskAdd}
               tags={tags}
               onCancel={() => setShowForm(false)}
             />
@@ -142,7 +159,7 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
               <TaskItem
                 key={task.id}
                 task={task}
-                updateTask={updateTask}
+                updateTask={handleTaskComplete}
                 deleteTask={deleteTask}
               />
             ))
@@ -153,6 +170,70 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask }) {
           )}
         </div>
       </div>
+
+      {showPrompt && (
+        <div className="task-action-prompt">
+          {lastAction === 'added' && (
+            <div className="prompt-content">
+              <h3>Great! Ready to focus on this task?</h3>
+              <div className="prompt-actions">
+                <button 
+                  className="prompt-action-button"
+                  onClick={() => {
+                    setShowPrompt(false);
+                    onTimerStart();
+                  }}
+                >
+                  <Timer size={24} weight="duotone" />
+                  Start Focus Timer
+                </button>
+                <button 
+                  className="prompt-action-button"
+                  onClick={() => {
+                    setShowPrompt(false);
+                    navigate('/notes/new', { 
+                      state: { contextTask: tasks[tasks.length - 1] }
+                    });
+                  }}
+                >
+                  <NotePencil size={24} weight="duotone" />
+                  Add Related Notes
+                </button>
+                <button 
+                  className="prompt-action-skip"
+                  onClick={() => setShowPrompt(false)}
+                >
+                  Maybe Later
+                </button>
+              </div>
+            </div>
+          )}
+          
+          {lastAction === 'completed' && (
+            <div className="prompt-content">
+              <h3>Task completed! Want to capture any thoughts?</h3>
+              <div className="prompt-actions">
+                <button 
+                  className="prompt-action-button"
+                  onClick={() => {
+                    setShowPrompt(false);
+                    navigate('/notes/new');
+                  }}
+                >
+                  <NotePencil size={24} weight="duotone" />
+                  Add Notes
+                </button>
+                <button 
+                  className="prompt-action-skip"
+                  onClick={() => setShowPrompt(false)}
+                >
+                  Not Now
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

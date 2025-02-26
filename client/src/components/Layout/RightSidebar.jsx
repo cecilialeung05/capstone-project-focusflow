@@ -10,6 +10,7 @@ import './RightSidebar.scss';
 function RightSidebar({ tasks = [], notes = [], updateNote, isAuthenticated }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isEditing, setIsEditing] = useState(!localStorage.getItem('userName'));
   const [widgets, setWidgets] = useState([
     { id: 'greeting', title: 'Welcome', component: Greeting, isExpanded: true },
     { id: 'weather', title: 'Weather', icon: <WiDaySunny size={16} />, component: WeatherWidget, isExpanded: true },
@@ -30,6 +31,20 @@ function RightSidebar({ tasks = [], notes = [], updateNote, isAuthenticated }) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setIsEditing(!localStorage.getItem('userName'));
+    };
+
+    window.addEventListener('nameUpdated', handleStorageChange);
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('nameUpdated', handleStorageChange);
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
   const handleDragEnd = (result) => {
     if (!result.destination) return;
     const items = Array.from(widgets);
@@ -46,18 +61,39 @@ function RightSidebar({ tasks = [], notes = [], updateNote, isAuthenticated }) {
     ));
   };
 
+  const handleClearSession = () => {
+    localStorage.clear();
+    window.dispatchEvent(new Event('nameUpdated'));
+    window.location.reload(); // Refresh to reset all state
+  };
+
   return (
-    <aside className={`right-sidebar ${isCollapsed ? 'right-sidebar--collapsed' : ''}`}>
-      <button 
-        className="right-sidebar__toggle"
-        onClick={() => setIsCollapsed(!isCollapsed)}
-        aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-      >
-        {isMobile 
-          ? (isCollapsed ? '↑' : '↓')
-          : (isCollapsed ? '←' : '→')
-        }
-      </button>
+    <aside className={`
+      right-sidebar 
+      ${isCollapsed ? 'right-sidebar--collapsed' : ''} 
+      ${isEditing ? 'right-sidebar--fullscreen' : ''}
+    `}>
+      <div className="right-sidebar__header">
+        <button 
+          className="right-sidebar__toggle"
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          {isMobile 
+            ? (isCollapsed ? '↑' : '↓')
+            : (isCollapsed ? '←' : '→')
+          }
+        </button>
+        
+        {!isEditing && (
+          <button 
+            className="right-sidebar__clear-session"
+            onClick={handleClearSession}
+          >
+            Clear Session
+          </button>
+        )}
+      </div>
 
       <DragDropContext onDragEnd={handleDragEnd}>
         <Droppable droppableId="widgets">

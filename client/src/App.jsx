@@ -15,6 +15,7 @@ function App() {
   const [tasks, setTasks] = useState([]);
   const [notes, setNotes] = useState([]);
   const [tags, setTags] = useState([]);
+  const [isTimerOpen, setIsTimerOpen] = useState(false);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -126,12 +127,21 @@ function App() {
     }
   };
 
+  const handleTimerStart = () => {
+    setIsTimerOpen(true);
+  };
+
   return (
-    <Layout>
+    <Layout isTimerOpen={isTimerOpen} setIsTimerOpen={setIsTimerOpen}>
       <Routes>
         <Route path="/" element={
           <>
-            <Dashboard tasks={tasks} notes={notes} tags={tags} />
+            <Dashboard 
+              tasks={tasks} 
+              notes={notes} 
+              tags={tags} 
+              onTimerStart={handleTimerStart}
+            />
           </>
         } />
         <Route path="/tasks" element={
@@ -140,7 +150,8 @@ function App() {
             tags={tags}
             addTask={addTask} 
             updateTask={updateTask} 
-            deleteTask={deleteTask} 
+            deleteTask={deleteTask}
+            onTimerStart={handleTimerStart}
           />
         } />
         <Route path="/tasks/:taskId" element={

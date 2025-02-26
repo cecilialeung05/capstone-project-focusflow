@@ -30,7 +30,6 @@ nav {
           display: none;
         }
 
-        // Rotate timer display
         .timer-display {
           writing-mode: vertical-rl;
           text-orientation: upright;
@@ -141,11 +140,36 @@ nav {
     background: #f8fafc;        
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 
-    .timer-label {
-      display: block;
-      color: #64748b;
-      font-size: 0.875rem;
-      font-weight: 500;         
+    .timer-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
       margin-bottom: 0.5rem;
+
+      .timer-label {
+        display: block;
+        color: #64748b;
+        font-size: 0.875rem;
+        font-weight: 500;         
+        margin-bottom: 0.5rem;
+      }
+
+      .timer-demo-trigger {
+        background: none;
+        border: none;
+        padding: 4px;
+        cursor: pointer;
+        color: var(--text-secondary);
+        opacity: 0.6;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+
+        &:hover {
+          opacity: 1;
+          color: var(--accent-primary);
+          transform: scale(1.1);
+        }
+      }
     }
   }

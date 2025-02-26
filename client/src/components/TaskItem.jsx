@@ -28,16 +28,16 @@ function TaskItem({ task, updateTask, deleteTask }) {
       <button onClick={() => handleStatusChange('open')}>Set Open</button>
       <button onClick={() => handleStatusChange('in progress')}>Set In Progress</button>
       <button onClick={() => handleStatusChange('completed')}>Set Completed</button>
-      <button onClick={() => setIsEditing(true)}>Update Task</button> {/* Update button */}
+      <button onClick={() => setIsEditing(true)}>Update Task</button> 
       <button onClick={() => deleteTask(task.id)}>Delete</button>
     
-     {isEditing && ( // Conditionally render the edit form/modal
+     {isEditing && ( 
       <div className="modal">
         <div className="modal-content">
            <TaskForm 
-             task={task} // Pass the task data to pre-populate the form
-             addTask={updateTask} // Pass the updateTask function
-             onCancel={() => setIsEditing(false)} // Function to close the modal
+             task={task} 
+             addTask={updateTask} 
+             onCancel={() => setIsEditing(false)}
             />
             <button onClick={() => setIsEditing(false)}>Cancel</button>
           </div>

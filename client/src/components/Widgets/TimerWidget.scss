@@ -3,6 +3,7 @@
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  position: relative;
 
   .timer-display {
     font-family: monospace;
@@ -111,6 +112,25 @@
     letter-spacing: 0.1em;
     text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.05);
     position: relative;
+
+    .timer-widget__demo-trigger {
+      position: absolute;
+      top: -8px;
+      right: -24px;
+      background: none;
+      border: none;
+      padding: 4px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      opacity: 0.6;
+      transition: all 0.2s ease;
+
+      &:hover {
+        opacity: 1;
+        color: var(--accent-primary);
+        transform: scale(1.1);
+      }
+    }
   }
 
   &__controls {
@@ -187,12 +207,12 @@
     }
   }
 
-  &__placeholder {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-    text-align: center;
-    opacity: 0.7;
-  }
+  // &__placeholder {
+  //   color: var(--text-secondary);
+  //   font-size: 0.9rem;
+  //   text-align: center;
+  //   opacity: 0.7;
+  // }
 
   .motivation-message {
     margin-top: 0.5rem;
@@ -202,16 +222,65 @@
     font-size: 0.875rem;
     color: #64748b;
     text-align: center;
-    border-left: 3px solid #3b82f6;
     animation: fadeIn 0.3s ease;
+  }
+
+  &__overlay {
+    position: fixed;
+    // top: 0;
+    // left: 0;
+    // right: 0;
+    // bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    animation: fadeIn 0.2s ease;
+    z-index: 998;
+
+    &-text {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.85);
+      color: #999;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      animation: fadeIn 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    &-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      padding: 0;
+      cursor: pointer;
+      opacity: 0.8;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      line-height: 1;
+
+      &:hover {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+    }
   }
 
   &__prompt {
     position: absolute;
     top: 100%;
     left: 50%;
+    margin-left: 10px;
     transform: translateX(-50%);
-    background: #f8fafc;
+    background: #c4d2e0;
     padding: 0.5rem 1rem;
     border-radius: 4px;
     font-size: 0.875rem;
@@ -219,7 +288,7 @@
     white-space: nowrap;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     animation: fadeInUp 0.3s ease;
-    border-left: 3px solid #477593;
+    z-index: 999;
   }
 }
 
@@ -243,4 +312,4 @@
     opacity: 1;
     transform: translate(-50%, 0);
   }
-} 
+}

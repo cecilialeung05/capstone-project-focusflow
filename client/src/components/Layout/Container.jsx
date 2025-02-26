@@ -4,11 +4,11 @@ import Header from './Header';
 import RightSidebar from "./RightSidebar";
 import './Container.scss'; 
 
-const Container = ({ children }) => {
+const Container = ({ children, isTimerOpen, setIsTimerOpen }) => {
   return (
     <div className="app-container"> 
         <div className="layout-container"> 
-      <Navbar />
+      <Navbar isTimerOpen={isTimerOpen} setIsTimerOpen={setIsTimerOpen} />
       <div className="container">
       <div className="content-wrapper">  
         <Header />

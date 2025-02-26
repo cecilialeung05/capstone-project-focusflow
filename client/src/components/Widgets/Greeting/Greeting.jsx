@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { ResizableBox } from 'react-resizable';
-import 'react-resizable/css/styles.css';
 import './Greeting.scss';
 
-function Greeting({ username = 'NAME' }) {
+function Greeting() {
   const [dateTime, setDateTime] = useState(new Date());
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [dimensions, setDimensions] = useState({ width: 300, height: 150 });
+  const [isEditing, setIsEditing] = useState(!localStorage.getItem('userName'));
+  const [name, setName] = useState(localStorage.getItem('userName') || '');
 
   useEffect(() => {
     const timer = setInterval(() => {
       setDateTime(new Date());
     }, 1000);
-
     return () => clearInterval(timer);
   }, []);
 
@@ -21,14 +18,14 @@ function Greeting({ username = 'NAME' }) {
     const timeGreeting = hour < 12 ? 'GOOD MORNING' : 
                         hour < 17 ? 'GOOD AFTERNOON' : 
                         'GOOD EVENING';
-    return `${timeGreeting}, ${username.toUpperCase()}`;
+    return `${timeGreeting}, ${name.toUpperCase()}`;
   };
 
   const formatDate = () => {
     const options = {
       weekday: 'short',
       year: 'numeric',
-      month: 'long',
+      month: 'short',
       day: 'numeric'
     };
     return dateTime.toLocaleDateString('en-US', options).toUpperCase();
@@ -41,35 +38,50 @@ function Greeting({ username = 'NAME' }) {
     hour12: true
   }).toUpperCase();
 
-  const handleResize = (e, { size }) => {
-    setDimensions({ width: size.width, height: size.height });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (name.trim()) {
+      localStorage.setItem('userName', name.trim());
+      setIsEditing(false);
+      window.dispatchEvent(new Event('nameUpdated'));
+    }
+  };
+
+  const handleClearSession = () => {
+    localStorage.removeItem('userName');
+    setName('');
+    setIsEditing(true);
+    window.dispatchEvent(new Event('nameUpdated'));
   };
 
   return (
-    <div className={`greeting ${isCollapsed ? 'greeting--collapsed' : ''}`}>
-      <button 
-        className="greeting__toggle"
-        onClick={() => setIsCollapsed(!isCollapsed)}
-        aria-label={isCollapsed ? 'Expand greeting' : 'Collapse greeting'}
-      >
-        {isCollapsed ? '↓' : '↑'}
-      </button>
-      
-      {!isCollapsed && (
-        <ResizableBox
-          width={dimensions.width}
-          height={dimensions.height}
-          onResize={handleResize}
-          minConstraints={[200, 100]}
-          maxConstraints={[500, 200]}
-          className="greeting__resizable"
-        >
-          <div className="greeting__content">
-            <div className="greeting__text">{getGreeting()}</div>
-            <div className="greeting__date">{formatDate()}</div>
-            <div className="greeting__time">{formatTime}</div>
-          </div>
-        </ResizableBox>
+    <div className="greeting">
+      {isEditing ? (
+        <form onSubmit={handleSubmit} className="greeting__form">
+          <input
+            type="text"
+            placeholder="Enter your name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="greeting__input"
+            autoFocus
+          />
+          <button type="submit" className="greeting__button">
+            Get Started
+          </button>
+        </form>
+      ) : (
+        <div className="greeting__content">
+          <div className="greeting__text">{getGreeting()}</div>
+          <div className="greeting__date">{formatDate()}</div>
+          <div className="greeting__time">{formatTime}</div>
+          <button 
+            className="greeting__edit"
+            onClick={handleClearSession}
+          >
+            Change Name
+          </button>
+        </div>
       )}
     </div>
   );

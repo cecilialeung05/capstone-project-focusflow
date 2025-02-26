@@ -12,7 +12,7 @@ import { useState } from 'react';
 
 import './Navbar.scss'; 
 
-function Navbar() {
+function Navbar({ isTimerOpen, setIsTimerOpen }) {
   const [totalTimeToday, setTotalTimeToday] = useState(0);
   const [timerEvent, setTimerEvent] = useState(null);
 
@@ -22,7 +22,7 @@ function Navbar() {
   };
 
   return (
-    <nav>
+    <nav className="navbar">
       <ul>
         <li className="navbar__item">
           <button className="navbar__user-circle"></button>
@@ -60,7 +60,10 @@ function Navbar() {
         <li className="timer-container">
           <span className="timer-label">Timer</span>
           <div className="timer-display">
-            <TimerWidget onTimerEvent={handleTimerEvent} />
+            <TimerWidget 
+              onTimerEvent={handleTimerEvent} 
+              autoStart={isTimerOpen}
+            />
           </div>
         </li>
         <li>
@@ -72,6 +75,11 @@ function Navbar() {
           </div>
         </li>
       </ul>
+      {isTimerOpen && (
+        <div className="timer-widget">
+          <button onClick={() => setIsTimerOpen(false)}>Close Timer</button>
+        </div>
+      )}
     </nav>
   );
 }
