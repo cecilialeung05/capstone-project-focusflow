@@ -1,8 +1,7 @@
 export async function seed(knex) {
-  // Clear existing entries
+
   await knex('tags').del();
 
-  // Insert tags
   await knex('tags').insert([
     { name: 'High Priority'},
     { name: 'Medium Priority'},

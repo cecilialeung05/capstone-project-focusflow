@@ -32,7 +32,7 @@ const taskService = {
         description: task.description,
         status: task.status,
         due_date: task.due_date,
-        tags: task.tags // Array of tag IDs
+        tags: task.tags 
       };
       const response = await axios.post(API_ENDPOINT, taskData);
       return response.data;
@@ -49,7 +49,7 @@ const taskService = {
         description: task.description,
         status: task.status,
         due_date: task.due_date,
-        tags: task.tags // Array of tag IDs
+        tags: task.tags 
       };
       const response = await axios.put(`${API_ENDPOINT}/${id}`, taskData);
       return response.data;

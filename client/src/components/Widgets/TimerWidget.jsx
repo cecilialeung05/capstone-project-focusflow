@@ -91,7 +91,6 @@ function TimerWidget({ onTimerEvent, autoStart }) {
     setIsRunning(false);
     onTimerEvent?.('break', totalTimeToday);
     
-    // Auto-dismiss after 3 seconds
     setTimeout(() => {
       setShowBreakPrompt(false);
     }, 3000);

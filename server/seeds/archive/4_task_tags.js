@@ -1,12 +1,12 @@
 export async function seed(knex) {
-  // Clear existing entries
+
   await knex('task_tags').del();
 
-  // Get references
+
   const tasks = await knex('tasks').select('id', 'title');
   const tags = await knex('tags').select('id', 'name');
 
-  // Insert task-tag relationships
+
   await knex('task_tags').insert([
     {
       task_id: tasks.find(t => t.title === 'Complete Project Proposal').id,

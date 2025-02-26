@@ -1,22 +1,3 @@
-.dashboard-header {
-  &__stats {
-    display: flex;
-    justify-content: center;
-    padding: 1rem;
-  }
-
-  .stat-card {
-    text-align: center;
-    width: 100%;
-    max-width: 400px;
-    
-    h3 {
-      margin-bottom: 1rem;
-      font-size: 1.2rem;
-      color: #64748b;
-    }
-  }
-}
 
 .split-flap {
   display: inline-flex;
@@ -66,7 +47,6 @@
   }
 }
 
-// Responsive styles
 @media (max-width: 768px) {
   .dashboard-header {
     &__stats {

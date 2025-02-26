@@ -24,6 +24,25 @@
     margin-bottom: 24px;
     display: flex;
     gap: 16px;
+      .tag-filter-btn {
+    padding: 0.5rem;
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    background: var(--bg-elevated);
+    text-align: left;
+    color: darkgray;
+    
+    &.selected {
+      background: var(--accent-primary);
+      color: white;
+      border-color: var(--accent-hover);
+    }
+    
+    &:hover:not(.selected) {
+      background: var(--bg-secondary);
+      color: cadetblue;
+    }
+  }
 
     .search-input {
       flex: 1;
@@ -339,3 +358,4 @@
     }
   }
 } 
+

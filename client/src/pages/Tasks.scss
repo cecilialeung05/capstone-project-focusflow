@@ -88,6 +88,7 @@
     border-radius: 4px;
     background: var(--bg-elevated);
     text-align: left;
+    color: darkgray;
     
     &.selected {
       background: var(--accent-primary);
@@ -97,6 +98,7 @@
     
     &:hover:not(.selected) {
       background: var(--bg-secondary);
+      color: cadetblue;
     }
   }
 

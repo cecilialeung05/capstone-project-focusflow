@@ -1,11 +1,11 @@
 export async function seed(knex) {
-  // Clear existing entries
+
   await knex('notes').del();
 
-  // Get task IDs for reference
+
   const tasks = await knex('tasks').select('id', 'title');
   
-  // Insert notes
+
   await knex('notes').insert([
     {
       task_id: tasks.find(t => t.title === 'Complete Project Proposal').id,

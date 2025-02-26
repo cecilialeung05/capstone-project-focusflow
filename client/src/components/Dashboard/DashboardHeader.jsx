@@ -53,17 +53,5 @@ function SplitFlapDisplay({ value, digits = 2 }) {
   );
 }
 
-function DashboardHeader({ daysToGoal = 7 }) {
-  return (
-    <div className="dashboard-header">
-      <div className="dashboard-header__stats">
-        <div className="stat-card">
-          <h3>Goal Countdown</h3>
-          <SplitFlapDisplay value={daysToGoal} digits={2} />
-        </div>
-      </div>
-    </div>
-  );
-}
 
-export default DashboardHeader; 
+export default SplitFlapDisplay;

@@ -1,8 +1,7 @@
 export async function seed(knex) {
-    // Clear existing note-tag relationships first
+
     await knex('note_tags').del();
   
-    // Insert notes (independent of focus sessions)
     await knex('notes').insert([
       { title: 'Meeting Notes: AI Project Planning', content: '1. Define the scope of AI automation.\n2. Establish data sources.\n3. Assign model training responsibilities.\n4. Prototype first MVP within 3 sprints.' },
       { title: 'JavaScript Async/Await Guide', content: 'Key takeaways:\n- Always use try/catch in async functions.\n- Avoid deep nesting with promise chaining.\n- Use async/await for cleaner code.\n- Fetch API works better with async/await than .then().' },
@@ -15,38 +14,30 @@ export async function seed(knex) {
       { title: 'Mindfulness Reflections', content: 'Today, I felt present and engaged while working. Noticed my focus increased after deep breathing exercises.' }
     ]);
   
-    // Fetch the newly inserted notes
     const insertedNotes = await knex('notes').select('id', 'title');
   
-    // Get references for tags
     const tags = await knex('tags').select('id', 'name');
   
-    // Prepare note-tag relationships
     const noteTagRelationships = [
-      // Work & Study Notes
       { noteTitle: 'Meeting Notes: AI Project Planning', tagName: 'Work' },
       { noteTitle: 'JavaScript Async/Await Guide', tagName: 'Study' },
       { noteTitle: 'Book Summary: Deep Work by Cal Newport', tagName: 'Deep Focus' },
   
-      // Productivity & Planning Notes
       { noteTitle: 'Weekly Review Template', tagName: 'Work' },
       { noteTitle: 'Morning Routine Checklist', tagName: 'Personal' },
       { noteTitle: 'Pomodoro Productivity Log', tagName: 'Deep Focus' },
   
-      // Creative & Personal Reflections
       { noteTitle: 'Brainstorming: Future Business Ideas', tagName: 'Project' },
       { noteTitle: 'Random Thoughts at Midnight', tagName: 'Personal' },
       { noteTitle: 'Mindfulness Reflections', tagName: 'Health' }
     ];
   
-    // Insert note-tag relationships
     const noteTags = noteTagRelationships.map(({ noteTitle, tagName }) => {
       const note = insertedNotes.find(n => n.title === noteTitle);
       const tag = tags.find(t => t.name === tagName);
       return note && tag ? { note_id: note.id, tag_id: tag.id } : null;
-    }).filter(entry => entry !== null); // Filter out any undefined values
+    }).filter(entry => entry !== null); 
   
-    // Insert the filtered relationships
     await knex('note_tags').insert(noteTags);
   }
   

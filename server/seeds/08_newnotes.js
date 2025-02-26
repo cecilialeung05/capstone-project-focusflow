@@ -1,8 +1,7 @@
 export async function seed(knex) {
-    // Clear existing entries
+
     await knex('notes').del();
   
-    // Insert notes (independent of focus sessions)
     await knex('notes').insert([
       {
         title: 'Meeting Notes: Client Kickoff',

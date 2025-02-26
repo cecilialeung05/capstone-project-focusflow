@@ -15,7 +15,6 @@ import './Dashboard.scss';
 function Dashboard({ tasks, notes, onTimerStart }) {
   const [userName, setUserName] = useState(localStorage.getItem('userName') || 'Guest');
 
-  // Listen for name updates
   useEffect(() => {
     const handleNameUpdate = () => {
       setUserName(localStorage.getItem('userName') || 'Guest');

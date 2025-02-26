@@ -3,7 +3,7 @@
  * @returns { Promise<void> }
  */
 export async function seed(knex) {
-    // Deletes ALL existing entries
+
     await knex('tasks').del();
     await knex('tasks').insert([
       {
@@ -32,7 +32,7 @@ export async function seed(knex) {
         title: 'Fix Bug in User Authentication',
         description: 'Resolve the reported issue in the user login process.',
         status: 'blocked',
-        due_date: null,  // No due date
+        due_date: null, 
       },
       {
         id: 5,

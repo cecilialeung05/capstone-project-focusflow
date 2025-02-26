@@ -41,7 +41,7 @@ function MotivationalQuotes({ totalTimeToday = 0, timerEvent = null }) {
         if (index < text.length) {
           setDisplayedMessage(text.substring(0, index + 1));
           index++;
-          typingTimeout = setTimeout(type, 150); // Slower typing speed (150ms)
+          typingTimeout = setTimeout(type, 150); 
         }
       };
       
