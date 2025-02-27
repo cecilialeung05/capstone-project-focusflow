@@ -8,13 +8,16 @@ function TimerWidget({ onTimerEvent, autoStart }) {
   const [isRunning, setIsRunning] = useState(false);
   const [totalTimeToday, setTotalTimeToday] = useState(0);
   const [showBreakPrompt, setShowBreakPrompt] = useState(false);
+  const [breakCountdown, setBreakCountdown] = useState(0);
+  const [showOverlay, setShowOverlay] = useState(false);
 
   const breakPrompts = [
       "Do a quick stretch!",
       "Take a water break",
-      "Look away from screen",
-      "Deep breath moment",
-      "Quick posture check"
+      "20-20-20 rule, look away from your screen",
+      "Ahhhh... Deep breath moment",
+      "Itching to move? Go for a quick walk",
+      "Quick! Do a posture check"
   ];
 
   const [currentPrompt, setCurrentPrompt] = useState('');
@@ -41,6 +44,22 @@ function TimerWidget({ onTimerEvent, autoStart }) {
   }, [autoStart]);
 
   useEffect(() => {
+    let countdownInterval;
+    if (breakCountdown > 0) {
+      countdownInterval = setInterval(() => {
+        setBreakCountdown(prev => {
+          const newCount = prev - 1;
+          if (newCount === 0) {
+            setShowBreakPrompt(false);
+          }
+          return newCount;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(countdownInterval);
+  }, [breakCountdown]);
+
+  useEffect(() => {
     let interval;
     if (isRunning && time > 0) {
       interval = setInterval(() => {
@@ -50,8 +69,16 @@ function TimerWidget({ onTimerEvent, autoStart }) {
             const randomPrompt = breakPrompts[Math.floor(Math.random() * breakPrompts.length)];
             setCurrentPrompt(randomPrompt);
             setShowBreakPrompt(true);
+            setShowOverlay(true);
             onTimerEvent?.('break', totalTimeToday);
             setIsRunning(false);
+            
+            const breakDuration = randomPrompt.includes("15") ? 15 * 60 : 5 * 60;
+            setBreakCountdown(breakDuration);
+            
+            setTimeout(() => {
+              setShowOverlay(false);
+            }, 3000);
           }
           return newTime;
         });
@@ -84,15 +111,25 @@ function TimerWidget({ onTimerEvent, autoStart }) {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const formatBreakTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   const triggerBreakDemo = () => {
     const randomPrompt = breakPrompts[Math.floor(Math.random() * breakPrompts.length)];
     setCurrentPrompt(randomPrompt);
     setShowBreakPrompt(true);
+    setShowOverlay(true);
     setIsRunning(false);
     onTimerEvent?.('break', totalTimeToday);
     
+    const breakDuration = randomPrompt.includes("15") ? 15 * 60 : 5 * 60;
+    setBreakCountdown(breakDuration);
+    
     setTimeout(() => {
-      setShowBreakPrompt(false);
+      setShowOverlay(false);
     }, 3000);
   };
 
@@ -100,18 +137,25 @@ function TimerWidget({ onTimerEvent, autoStart }) {
     <div className="timer-widget">
       {showBreakPrompt && (
         <>
-          <div className="timer-widget__overlay">
-            <span className="timer-widget__overlay-text">
-              <button 
-                className="timer-widget__overlay-close"
-                onClick={() => setShowBreakPrompt(false)}
-              >
-                ×
-              </button>
-            </span>
-          </div>
-          <div className="timer-widget__prompt">
-            {currentPrompt}
+          {showOverlay && (
+            <div 
+              className="timer-widget__modal-overlay"
+              onClick={() => setShowBreakPrompt(false)}
+            />
+          )}
+          <div className="timer-widget__modal">
+            <button 
+              className="timer-widget__modal-close"
+              onClick={() => setShowBreakPrompt(false)}
+            >
+              ×
+            </button>
+            <div className="timer-widget__prompt-duration">
+              {formatBreakTime(breakCountdown)}
+            </div>
+            <div className="timer-widget__prompt-message">
+              {currentPrompt}
+            </div>
           </div>
         </>
       )}

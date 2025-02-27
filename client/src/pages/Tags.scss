@@ -128,7 +128,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 8px 12px;
-                color: #64748b;
+            color: #64748b;
             background: white;
             border: 1px solid #ddd;
             border-radius: 4px;
@@ -144,9 +144,6 @@
               color: white;
               border-color: #587d95;
 
-              .tag-stats {
-                background: rgba(255, 255, 255, 0.2);
-              }
             }
 
             .tag-stats {
@@ -274,7 +271,6 @@
 
                 &.completed { background: #6b9e81; }
                 &.in-progress { background: #477593; }
-                &.blocked { background: #b94032; }
                 &.open { background: #95a5a6; }
               }
             }

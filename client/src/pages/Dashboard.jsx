@@ -66,12 +66,7 @@ function Dashboard({ tasks, notes, onTimerStart }) {
         
         <div className="goal-counter">
           <div className="counter-display">
-            <SplitFlapDisplay 
-              value={statistics.taskStats.total} 
-              digits={2}
-              backgroundColor="var(--bg-primary)"
-              textColor="var(--text-primary)"
-            />
+            <SplitFlapDisplay />
           </div>
         </div>
 
@@ -150,7 +145,7 @@ function Dashboard({ tasks, notes, onTimerStart }) {
                 className="activity-item"
               >
                 <div className="activity-type note">
-                  📝
+                <NotePencil size={25} weight="duotone" />
                 </div>
                 <div className="activity-content">
                   <h4>{note.title}</h4>

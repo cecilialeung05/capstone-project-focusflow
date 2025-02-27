@@ -100,7 +100,6 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask, onTimerStart }) {
             <label>Status</label>
             <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
               <option value="all">All Status</option>
-              <option value="open">Open</option>
               <option value="in progress">In Progress</option>
               <option value="completed">Completed</option>
             </select>
@@ -191,7 +190,7 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask, onTimerStart }) {
                   className="prompt-action-button"
                   onClick={() => {
                     setShowPrompt(false);
-                    navigate('/notes/new', { 
+                    navigate('/notes', { 
                       state: { contextTask: tasks[tasks.length - 1] }
                     });
                   }}
