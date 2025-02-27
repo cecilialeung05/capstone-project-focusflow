@@ -10,7 +10,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    margin-bottom: 32px;
+    padding: 16px 0;
 
     h1 {
       font-size: 1rem;
@@ -23,6 +24,59 @@
       align-items: center;
       gap: 0.75rem;
       
+    }
+  }
+
+  .welcome-text {
+    font-family: Roboto, Arial, sans-serif;
+    font-size: 1.8rem;
+    color: #2c3e50;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    letter-spacing: -0.3px;
+
+    .welcome-emoji {
+      font-size: 1.6rem;
+    }
+  }
+
+  .add-task-button {
+    background-color: #86A890;  // Matching our checkbox color
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 24px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 4px rgba(134, 168, 144, 0.2);
+
+    &:hover {
+      background-color: #739A7E;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px rgba(134, 168, 144, 0.2);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(134, 168, 144, 0.2);
+    }
+
+    .button-content {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .plus-icon {
+      font-size: 1.2rem;
+      font-weight: 400;
     }
   }
 
@@ -204,6 +258,20 @@
     &:hover {
       background: var(--bg-secondary);
       transform: translateY(-1px);
+    }
+
+    &.feeling-good {
+      background-color: #6b9e81 !important;
+      &:hover {
+        background-color: #5c8b6f !important;
+      }
+    }
+    
+    &.feeling-tired {
+      background-color: #e2725b !important;
+      &:hover {
+        background-color: #d25c42 !important;
+      }
     }
   }
 

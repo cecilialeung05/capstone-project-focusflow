@@ -7,7 +7,6 @@ export const up = async (knex) => {
       .dropTableIfExists('tags')
       .then(() => {
         return knex.schema
-
           .createTable('tags', table => {
             table.increments('id').primary();
             table.string('name').notNullable();
@@ -15,7 +14,6 @@ export const up = async (knex) => {
             table.timestamps(true, true);
           })
           
-
           .createTable('tasks', table => {
             table.increments('id').primary();
             table.string('title').notNullable();
@@ -25,7 +23,6 @@ export const up = async (knex) => {
             table.timestamps(true, true);
           })
           
-
           .createTable('notes', table => {
             table.increments('id').primary();
             table.integer('task_id').unsigned()
@@ -36,7 +33,6 @@ export const up = async (knex) => {
             table.timestamps(true, true);
           })
           
-     
           .createTable('task_tags', table => {
             table.increments('id').primary();
             table.integer('task_id').unsigned()
@@ -68,4 +64,4 @@ export const up = async (knex) => {
       .dropTableIfExists('notes')
       .dropTableIfExists('tasks')
       .dropTableIfExists('tags');
-  }; 
+  };

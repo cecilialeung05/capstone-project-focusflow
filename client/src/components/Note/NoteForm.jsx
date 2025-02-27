@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import './NoteForm.scss';
 
-function NoteForm({ note, addNote, tasks, tags, onCancel }) {
+const NoteForm = ({ 
+  note, 
+  onSubmit, 
+  tasks, 
+  tags, 
+  onCancel,
+  initialTaskId,
+  initialTitle 
+}) => {
   const [formData, setFormData] = useState({
-    title: '',
-    content: '',
-    task_id: '',
-    tags: []
+    title: note?.title || initialTitle || '',
+    content: note?.content || '',
+    task_id: note?.task_id || initialTaskId || '',
+    tags: note?.tags?.map(tag => tag.id) || []
   });
 
   useEffect(() => {
@@ -35,7 +43,7 @@ function NoteForm({ note, addNote, tasks, tags, onCancel }) {
       tags: formData.tags.map(Number)
     };
 
-    addNote(note ? { ...noteData, id: note.id } : noteData);
+    onSubmit(note ? { ...noteData, id: note.id } : noteData);
     
     if (!note) {
       setFormData({
@@ -144,6 +152,6 @@ function NoteForm({ note, addNote, tasks, tags, onCancel }) {
       </div>
     </form>
   );
-}
+};
 
 export default NoteForm;

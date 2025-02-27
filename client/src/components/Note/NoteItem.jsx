@@ -14,15 +14,19 @@ function NoteItem({ note, onEdit, onDelete }) {
 
   const handleEdit = () => {
     setIsEditing(true);
+    setEditData({ title: note.title, content: note.content });
     setTimeout(() => {
       const textarea = document.querySelector(`#note-${note.id}-content`);
       if (textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
         textarea.focus();
       }
     }, 0);
   };
 
   const handleSave = () => {
+    if (editData.title.trim() === '' || editData.content.trim() === '') return;
     onEdit(note.id, editData);
     setIsEditing(false);
   };
@@ -33,6 +37,21 @@ function NoteItem({ note, onEdit, onDelete }) {
       ...prev,
       [name]: value
     }));
+
+    // Auto-resize textarea
+    if (name === 'content') {
+      e.target.style.height = 'auto';
+      e.target.style.height = e.target.scrollHeight + 'px';
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && e.metaKey) {
+      handleSave();
+    } else if (e.key === 'Escape') {
+      setIsEditing(false);
+      setEditData({ title: note.title, content: note.content });
+    }
   };
 
   return (
@@ -45,10 +64,18 @@ function NoteItem({ note, onEdit, onDelete }) {
               name="title"
               value={editData.title}
               onChange={handleChange}
+              onKeyDown={handleKeyDown}
               className="note-item__title-input"
+              placeholder="Note title..."
+              autoFocus
             />
           ) : (
-            <h3 className="note-item__title">{note.title}</h3>
+            <h3 
+              className="note-item__title"
+              onClick={handleEdit}
+            >
+              {note.title}
+            </h3>
           )}
         </div>
         <div className="note-item__actions">
@@ -57,14 +84,17 @@ function NoteItem({ note, onEdit, onDelete }) {
               <button 
                 className="note-item__button note-item__button--success"
                 onClick={handleSave}
-                title="Save changes"
+                title="Save changes (⌘+Enter)"
               >
                 <FiSave />
               </button>
               <button 
                 className="note-item__button"
-                onClick={() => setIsEditing(false)}
-                title="Cancel editing"
+                onClick={() => {
+                  setIsEditing(false);
+                  setEditData({ title: note.title, content: note.content });
+                }}
+                title="Cancel editing (Esc)"
               >
                 <FiX />
               </button>
@@ -97,10 +127,15 @@ function NoteItem({ note, onEdit, onDelete }) {
             name="content"
             value={editData.content}
             onChange={handleChange}
+            onKeyDown={handleKeyDown}
             className="note-item__content-input"
+            placeholder="Write your note here..."
           />
         ) : (
-          <div className="note-item__content-display">
+          <div 
+            className="note-item__content-display"
+            onClick={handleEdit}
+          >
             {note.content}
           </div>
         )}

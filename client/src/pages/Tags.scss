@@ -24,13 +24,17 @@
     margin-bottom: 24px;
     display: flex;
     gap: 16px;
-      .tag-filter-btn {
+    flex-direction: column; // Add this line to make filters stack vertically
+    align-items: stretch;   // Add this to make filters full width
+    .tag-filter-btn {
     padding: 0.5rem;
     border: 1px solid var(--border-light);
     border-radius: 4px;
     background: var(--bg-elevated);
     text-align: left;
     color: darkgray;
+    width: 100%;         // Add this to make buttons full width
+    margin-bottom: 8px;  // Add some spacing between buttons
     
     &.selected {
       background: var(--accent-primary);
@@ -45,6 +49,7 @@
   }
 
     .search-input {
+      width: 100%;  
       flex: 1;
       padding: 8px 12px;
       border: 1px solid #ddd;
@@ -59,6 +64,7 @@
     }
 
     .sort-select {
+      width: 100%;   
       padding: 8px;
       border: 1px solid #ddd;
       border-radius: 4px;
@@ -355,4 +361,68 @@
     }
   }
 } 
+
+.tag-group {
+  margin-bottom: 24px;
+  
+  &-title {
+    color: #64748b;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  &-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+.tag-btn {
+  padding: 6px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &.active {
+    border-width: 2px;
+  }
+}
+
+.search-container {
+  margin-bottom: 20px;
+  
+  .search-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    
+    &:focus {
+      outline: none;
+      border-color: #779eb7;
+      box-shadow: 0 0 0 2px rgba(119, 158, 183, 0.1);
+    }
+  }
+}
+
+.no-results {
+  color: #64748b;
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
+}
+
 

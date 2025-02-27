@@ -1,5 +1,4 @@
 export async function seed(knex) {
-    await knex('tags').del();
   
     await knex('tags').insert([
       { name: 'Deep Focus' }, 

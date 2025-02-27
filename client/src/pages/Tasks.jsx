@@ -1,18 +1,18 @@
 import React, { useState, useMemo } from 'react';
-import TaskForm from '../components/Task/TaskForm';
 import TaskItem from '../components/Task/TaskItem';
 import './Tasks.scss';
 import { useNavigate } from 'react-router-dom';
 import { Timer, NotePencil } from '@phosphor-icons/react';
+import { FiSmile, FiCoffee, FiClock, FiPlus } from 'react-icons/fi';
 
 function Tasks({ tasks, tags, addTask, updateTask, deleteTask, onTimerStart }) {
-  const [showForm, setShowForm] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedTags, setSelectedTags] = useState([]);
   const [sortBy, setSortBy] = useState('created'); 
   const [searchTerm, setSearchTerm] = useState('');
   const [showPrompt, setShowPrompt] = useState(false);
   const [lastAction, setLastAction] = useState(null);
+  const [selectedTaskId, setSelectedTaskId] = useState(null);
   const navigate = useNavigate();
 
   const filteredTasks = useMemo(() => {
@@ -61,9 +61,68 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask, onTimerStart }) {
     setShowPrompt(true);
   };
 
-  const handleTaskComplete = async (taskId, task) => {
-    await updateTask(taskId, { ...task, status: 'completed' });
-    setLastAction('completed');
+  const handleStatusChange = async (taskId, task, newStatus) => {
+    // Normalize the status to match database format
+    const normalizedStatus = newStatus.toLowerCase() === 'in progress' ? 'In Progress' :
+                            newStatus.toLowerCase() === 'completed' ? 'Completed' :
+                            'Open';
+    
+    await updateTask(taskId, { ...task, status: normalizedStatus });
+    
+    // Check status with case-insensitive comparison
+    if (normalizedStatus.toLowerCase() === 'in progress') {
+      setLastAction('added');
+      setShowPrompt(true);
+    } else if (normalizedStatus.toLowerCase() === 'completed') {
+      setLastAction('need_feedback');
+      setShowPrompt(true);
+    }
+  };
+
+  const handleTaskUpdate = async (taskId, updatedTask) => {
+    try {
+      console.log('Tasks.jsx - Updating task:', taskId, updatedTask);
+      await updateTask(taskId, updatedTask);
+      console.log('Tasks.jsx - Update successful');
+    } catch (error) {
+      console.error('Tasks.jsx - Error updating task:', error);
+      throw error; // Propagate error back to TaskItem
+    }
+  };
+
+  const handleAddNewTask = async () => {
+    try {
+      const newTask = {
+        title: "New Task",
+        status: "Open",
+        description: "",
+        due_date: null
+      };
+      const addedTask = await addTask(newTask);
+      // The task list should automatically update if your state management is set up correctly
+    } catch (error) {
+      console.error('Failed to add new task:', error);
+    }
+  };
+
+  const handleTaskCheck = async (taskId, task) => {
+    // If the task is already selected, unselect it
+    if (selectedTaskId === taskId) {
+      setSelectedTaskId(null);
+      setShowPrompt(false);
+      // Optionally reset the task status if needed
+      await handleStatusChange(taskId, task, 'Open');
+    } else {
+      // Select the new task
+      setSelectedTaskId(taskId);
+      setLastAction('added');
+      setShowPrompt(true);
+      await handleStatusChange(taskId, task, 'In Progress');
+    }
+  };
+
+  const handleEndSession = () => {
+    setLastAction('need_feedback');
     setShowPrompt(true);
   };
 
@@ -133,24 +192,30 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask, onTimerStart }) {
 
       <div className="tasks-column">
         <div className="header-title-row">
-          <h1>... Ready to get started?</h1>
-          <button 
-            onClick={() => setShowForm(!showForm)}
-            className="primary-action-btn"
-          >
-            {showForm ? 'Cancel' : '+ Add Task'}
-          </button>
-        </div>
-
-        {showForm && (
-          <div className="form-section">
-            <TaskForm 
-              addTask={handleTaskAdd}
-              tags={tags}
-              onCancel={() => setShowForm(false)}
-            />
+          <div className="header-left">
+            <h1 className="welcome-text">
+              <span className="welcome-emoji"></span> Ready to get started?
+            </h1>
           </div>
-        )}
+          <div className="header-actions">
+            {selectedTaskId && (
+              <button 
+                onClick={handleEndSession}
+                className="header-button end-session-button"
+              >
+                <FiClock size={18} />
+                End Session
+              </button>
+            )}
+            <button 
+              onClick={handleAddNewTask}
+              className="header-button add-task-button"
+            >
+              <FiPlus size={18} />
+              Add Task
+            </button>
+          </div>
+        </div>
 
         <div className="tasks-list">
           {filteredTasks.length > 0 ? (
@@ -158,8 +223,11 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask, onTimerStart }) {
               <TaskItem
                 key={task.id}
                 task={task}
-                updateTask={handleTaskComplete}
+                updateTask={handleTaskUpdate}
                 deleteTask={deleteTask}
+                onStatusChange={handleStatusChange}
+                onCheck={handleTaskCheck}
+                isSelected={selectedTaskId === task.id}
               />
             ))
           ) : (
@@ -172,6 +240,77 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask, onTimerStart }) {
 
       {showPrompt && (
         <div className="task-action-prompt">
+          {lastAction === 'need_feedback' && (
+            <div className="prompt-content">
+              <h3>How are you feeling after this session?</h3>
+              <div className="prompt-actions">
+                <button 
+                  className="prompt-action-button"
+                  onClick={() => {
+                    setShowPrompt(false);
+                    setLastAction('completed');
+                    setTimeout(() => {
+                      setShowPrompt(true);
+                      setLastAction('suggest_next');
+                    }, 500);
+                  }}
+                >
+                  <FiSmile size={24} />
+                  <span>Feeling Good!</span>
+                </button>
+                <button 
+                  className="prompt-action-skip"
+                  onClick={() => {
+                    setShowPrompt(false);
+                    setTimeout(() => {
+                      setShowPrompt(true);
+                      setLastAction('suggest_break');
+                    }, 500);
+                  }}
+                >
+                  <FiCoffee size={24} />
+                  <span>Need a Break</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {lastAction === 'suggest_next' && (
+            <div className="prompt-content">
+              <h3>Great energy! Want to tackle another deep focus task?</h3>
+              <div className="prompt-actions">
+                <button 
+                  className="prompt-action-button"
+                  onClick={() => {
+                    setShowPrompt(false);
+                  }}
+                >
+                  Start New Task
+                </button>
+                <button 
+                  className="prompt-action-skip"
+                  onClick={() => setShowPrompt(false)}
+                >
+                  Maybe Later
+                </button>
+              </div>
+            </div>
+          )}
+
+          {lastAction === 'suggest_break' && (
+            <div className="prompt-content">
+              <h3>Take a short break and try a lighter task next! 🌿</h3>
+              <div className="prompt-actions">
+                <button 
+                  className="prompt-action-button"
+                  onClick={() => setShowPrompt(false)}
+                >
+                  Got it!
+                </button>
+              </div>
+            </div>
+          )}
+
           {lastAction === 'added' && (
             <div className="prompt-content">
               <h3>Great! Ready to focus on this task?</h3>
@@ -181,22 +320,12 @@ function Tasks({ tasks, tags, addTask, updateTask, deleteTask, onTimerStart }) {
                   onClick={() => {
                     setShowPrompt(false);
                     onTimerStart();
+                    // Simply navigate to notes page
+                    navigate('/notes');
                   }}
                 >
                   <Timer size={24} weight="duotone" />
-                  Start Focus Timer
-                </button>
-                <button 
-                  className="prompt-action-button"
-                  onClick={() => {
-                    setShowPrompt(false);
-                    navigate('/notes', { 
-                      state: { contextTask: tasks[tasks.length - 1] }
-                    });
-                  }}
-                >
-                  <NotePencil size={24} weight="duotone" />
-                  Add Related Notes
+                  Start Timer & Take Notes
                 </button>
                 <button 
                   className="prompt-action-skip"

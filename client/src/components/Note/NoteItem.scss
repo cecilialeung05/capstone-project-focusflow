@@ -32,12 +32,12 @@
 
   &__title-input {
     width: 100%;
-    font-size: 1.25rem;
-    font-weight: 600;
     border: none;
     background: transparent;
-    color: #1e293b;
-    padding: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+    padding: 4px 0;
+    color: #2c3e50;
     
     &:focus {
       outline: none;
@@ -50,24 +50,23 @@
   }
 
   &__content-display {
+    cursor: text;
+    padding: 8px 0;
     white-space: pre-wrap;
-    color: #334155;
-    line-height: 1.6;
-    font-size: 1rem;
-    padding: 0.5rem;
+    color: #4a5568;
+    line-height: 1.5;
   }
 
   &__content-input {
     width: 100%;
-    min-height: 100px;
     border: none;
     background: transparent;
-    color: #334155;
-    line-height: 1.6;
-    font-size: 1rem;
-    font-family: inherit;
-    padding: 0.5rem;
-    resize: vertical;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    padding: 8px 0;
+    min-height: 100px;
+    resize: none;
+    color: #4a5568;
     
     &:focus {
       outline: none;
@@ -242,6 +241,12 @@
     line-height: 1.6;
     color: #444;
     font-size: 0.95rem;
+  }
+
+  &:hover {
+    .note-item__actions {
+      opacity: 1;
+    }
   }
 }
 

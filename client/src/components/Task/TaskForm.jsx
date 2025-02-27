@@ -2,39 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { FiX, FiCheck } from 'react-icons/fi';
 import './TaskForm.scss';
 
-function TaskForm({ task, addTask, tags, onCancel }) {
+function TaskForm({ addTask, tags, onCancel, initialTask }) {
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    due_date: '',
+    title: initialTask?.title || '',
+    description: initialTask?.description || '',
+    due_date: initialTask?.due_date || '',
     status: 'open',
-    tags: []
+    tags: initialTask?.tags?.map(tag => tag.id) || [],
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    if (!formData.title.trim()) {
-      return;
+    if (initialTask) {
+      addTask({ ...formData, id: initialTask.id });
+    } else {
+      addTask(formData);
     }
-    const taskData = {
-      ...formData,
-      title: formData.title.trim(),
-      description: formData.description.trim()
-    };
-
-    addTask(task ? { ...taskData, id: task.id } : taskData);
-    
-    if (!task) {
-      setFormData({
-        title: '',
-        description: '',
-        due_date: '',
-        status: 'open',
-        tags: []
-      });
-    }
-    onCancel?.();
+    onCancel();
   };
 
   const handleChange = (e) => {
