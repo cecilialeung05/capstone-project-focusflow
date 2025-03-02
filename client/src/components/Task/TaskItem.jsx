@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { FiEdit2, FiTrash2, FiX, FiSave, FiCheck } from 'react-icons/fi';
 import './TaskItem.scss';
+import { TaskContext } from '../../context/TaskContext';
 
 function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSelected }) {
   const [showStatusMenu, setShowStatusMenu] = useState(false);
@@ -13,35 +14,24 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
     description: task.description || '',
     due_date: task.due_date || '',
   });
+  const { updateTask: contextUpdateTask } = useContext(TaskContext);
 
   const handleTitleSubmit = async () => {
     if (editedTitle.trim() !== task.title) {
-      console.log('TaskItem - Attempting to update task:', task.id);
-      
-      // Only send necessary fields for update
-      const updateData = {
-        id: task.id,
-        title: editedTitle.trim(),
-        status: task.status,
-        description: task.description,
-        due_date: task.due_date
-      };
-      
       try {
-        await updateTask(task.id, updateData);
-        console.log('TaskItem - Update successful');
-        setIsEditing(false);
+        await contextUpdateTask(task.id, {
+          ...task,
+          title: editedTitle.trim()
+        });
       } catch (error) {
-        console.error('TaskItem - Failed to update task:', error);
+        console.error('Failed to update task:', error);
         setEditedTitle(task.title);
-        setIsEditing(false);
       }
-    } else {
-      setIsEditing(false);
     }
+    setIsEditing(false);
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       handleTitleSubmit();
     } else if (e.key === 'Escape') {
@@ -78,12 +68,12 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
               value={editedTitle}
               onChange={(e) => setEditedTitle(e.target.value)}
               onBlur={handleTitleSubmit}
-              onKeyDown={handleKeyPress}
+              onKeyDown={handleKeyDown}
               className="task-item__title-input"
               autoFocus
             />
           ) : (
-            <h3 className="task-item__title">
+            <h3 className="task-item__title" onClick={() => setIsEditing(true)}>
               {task.title}
             </h3>
           )}

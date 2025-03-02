@@ -10,7 +10,7 @@ import Layout from './components/Layout/Container';
 import taskService from './services/taskService';
 import noteService from './services/noteService';
 import tagService from './services/tagService';
-
+import { TaskProvider } from './context/TaskContext';
 function App() {
   const [tasks, setTasks] = useState([]);
   const [notes, setNotes] = useState([]);
@@ -132,6 +132,7 @@ function App() {
   };
 
   return (
+    <TaskProvider>
     <Layout isTimerOpen={isTimerOpen} setIsTimerOpen={setIsTimerOpen}>
       <Routes>
         <Route path="/" element={
@@ -193,6 +194,7 @@ function App() {
         } />
       </Routes>
     </Layout>
+    </TaskProvider>
   );
 }
 

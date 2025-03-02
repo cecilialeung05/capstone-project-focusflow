@@ -42,16 +42,16 @@ const taskService = {
     }
   },
 
-  updateTask: async (id, task) => {
+  updateTask: async (id, updatedTask) => {
     try {
-      const taskData = {
-        title: task.title,
-        description: task.description,
-        status: task.status,
-        due_date: task.due_date,
-        tags: task.tags 
-      };
-      const response = await axios.put(`${API_ENDPOINT}/${id}`, taskData);
+      const response = await axios.put(`${API_ENDPOINT}/${id}`, {
+        id: id,
+        title: updatedTask.title,
+        description: updatedTask.description || "string",
+        status: updatedTask.status || "open",
+        due_date: updatedTask.due_date || new Date().toISOString(),
+        tags: updatedTask.tags || []
+      });
       return response.data;
     } catch (error) {
       console.error(`Error updating task ${id}:`, error);
