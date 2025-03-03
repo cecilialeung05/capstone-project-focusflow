@@ -1,20 +1,43 @@
-import React, { useState } from 'react';
-import { FiEdit2, FiTrash2, FiX, FiExternalLink, FiSave } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { FiEdit2, FiTrash2, FiX, FiExternalLink, FiSave, FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { Link, useNavigate } from 'react-router-dom';
 import { formatDate } from '../../utils/dateUtils';
 import './NoteItem.scss';
 
-function NoteItem({ note, onEdit, onDelete }) {
+function NoteItem({ note, onEdit, onDelete, isNew = false }) {
+  const navigate = useNavigate();
+  const [isEditing, setIsEditing] = useState(isNew);
   const [showDetails, setShowDetails] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({
-    title: note.title,
-    content: note.content
+    title: note?.title || '',
+    content: note?.content || '',
+    task_id: note?.task_id || null,
+    tags: note?.tags || []
   });
+
+  useEffect(() => {
+    if (isNew) {
+      const titleInput = document.querySelector('.note-item__title-input');
+      if (titleInput) {
+        titleInput.focus();
+      }
+    }
+  }, [isNew]);
+
+  useEffect(() => {
+    if (!isNew && note) {
+      setEditData({
+        title: note.title || '',
+        content: note.content || '',
+        task_id: note.task_id || null,
+        tags: note.tags || []
+      });
+    }
+  }, [note, isNew]);
 
   const handleEdit = () => {
     setIsEditing(true);
-    setEditData({ title: note.title, content: note.content });
+    setEditData({ title: note.title, content: note.content, task_id: note.task_id, tags: note.tags || [] });
     setTimeout(() => {
       const textarea = document.querySelector(`#note-${note.id}-content`);
       if (textarea) {
@@ -25,10 +48,39 @@ function NoteItem({ note, onEdit, onDelete }) {
     }, 0);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (editData.title.trim() === '' || editData.content.trim() === '') return;
-    onEdit(note.id, editData);
-    setIsEditing(false);
+    
+    try {
+      await onEdit(note?.id, {
+        ...editData,
+        title: editData.title.trim(),
+        content: editData.content.trim(),
+        task_id: editData.task_id,
+        tags: editData.tags
+      });
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error saving note:', error);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && e.metaKey) {
+      handleSave();
+    } else if (e.key === 'Escape') {
+      if (isNew) {
+        onDelete();
+      } else {
+        setIsEditing(false);
+        setEditData({
+          title: note.title,
+          content: note.content,
+          task_id: note.task_id,
+          tags: note.tags || []
+        });
+      }
+    }
   };
 
   const handleChange = (e) => {
@@ -38,27 +90,22 @@ function NoteItem({ note, onEdit, onDelete }) {
       [name]: value
     }));
 
-    // Auto-resize textarea
-    if (name === 'content') {
+    if (name === 'content' && e.target.tagName.toLowerCase() === 'textarea') {
       e.target.style.height = 'auto';
-      e.target.style.height = e.target.scrollHeight + 'px';
+      e.target.style.height = `${e.target.scrollHeight}px`;
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && e.metaKey) {
-      handleSave();
-    } else if (e.key === 'Escape') {
-      setIsEditing(false);
-      setEditData({ title: note.title, content: note.content });
-    }
+  const handleTaskClick = (e) => {
+    e.preventDefault();
+    navigate(`/tasks`, { state: { selectedTaskId: note.task_id } });
   };
 
   return (
-    <div className={`note-item ${isEditing ? 'note-item--editing' : ''}`}>
+    <div className={`note-item ${isEditing ? 'note-item--editing' : ''} ${isNew ? 'note-item--new' : ''}`}>
       <div className="note-item__header">
         <div className="note-item__title-container">
-          {isEditing ? (
+          {isEditing || isNew ? (
             <input
               type="text"
               name="title"
@@ -67,19 +114,16 @@ function NoteItem({ note, onEdit, onDelete }) {
               onKeyDown={handleKeyDown}
               className="note-item__title-input"
               placeholder="Note title..."
-              autoFocus
+              autoFocus={isNew}
             />
           ) : (
-            <h3 
-              className="note-item__title"
-              onClick={handleEdit}
-            >
+            <h3 className="note-item__title" onClick={() => setIsEditing(true)}>
               {note.title}
             </h3>
           )}
         </div>
         <div className="note-item__actions">
-          {isEditing ? (
+          {isEditing || isNew ? (
             <>
               <button 
                 className="note-item__button note-item__button--success"
@@ -91,8 +135,17 @@ function NoteItem({ note, onEdit, onDelete }) {
               <button 
                 className="note-item__button"
                 onClick={() => {
-                  setIsEditing(false);
-                  setEditData({ title: note.title, content: note.content });
+                  if (isNew) {
+                    onDelete();
+                  } else {
+                    setIsEditing(false);
+                    setEditData({
+                      title: note.title,
+                      content: note.content,
+                      task_id: note.task_id,
+                      tags: note.tags || []
+                    });
+                  }
                 }}
                 title="Cancel editing (Esc)"
               >
@@ -103,7 +156,14 @@ function NoteItem({ note, onEdit, onDelete }) {
             <>
               <button 
                 className="note-item__button"
-                onClick={handleEdit}
+                onClick={() => setShowDetails(!showDetails)}
+                title={showDetails ? "Hide details" : "Show details"}
+              >
+                {showDetails ? <FiChevronUp /> : <FiChevronDown />}
+              </button>
+              <button 
+                className="note-item__button"
+                onClick={() => setIsEditing(true)}
                 title="Edit note"
               >
                 <FiEdit2 />
@@ -121,9 +181,8 @@ function NoteItem({ note, onEdit, onDelete }) {
       </div>
 
       <div className="note-item__content">
-        {isEditing ? (
+        {isEditing || isNew ? (
           <textarea
-            id={`note-${note.id}-content`}
             name="content"
             value={editData.content}
             onChange={handleChange}
@@ -134,56 +193,47 @@ function NoteItem({ note, onEdit, onDelete }) {
         ) : (
           <div 
             className="note-item__content-display"
-            onClick={handleEdit}
+            onClick={() => setIsEditing(true)}
           >
             {note.content}
           </div>
         )}
       </div>
 
-      {showDetails && (
+      {showDetails && !isNew && (
         <div className="note-item__details">
-          <div className="note-item__details-actions">
-            <Link 
-              to={`/notes/${note.id}`}
-              className="note-item__button"
-              title="Open in full page"
-            >
-              <FiExternalLink />
-            </Link>
-            <button 
-              className="note-item__button"
-              onClick={() => setShowDetails(false)}
-              title="Close panel"
-            >
-              <FiX />
-            </button>
-          </div>
           <div className="note-item__details-content">
             <div className="note-item__details-line">
-              {note.task && (
-                <>
-                  <span className="note-item__detail--label">Task:</span>
-                  <span className="note-item__detail--value">{note.task.title}</span>
-                  <span className="note-item__detail--separator">•</span>
-                </>
-              )}
               <span className="note-item__detail--label">Created:</span>
               <span className="note-item__detail--value">{formatDate(note.created_at)}</span>
-              {note.tags && note.tags.length > 0 && (
+              
+              {note.task_id && (
                 <>
                   <span className="note-item__detail--separator">•</span>
-                  <span className="note-item__detail--label">Tags:</span>
-                  <div className="note-item__tags">
-                    {note.tags.map(tag => (
-                      <span key={`note-${note.id}-tag-${tag.id}`} className="note-item__tag">
-                        {tag.name}
-                      </span>
-                    ))}
-                  </div>
+                  <span className="note-item__detail--label">Task:</span>
+                  <a 
+                    href="#"
+                    onClick={handleTaskClick}
+                    className="note-item__detail--link"
+                  >
+                    {note.task?.title || 'View Task'} <FiExternalLink size={12} />
+                  </a>
                 </>
               )}
             </div>
+
+            {note.tags && note.tags.length > 0 && (
+              <div className="note-item__tags-container">
+                <span className="note-item__detail--label">Tags:</span>
+                <div className="note-item__tags">
+                  {note.tags.map(tag => (
+                    <span key={tag.id} className="note-item__tag">
+                      {tag.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

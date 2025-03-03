@@ -11,6 +11,8 @@ import taskService from './services/taskService';
 import noteService from './services/noteService';
 import tagService from './services/tagService';
 import { TaskProvider } from './context/TaskContext';
+import { NoteProvider } from './context/NoteContext';
+
 function App() {
   const [tasks, setTasks] = useState([]);
   const [notes, setNotes] = useState([]);
@@ -46,6 +48,16 @@ function App() {
       console.error('Error adding task:', error);
     }
   };
+
+  const getTaskWithNotes = async (taskId) => {
+    try {
+      const taskData = await taskService.getTaskWithNotes(taskId);
+      setTasks(prevTasks => prevTasks.map(task => task.id === taskId ? taskData : task));
+    } catch (error) {
+      console.error('Error fetching task with notes:', error);
+    }
+  };
+  
 
 
   const updateTask = async (taskId, updatedTask) => {
@@ -132,69 +144,73 @@ function App() {
   };
 
   return (
-    <TaskProvider>
-    <Layout isTimerOpen={isTimerOpen} setIsTimerOpen={setIsTimerOpen}>
-      <Routes>
-        <Route path="/" element={
-          <>
-            <Dashboard 
-              tasks={tasks} 
-              notes={notes} 
-              tags={tags} 
-              onTimerStart={handleTimerStart}
-            />
-          </>
-        } />
-        <Route path="/tasks" element={
-          <Tasks 
-            tasks={tasks} 
-            tags={tags}
-            addTask={addTask} 
-            updateTask={updateTask} 
-            deleteTask={deleteTask}
-            onTimerStart={handleTimerStart}
-          />
-        } />
-        <Route path="/tasks/:taskId" element={
-          <TaskDetails 
-            tasks={tasks}
-            tags={tags}
-            updateTask={updateTask} 
-            deleteTask={deleteTask}
-          />
-        } />
-        <Route path="/notes" element={
-          <Notes 
-            notes={notes}
-            tasks={tasks}
-            tags={tags}
-            addNote={addNote} 
-            updateNote={updateNote} 
-            deleteNote={deleteNote}
-          />
-        } />
-        <Route path="/notes/:noteId" element={
-          <NotesDetails 
-            notes={notes}
-            tasks={tasks}
-            tags={tags}
-            updateNote={updateNote} 
-            deleteNote={deleteNote}
-          />
-        } />
-        <Route path="/tags" element={
-          <Tags 
-            tags={tags}
-            notes={notes}
-            tasks={tasks}
-            addTag={addTag} 
-            updateTag={updateTag} 
-            deleteTag={deleteTag}
-          />
-        } />
-      </Routes>
-    </Layout>
-    </TaskProvider>
+    <NoteProvider>
+      <TaskProvider>
+        <Layout isTimerOpen={isTimerOpen} setIsTimerOpen={setIsTimerOpen}>
+          <Routes>
+            <Route path="/" element={
+              <>
+                <Dashboard 
+                  tasks={tasks} 
+                  notes={notes} 
+                  tags={tags} 
+                  onTimerStart={handleTimerStart}
+                />
+              </>
+            } />
+            <Route path="/tasks" element={
+              <Tasks 
+                tasks={tasks} 
+                tags={tags}
+                addTask={addTask} 
+                updateTask={updateTask} 
+                deleteTask={deleteTask}
+                onTimerStart={handleTimerStart}
+                getTaskWithNotes={getTaskWithNotes}
+              />
+            } />
+            <Route path="/tasks/:taskId" element={
+              <TaskDetails 
+                tasks={tasks}
+                tags={tags}
+                updateTask={updateTask} 
+                deleteTask={deleteTask}
+              />
+            } />
+            <Route path="/notes" element={
+              <Notes 
+                notes={notes}
+                tasks={tasks}
+                tags={tags}
+                addNote={addNote} 
+                updateNote={updateNote} 
+                deleteNote={deleteNote}
+              />
+            } />
+            <Route path="/notes/:noteId" element={
+              <NotesDetails 
+                notes={notes}
+                tasks={tasks}
+                tags={tags}
+                updateNote={updateNote} 
+                deleteNote={deleteNote}
+
+              />
+            } />
+            <Route path="/tags" element={
+              <Tags 
+                tags={tags}
+                notes={notes}
+                tasks={tasks}
+                addTag={addTag} 
+                updateTag={updateTag} 
+                deleteTag={deleteTag}
+              />
+            } />
+          </Routes>
+        </Layout>
+      </TaskProvider>
+    </NoteProvider>
   );
 }
 

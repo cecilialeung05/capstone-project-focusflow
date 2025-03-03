@@ -1,5 +1,5 @@
-import React, { useState, useContext, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useContext, useMemo, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { TaskContext } from "../context/TaskContext";
 import TaskItem from "../components/Task/TaskItem";
 import { Timer, NotePencil, Trash } from "@phosphor-icons/react";
@@ -7,17 +7,35 @@ import { FiSmile, FiCoffee, FiClock, FiPlus } from "react-icons/fi";
 import "./Tasks.scss";
 
 function Tasks() {
-  const { tasks, addTask, updateTask, deleteTask } = useContext(TaskContext);
+  const { 
+    tasks, 
+    addTask, 
+    updateTask, 
+    deleteTask, 
+    selectedTask,
+    setSelectedTask,
+    selectedTaskNotes,
+    getTaskWithNotes 
+  } = useContext(TaskContext);
   const navigate = useNavigate();
+  const location = useLocation();
 
   // UI State
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [sortBy, setSortBy] = useState("created");
-  const [selectedTask, setSelectedTask] = useState(null);
   const [showPrompt, setShowPrompt] = useState(false);
   const [lastAction, setLastAction] = useState(null);
 
+  useEffect(() => {
+    if (location.state?.selectedTaskId) {
+      const task = tasks.find(t => t.id === location.state.selectedTaskId);
+      if (task) {
+        setSelectedTask(task);
+        setShowPrompt(true);
+      }
+    }
+  }, [location.state]);
 
   const filteredTasks = useMemo(() => {
     return tasks
@@ -48,19 +66,43 @@ function Tasks() {
 
   // ➕ **Create a New Task**
   const handleAddTask = async () => {
-    const newTask = await addTask({
-      title: "New Task",
-      status: "open",
-      tags: [],
-    });
-    setSelectedTask(newTask);
-    setShowPrompt(true);
+    try {
+      const initialTaskData = {
+        title: "New Task",
+        description: "",
+        status: "open",
+        due_date: null,
+        tags: []
+      };
+
+      console.log('Attempting to create task:', initialTaskData);
+
+      const newTask = await addTask(initialTaskData);
+      console.log('Task created successfully:', newTask);
+
+      if (newTask) {
+        setSelectedTask({ ...newTask, isNew: true });
+        setShowPrompt(false);
+      }
+    } catch (error) {
+      console.error('Error creating new task:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
+    }
   };
 
   // ▶️ **Start a Focus Session**
   const handleStartTimer = () => {
     if (!selectedTask) return;
-    navigate(`/notes?taskId=${selectedTask.id}`);
+    navigate(`/notes`, { 
+      state: { 
+        createNote: true,
+        taskId: selectedTask.id,
+        taskTitle: selectedTask.title
+      } 
+    });
   };
 
   // ⏳ **End Session & Log Energy**
@@ -89,10 +131,10 @@ function Tasks() {
     }
   };
 
-  // Add function to handle starting focus session
-  const handleStartFocus = (task, e) => {
-    e.stopPropagation(); // Prevent event bubbling
+  // Update the task selection handler
+  const handleTaskSelect = async (task) => {
     setSelectedTask(task);
+    await getTaskWithNotes(task.id);
     setShowPrompt(true);
   };
 
@@ -108,9 +150,10 @@ function Tasks() {
         />
         <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
           <option value="all">All Tasks</option>
-          <option value="open">Open</option>
-          <option value="in progress">In Progress</option>
-          <option value="completed">Completed</option>
+          <option value="OPEN">Open</option>
+          <option value="TODO">To Do</option>
+          <option value="IN_PROGRESS">In Progress</option>
+          <option value="DONE">Done</option>
         </select>
         <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
           <option value="created">Created Date</option>
@@ -134,7 +177,7 @@ function Tasks() {
               updateTask={updateTask}
               deleteTask={deleteTask}
               onStatusChange={(status) => updateTask(task.id, { ...task, status })}
-              onCheck={() => setSelectedTask(task)}
+              onCheck={() => handleTaskSelect(task)}
               isSelected={selectedTask?.id === task.id}
             />
           ))
@@ -149,6 +192,24 @@ function Tasks() {
           <div className="focus-popup">
             <h3>Focus Session</h3>
             <p>Ready to focus on: {selectedTask.title}</p>
+            
+            {/* Add Notes Section */}
+            {selectedTaskNotes && selectedTaskNotes.length > 0 && (
+              <div className="task-notes">
+                <h4>Task Notes:</h4>
+                {selectedTaskNotes.map(note => (
+                  <div key={note.id} className="note-item">
+                    <p>{note.content}</p>
+                    <div className="note-tags">
+                      {note.tags.map(tag => (
+                        <span key={tag.id} className="tag-badge">{tag.name}</span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
             <div className="focus-buttons">
               <button onClick={handleStartTimer}>Start Timer</button>
               <button onClick={() => setShowPrompt(false)}>Cancel</button>

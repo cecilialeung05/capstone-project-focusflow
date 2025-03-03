@@ -106,6 +106,32 @@
       line-height: 1.5;
       font-style: italic;
     }
+
+    .task-item__status-select,
+    .task-item__date-input,
+    .task-item__description,
+    .task-item__tags-select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      background: white;
+      
+      &:focus {
+        outline: none;
+        border-color: #86A890;
+      }
+    }
+
+    .task-item__description {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .task-item__tags-select {
+      min-height: 100px;
+    }
   }
 
   &__details-actions {
@@ -178,50 +204,47 @@
     cursor: pointer;
   }
 
-  .task-title {
-    cursor: pointer;
-    &:hover {
-      color: #007bff;
-    }
-  }
-
-  input {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: inherit;
-    
-    &:focus {
-      outline: none;
-      border-color: #007bff;
-    }
-  }
-
   &__title-input {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
-    margin: 0;
+    border: none;
+    background: transparent;
+    font-size: 0.95rem;
+    color: #2c3e50;
+    padding: 4px;
     
     &:focus {
       outline: none;
-      border-color: #007bff;
-      box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+      background: #f8fafc;
+      border-radius: 4px;
     }
   }
 
-  &__title {
-    cursor: pointer;
-    margin: 0;
-    padding: 8px;
-    
-    &:hover {
-      background: rgba(0,0,0,0.05);
-      border-radius: 4px;
+  &__selected-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+
+    .tag-badge {
+      background: #f0f0f0;
+      color: #666;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
     }
+  }
+
+  .task-item__details > * + * {
+    margin-top: 12px;
+  }
+
+  .task-item__details label {
+    display: block;
+    color: #64748b;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
   }
 }
 

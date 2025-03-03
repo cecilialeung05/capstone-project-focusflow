@@ -23,10 +23,16 @@ const noteService = {
       throw error;
     }
   },
+  
 
   createNote: async (note) => {
     try {
-      const response = await axios.post(API_ENDPOINT, note);
+      const response = await axios.post(API_ENDPOINT, {
+        title: note.title,
+        content: note.content,
+        task_id: note.task_id || null,
+        tags: note.tags || []
+      });
       return response.data;
     } catch (error) {
       console.error('Error creating note:', error);
@@ -36,7 +42,12 @@ const noteService = {
 
   updateNote: async (id, note) => {
     try {
-      const response = await axios.put(`${API_ENDPOINT}/${id}`, note);
+      const response = await axios.put(`${API_ENDPOINT}/${id}`, {
+        title: note.title,
+        content: note.content,
+        task_id: note.task_id || null,
+        tags: note.tags || []
+      });
       return response.data;
     } catch (error) {
       console.error(`Error updating note ${id}:`, error);

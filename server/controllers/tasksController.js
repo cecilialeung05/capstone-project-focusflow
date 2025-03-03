@@ -34,6 +34,7 @@ export const getTask = async (req, res) => {
   const { id } = req.params;
 
   try {
+    // Get the task
     const task = await knex("tasks").where({ id }).first();
     if (!task) {
       return res.status(404).json({ message: `Task with ID ${id} not found` });
@@ -44,9 +45,32 @@ export const getTask = async (req, res) => {
       .join("task_tags", "tags.id", "task_tags.tag_id")
       .where("task_tags.task_id", id);
 
+    // Get the task's notes
+    const notes = await knex("notes")
+      .select("notes.*")
+      .where("task_id", id)
+      .orderBy("created_at", "desc");
+
+    // Get tags for each note
+    const notesWithTags = await Promise.all(
+      notes.map(async (note) => {
+        const noteTags = await knex("tags")
+          .select("tags.*")
+          .join("note_tags", "tags.id", "note_tags.tag_id")
+          .where("note_tags.note_id", note.id);
+
+        return {
+          ...note,
+          tags: noteTags || []
+        };
+      })
+    );
+
+    // Return task with both tags and notes
     res.status(200).json({
       ...task,
-      tags: tags || []
+      tags: tags || [],
+      notes: notesWithTags
     });
   } catch (error) {
     console.error("Error getting task:", error);
