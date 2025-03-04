@@ -39,7 +39,7 @@ export const TaskProvider = ({ children }) => {
       const updated = await taskService.updateTask(id, updatedTask);
       if (updated) {
         setTasks(prevTasks => 
-          prevTasks.map(task => (task.id === id ? updated : task))
+          prevTasks.map(task => task.id === id ? updated : task)
         );
         return updated;
       }

@@ -6,6 +6,27 @@ import { Timer, NotePencil, Trash } from "@phosphor-icons/react";
 import { FiSmile, FiCoffee, FiClock, FiPlus } from "react-icons/fi";
 import "./Tasks.scss";
 
+// Update filter constants to use names
+const DURATION_FILTERS = [
+  { value: '25min', label: '25 Minutes' },
+  { value: '50min', label: '50 Minutes' },
+];
+
+const TIME_OF_DAY_FILTERS = [
+  { value: 'Morning Session', label: 'Morning Session' },
+  { value: 'Afternoon Session', label: 'Afternoon Session' },
+];
+
+const WORK_TYPE_FILTERS = [
+  { value: 'Deep Focus', label: 'Deep Focus' },
+  { value: 'Light Work', label: 'Light Work' },
+];
+
+const ENERGY_LEVEL_FILTERS = [
+  { value: 'Feeling Good', label: 'Feeling Good' },
+  { value: 'Feeling Tired', label: 'Feeling Tired' },
+];
+
 function Tasks() {
   const { 
     tasks, 
@@ -26,6 +47,11 @@ function Tasks() {
   const [sortBy, setSortBy] = useState("created");
   const [showPrompt, setShowPrompt] = useState(false);
   const [lastAction, setLastAction] = useState(null);
+  const [filterTag, setFilterTag] = useState(null);
+  const [filterDuration, setFilterDuration] = useState('');
+  const [filterTimeOfDay, setFilterTimeOfDay] = useState('');
+  const [filterWorkType, setFilterWorkType] = useState('');
+  const [filterEnergyLevel, setFilterEnergyLevel] = useState('');
 
   useEffect(() => {
     if (location.state?.selectedTaskId) {
@@ -42,7 +68,16 @@ function Tasks() {
       .filter((task) => {
         const matchesStatus = filterStatus === "all" || task.status === filterStatus;
         const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase());
-        return matchesStatus && matchesSearch;
+        const matchesTag = !filterTag || task.tags?.some(tag => tag.name === filterTag);
+        
+        // Update filter conditions to use tag names
+        const matchesDuration = !filterDuration || task.tags?.some(tag => tag.name === filterDuration);
+        const matchesTimeOfDay = !filterTimeOfDay || task.tags?.some(tag => tag.name === filterTimeOfDay);
+        const matchesWorkType = !filterWorkType || task.tags?.some(tag => tag.name === filterWorkType);
+        const matchesEnergyLevel = !filterEnergyLevel || task.tags?.some(tag => tag.name === filterEnergyLevel);
+
+        return matchesStatus && matchesSearch && matchesTag &&
+               matchesDuration && matchesTimeOfDay && matchesWorkType && matchesEnergyLevel;
       })
       .sort((a, b) => {
         switch (sortBy) {
@@ -54,7 +89,8 @@ function Tasks() {
             return new Date(b.created_at) - new Date(a.created_at);
         }
       });
-  }, [tasks, searchTerm, filterStatus, sortBy]);
+  }, [tasks, searchTerm, filterStatus, sortBy, filterTag, 
+      filterDuration, filterTimeOfDay, filterWorkType, filterEnergyLevel]);
 
   // 📊 **Task Statistics**
   const taskStats = useMemo(() => ({
@@ -138,6 +174,19 @@ function Tasks() {
     setShowPrompt(true);
   };
 
+  const handleTagClick = (tagName) => {
+    setFilterTag(tagName === filterTag ? null : tagName);
+  };
+
+  const clearFilters = () => {
+    setFilterDuration('');
+    setFilterTimeOfDay('');
+    setFilterWorkType('');
+    setFilterEnergyLevel('');
+    setFilterTag(null);
+    setFilterStatus('all');
+  };
+
   return (
     <div className="tasks-page">
       {/* 🎯 Task Filters */}
@@ -148,18 +197,85 @@ function Tasks() {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
-          <option value="all">All Tasks</option>
-          <option value="OPEN">Open</option>
-          <option value="TODO">To Do</option>
-          <option value="IN_PROGRESS">In Progress</option>
-          <option value="DONE">Done</option>
-        </select>
-        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-          <option value="created">Created Date</option>
-          <option value="due">Due Date</option>
-          <option value="status">Status</option>
-        </select>
+        
+        <div className="filter-group">
+          <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
+            <option value="all">All Status</option>
+            <option value="OPEN">Open</option>
+            <option value="TODO">To Do</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="DONE">Done</option>
+          </select>
+
+          <select value={filterDuration} onChange={(e) => setFilterDuration(e.target.value)}>
+            <option value="">Duration</option>
+            {DURATION_FILTERS.map(filter => (
+              <option key={filter.value} value={filter.value}>
+                {filter.label}
+              </option>
+            ))}
+          </select>
+
+          <select value={filterTimeOfDay} onChange={(e) => setFilterTimeOfDay(e.target.value)}>
+            <option value="">Time of Day</option>
+            {TIME_OF_DAY_FILTERS.map(filter => (
+              <option key={filter.value} value={filter.value}>
+                {filter.label}
+              </option>
+            ))}
+          </select>
+
+          <select value={filterWorkType} onChange={(e) => setFilterWorkType(e.target.value)}>
+            <option value="">Work Type</option>
+            {WORK_TYPE_FILTERS.map(filter => (
+              <option key={filter.value} value={filter.value}>
+                {filter.label}
+              </option>
+            ))}
+          </select>
+
+          <select value={filterEnergyLevel} onChange={(e) => setFilterEnergyLevel(e.target.value)}>
+            <option value="">Energy Level</option>
+            {ENERGY_LEVEL_FILTERS.map(filter => (
+              <option key={filter.value} value={filter.value}>
+                {filter.label}
+              </option>
+            ))}
+          </select>
+
+          <button 
+            className="clear-filters-button" 
+            onClick={clearFilters}
+            disabled={!filterDuration && !filterTimeOfDay && !filterWorkType && 
+                     !filterEnergyLevel && !filterTag && filterStatus === 'all'}
+          >
+            Clear Filters
+          </button>
+        </div>
+
+        {/* Active filters display */}
+        <div className="active-filters">
+          {[
+            { value: filterDuration, label: 'Duration' },
+            { value: filterTimeOfDay, label: 'Time of Day' },
+            { value: filterWorkType, label: 'Work Type' },
+            { value: filterEnergyLevel, label: 'Energy Level' },
+            { value: filterTag, label: 'Tag' }
+          ].map(filter => filter.value && (
+            <span key={filter.label} className="active-filter-tag">
+              {filter.label}: {filter.value}
+              <button onClick={() => {
+                switch(filter.label) {
+                  case 'Duration': setFilterDuration(''); break;
+                  case 'Time of Day': setFilterTimeOfDay(''); break;
+                  case 'Work Type': setFilterWorkType(''); break;
+                  case 'Energy Level': setFilterEnergyLevel(''); break;
+                  case 'Tag': setFilterTag(null); break;
+                }
+              }}>×</button>
+            </span>
+          ))}
+        </div>
       </div>
 
       {/* ➕ Quick Add Task */}
@@ -179,6 +295,7 @@ function Tasks() {
               onStatusChange={(status) => updateTask(task.id, { ...task, status })}
               onCheck={() => handleTaskSelect(task)}
               isSelected={selectedTask?.id === task.id}
+              onTagClick={handleTagClick}
             />
           ))
         ) : (

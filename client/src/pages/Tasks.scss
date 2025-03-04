@@ -54,15 +54,75 @@
     }
   }
 
-  .task-filters{
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    background: var(--bg-elevated);
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 0 2px 8px rgba(123, 167, 204, 0.1);
+  .task-filters {
+    margin-bottom: 1.5rem;
+    
+    .filter-group {
+      display: flex;
+      gap: 0.5rem;
+      margin: 1rem 0;
+      flex-wrap: wrap;
 
+      select {
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background: white;
+        min-width: 120px;
+
+        &:focus {
+          outline: none;
+          border-color: #007bff;
+        }
+      }
+
+      .clear-filters-button {
+        padding: 0.5rem 1rem;
+        background: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+
+        &:disabled {
+          background: #e9ecef;
+          cursor: not-allowed;
+        }
+
+        &:hover:not(:disabled) {
+          background: #c82333;
+        }
+      }
+    }
+  }
+
+  .active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+
+    .active-filter-tag {
+      display: inline-flex;
+      align-items: center;
+      background: #e9ecef;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.875rem;
+
+      button {
+        background: none;
+        border: none;
+        margin-left: 0.5rem;
+        padding: 0 0.25rem;
+        cursor: pointer;
+        color: #666;
+
+        &:hover {
+          color: #dc3545;
+        }
+      }
+    }
   }
 
   .tasks-list {
@@ -181,6 +241,27 @@
       display: flex;
       flex-wrap: wrap;
       gap: 5px;
+    }
+  }
+
+  .active-tag-filter {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    margin-left: 8px;
+    
+    button {
+      background: none;
+      border: none;
+      margin-left: 8px;
+      cursor: pointer;
+      padding: 2px;
+      
+      &:hover {
+        color: red;
+      }
     }
   }
 }

@@ -5,7 +5,26 @@ import './TaskItem.scss';
 import { TaskContext } from '../../context/TaskContext';
 import { formatDate } from '../../utils/dateUtils';
 
-function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSelected, isNew = false }) {
+const TAG_CATEGORIES = {
+  Duration: [
+    { value: '25min', label: '25 Minutes' },
+    { value: '50min', label: '50 Minutes' },
+  ],
+  'Time of Day': [
+    { value: 'Morning Session', label: 'Morning Session' },
+    { value: 'Afternoon Session', label: 'Afternoon Session' },
+  ],
+  'Work Type': [
+    { value: 'Deep Focus', label: 'Deep Focus' },
+    { value: 'Light Work', label: 'Light Work' },
+  ],
+  'Energy Level': [
+    { value: 'Feeling Good', label: 'Feeling Good' },
+    { value: 'Feeling Tired', label: 'Feeling Tired' },
+  ],
+};
+
+function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSelected, isNew = false, onTagClick }) {
   const [showStatusMenu, setShowStatusMenu] = useState(false);
   const [showDetails, setShowDetails] = useState(isNew);
   const [isEditing, setIsEditing] = useState(isNew);
@@ -79,6 +98,55 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
       [name]: value
     }));
   };
+
+  const getLabelForValue = (category, value) => {
+    const option = TAG_CATEGORIES[category].find(opt => opt.value === value);
+    return option ? option.label : '';
+  };
+
+  const handleTagSelect = async (category, value) => {
+    if (!value) return;
+
+    // Remove any existing tag from this category
+    const filteredTags = editData.tags?.filter(tag => {
+      const tagCategory = Object.entries(TAG_CATEGORIES).find(([_, tags]) =>
+        tags.some(t => t.value === tag.name)
+      )?.[0];
+      return tagCategory !== category;
+    }) || [];
+
+    // Add the new tag using name as value
+    const updatedTags = [
+      ...filteredTags,
+      { 
+        id: Date.now(),
+        name: value // Use the name directly
+      }
+    ];
+
+    setEditData(prev => ({
+      ...prev,
+      tags: updatedTags
+    }));
+
+    if (!isEditing) {
+      try {
+        await updateTask(task.id, {
+          ...task,
+          tags: updatedTags
+        });
+      } catch (error) {
+        console.error('Failed to update tag:', error);
+      }
+    }
+  };
+
+  const getCurrentTagForCategory = (category) => {
+    return editData.tags?.find(tag => 
+      TAG_CATEGORIES[category].some(t => t.value === tag.name)
+    )?.name || '';
+  };
+
   const handleSave = async () => { 
     if (!editData.title.trim()) return;
     
@@ -89,7 +157,7 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
         description: editData.description?.trim() || '',
         status: editData.status.toLowerCase(),
         due_date: editData.due_date || null,
-        tags: []
+        tags: editData.tags || []
       };
 
       console.log('Task ID:', task.id);
@@ -102,7 +170,8 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
         setLocalTask({
           ...updatedTask,
           due_date: updatedTask.due_date,
-          status: updatedTask.status
+          status: updatedTask.status,
+          tags: updatedTask.tags
         });
 
         setIsEditing(false);
@@ -163,6 +232,12 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
       priority: task.priority || 'MEDIUM',
       tags: task.tags || []
     });
+  };
+
+  const handleTagClick = (tagName) => {
+    if (onTagClick) {
+      onTagClick(tagName);
+    }
   };
 
   const statusOptions = [
@@ -309,6 +384,35 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
                   />
                 </div>
               </div>
+              <div className="task-item__tags-editor">
+                <label>Task Properties</label>
+                <div className="task-item__tags-input">
+                  {Object.entries(TAG_CATEGORIES).map(([category, options]) => (
+                    <div key={category} className="tag-category">
+                      <label>{category}</label>
+                      <select
+                        value={getCurrentTagForCategory(category)}
+                        onChange={(e) => handleTagSelect(category, e.target.value)}
+                        className="tag-select"
+                      >
+                        <option value="">Select {category}</option>
+                        {options.map(option => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  ))}
+                </div>
+                <div className="task-item__tags-list">
+                  {editData.tags?.map(tag => (
+                    <span key={tag.id} className="task-item__tag">
+                      {tag.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           ) : (
             <div className="task-item__details-content">
@@ -352,7 +456,13 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
                   <span className="task-item__detail-label">Tags:</span>
                   <div className="task-item__tags-list">
                     {localTask.tags.map(tag => (
-                      <span key={tag.id} className="task-item__tag">
+                      <span 
+                        key={tag.id} 
+                        className="task-item__tag"
+                        onClick={() => handleTagClick(tag.name)}
+                        style={{ cursor: 'pointer' }}
+                        title="Click to filter by this tag"
+                      >
                         {tag.name}
                       </span>
                     ))}
