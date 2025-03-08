@@ -5,6 +5,7 @@ import TaskItem from "../components/Task/TaskItem";
 import { Timer, NotePencil, Trash } from "@phosphor-icons/react";
 import { FiSmile, FiCoffee, FiClock, FiPlus } from "react-icons/fi";
 import "./Tasks.scss";
+import TaskForm from '../components/Task/TaskForm';
 
 const DURATION_FILTERS = [
   { value: '25min', label: '25 Minutes' },
@@ -51,7 +52,7 @@ function Tasks() {
   const [filterTimeOfDay, setFilterTimeOfDay] = useState('');
   const [filterWorkType, setFilterWorkType] = useState('');
   const [filterEnergyLevel, setFilterEnergyLevel] = useState('');
-  const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [showNewTaskForm, setShowNewTaskForm] = useState(false);
   const [activeTab, setActiveTab] = useState("All");
 
   useEffect(() => {
@@ -144,38 +145,18 @@ function Tasks() {
     open: tasks.filter((task) => task.status?.toLowerCase() === "open").length,
   }), [tasks]);
 
-  const handleAddTask = async () => {
-    if (!newTaskTitle.trim()) return;
-    
+  const handleAddTask = async (taskData) => {
     try {
-      const initialTaskData = {
-        title: newTaskTitle.trim(),
-        description: "",
-        status: "open",
-        due_date: null,
-        tags: []
-      };
-
-      console.log('Attempting to create task:', initialTaskData);
-
-      const newTask = await addTask(initialTaskData);
+      console.log('Attempting to create task:', taskData);
+      const newTask = await addTask(taskData);
       console.log('Task created successfully:', newTask);
-
-      if (newTask) {
-        setNewTaskTitle("");
-      }
+      setShowNewTaskForm(false);
     } catch (error) {
       console.error('Error creating new task:', {
         message: error.message,
         response: error.response?.data,
         status: error.response?.status
       });
-    }
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      handleAddTask();
     }
   };
 
@@ -250,6 +231,28 @@ function Tasks() {
     }
   };
 
+  const renderTaskInput = () => {
+    if (showNewTaskForm) {
+      return (
+        <TaskForm
+          addTask={handleAddTask}
+          onCancel={() => setShowNewTaskForm(false)}
+        />
+      );
+    }
+
+    return (
+      <div className="task-input-container">
+        <button 
+          onClick={() => setShowNewTaskForm(true)} 
+          className="add-task-button"
+        >
+          <FiPlus /> Add New Task
+        </button>
+      </div>
+    );
+  };
+
   return (
     <div className="tasks-page">
       <div className="tasks-container">
@@ -266,19 +269,7 @@ function Tasks() {
         </div>
 
         <div className="tasks-content">
-          <div className="task-input-container">
-            <input
-              type="text"
-              placeholder="Task 1"
-              value={newTaskTitle}
-              onChange={(e) => setNewTaskTitle(e.target.value)}
-              onKeyDown={handleKeyDown}
-              className="task-input"
-            />
-            <button onClick={handleAddTask} className="add-task-button">
-              Add Task
-            </button>
-          </div>
+          {renderTaskInput()}
 
           <div className="task-filters">
             <input

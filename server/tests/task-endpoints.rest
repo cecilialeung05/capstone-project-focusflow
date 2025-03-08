@@ -1,0 +1,40 @@
+### Create a new task with priority and recurring settings
+POST http://localhost:3000/api/tasks
+Content-Type: application/json
+
+{
+  "title": "Weekly Team Meeting",
+  "description": "Regular team sync-up",
+  "priority": "high",
+  "recurring_type": "weekly",
+  "due_date": "2024-03-25T10:00:00.000Z"
+}
+
+### Create a task with dependencies
+POST http://localhost:3000/api/tasks
+Content-Type: application/json
+
+{
+  "title": "Review Project",
+  "description": "Review project deliverables",
+  "priority": "medium",
+  "due_date": "2024-03-26T15:00:00.000Z",
+  "parent_task_id": 1
+}
+
+### Get all tasks
+GET http://localhost:3000/api/tasks
+
+### Get high priority tasks
+GET http://localhost:3000/api/tasks?priority=high
+
+### Get tasks with specific parent
+GET http://localhost:3000/api/tasks?parent_task_id=1
+
+### Update task status (mark as done)
+PUT http://localhost:3000/api/tasks/1
+Content-Type: application/json
+
+{
+  "status": "done"
+} 

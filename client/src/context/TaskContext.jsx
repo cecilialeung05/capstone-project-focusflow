@@ -23,7 +23,15 @@ export const TaskProvider = ({ children }) => {
 
   const addTask = async (task) => {
     try {
-      const newTask = await taskService.createTask(task);
+      // Format recurring data before sending
+      const formattedTask = {
+        ...task,
+        recurring_type: task.recurring_type || 'none',
+        recurring_interval: task.recurring_type === 'custom' ? parseInt(task.recurring_interval) : null,
+        recurring_unit: task.recurring_type === 'custom' ? task.recurring_unit : null
+      };
+
+      const newTask = await taskService.createTask(formattedTask);
       if (newTask) {
         setTasks(prevTasks => [...prevTasks, newTask]);
         return newTask;
@@ -36,11 +44,37 @@ export const TaskProvider = ({ children }) => {
 
   const updateTask = async (id, updatedTask) => {
     try {
-      const updated = await taskService.updateTask(id, updatedTask);
+      // Format recurring data before sending
+      const formattedTask = {
+        ...updatedTask,
+        recurring_type: updatedTask.recurring_type || 'none',
+        recurring_interval: updatedTask.recurring_type === 'custom' ? 
+          parseInt(updatedTask.recurring_interval) : null,
+        recurring_unit: updatedTask.recurring_type === 'custom' ? 
+          updatedTask.recurring_unit : null
+      };
+
+      const updated = await taskService.updateTask(id, formattedTask);
       if (updated) {
         setTasks(prevTasks => 
-          prevTasks.map(task => task.id === id ? updated : task)
+          prevTasks.map(task => task.id === id ? {
+            ...updated,
+            recurring_type: updated.recurring_type || 'none',
+            recurring_interval: updated.recurring_interval,
+            recurring_unit: updated.recurring_unit
+          } : task)
         );
+
+        // Update selected task if it's the one being edited
+        if (selectedTask?.id === id) {
+          setSelectedTask({
+            ...updated,
+            recurring_type: updated.recurring_type || 'none',
+            recurring_interval: updated.recurring_interval,
+            recurring_unit: updated.recurring_unit
+          });
+        }
+
         return updated;
       }
     } catch (error) {
@@ -67,9 +101,16 @@ export const TaskProvider = ({ children }) => {
     try {
       const taskData = await taskService.getTaskWithNotes(taskId);
       if (taskData) {
-        setSelectedTask(taskData);
-        setSelectedTaskNotes(taskData.notes || []);
-        return taskData;
+        // Ensure recurring data is properly formatted
+        const formattedTask = {
+          ...taskData,
+          recurring_type: taskData.recurring_type || 'none',
+          recurring_interval: taskData.recurring_interval,
+          recurring_unit: taskData.recurring_unit
+        };
+        setSelectedTask(formattedTask);
+        setSelectedTaskNotes(formattedTask.notes || []);
+        return formattedTask;
       }
     } catch (error) {
       console.error('Error fetching task with notes:', error);

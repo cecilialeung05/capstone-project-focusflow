@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { FiEdit2, FiTrash2, FiX, FiSave, FiCheck, FiChevronDown, FiChevronUp, FiClock } from 'react-icons/fi';
+import { FiEdit2, FiTrash2, FiX, FiSave, FiCheck, FiChevronDown, FiChevronUp, FiClock, FiRepeat } from 'react-icons/fi';
 import './TaskItem.scss';
 import { TaskContext } from '../../context/TaskContext';
 import { formatDate } from '../../utils/dateUtils';
@@ -35,10 +35,13 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
   const [editData, setEditData] = useState({
     title: task?.title || '',
     description: task?.description || '',
-    status: task?.status || 'OPEN',
+    status: task?.status || 'open',
     due_date: task?.due_date || '',
-    priority: task?.priority || 'MEDIUM',
-    tags: task?.tags || []
+    priority: task?.priority || 'medium',
+    tags: task?.tags || [],
+    recurring_type: task?.recurring_type || 'none',
+    recurring_interval: task?.recurring_interval || '1',
+    recurring_unit: task?.recurring_unit || 'days'
   });
   const { updateTask: contextUpdateTask } = useContext(TaskContext);
 
@@ -51,10 +54,13 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
       setEditData({
         title: task.title || '',
         description: task.description || '',
-        status: task.status || 'TODO',
+        status: task.status || 'open',
         due_date: task.due_date || '',
-        priority: task.priority || 'MEDIUM',
-        tags: task.tags || []
+        priority: task.priority || 'medium',
+        tags: task.tags || [],
+        recurring_type: task.recurring_type || 'none',
+        recurring_interval: task.recurring_interval || '1',
+        recurring_unit: task.recurring_unit || 'days'
       });
     }
   }, [task, isNew]);
@@ -168,6 +174,10 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
         description: editData.description?.trim() || '',
         status: editData.status.toLowerCase(),
         due_date: editData.due_date || null,
+        priority: editData.priority,
+        recurring_type: editData.recurring_type,
+        recurring_interval: editData.recurring_type === 'custom' ? parseInt(editData.recurring_interval) : null,
+        recurring_unit: editData.recurring_type === 'custom' ? editData.recurring_unit : null,
         tags: formattedTags
       };
 
@@ -182,7 +192,10 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
           ...updatedTask,
           due_date: updatedTask.due_date,
           status: updatedTask.status,
-          tags: updatedTask.tags
+          tags: updatedTask.tags,
+          recurring_type: updatedTask.recurring_type,
+          recurring_interval: updatedTask.recurring_interval,
+          recurring_unit: updatedTask.recurring_unit
         });
 
         setIsEditing(false);
@@ -225,7 +238,10 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
         status: localTask.status,
         due_date: localTask.due_date,
         priority: localTask.priority,
-        tags: localTask.tags
+        tags: localTask.tags,
+        recurring_type: localTask.recurring_type,
+        recurring_interval: localTask.recurring_interval,
+        recurring_unit: localTask.recurring_unit
       });
     }
   };
@@ -238,10 +254,13 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
       id: task.id,
       title: task.title,
       description: task.description || '',
-      status: task.status || 'OPEN',
+      status: task.status || 'open',
       due_date: task.due_date || '',
-      priority: task.priority || 'MEDIUM',
-      tags: task.tags || []
+      priority: task.priority || 'medium',
+      tags: task.tags || [],
+      recurring_type: task.recurring_type || 'none',
+      recurring_interval: task.recurring_interval || '1',
+      recurring_unit: task.recurring_unit || 'days'
     });
   };
 
@@ -260,6 +279,34 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
   const formatDateForInput = (date) => {
     if (!date) return '';
     return new Date(date).toISOString().split('T')[0];
+  };
+
+  const getRecurringBadge = (task) => {
+    if (!task.recurring_type || task.recurring_type === 'none') return null;
+
+    let recurringText = '';
+    switch (task.recurring_type) {
+      case 'daily':
+        recurringText = 'Daily';
+        break;
+      case 'weekly':
+        recurringText = 'Weekly';
+        break;
+      case 'monthly':
+        recurringText = 'Monthly';
+        break;
+      case 'custom':
+        recurringText = `Every ${task.recurring_interval} ${task.recurring_unit}`;
+        break;
+      default:
+        return null;
+    }
+
+    return (
+      <span className="task-item__badge task-item__badge--recurring">
+        <FiRepeat /> {recurringText}
+      </span>
+    );
   };
 
   return (<div className={`task-item ${localTask.status ? localTask.status.toLowerCase().replace(' ', '-') : 'default-status'} ${showDetails ? 'show-details' : ''} ${isEditing ? 'task-item--editing' : ''} ${isNew ? 'task-item--new' : ''}`}>
@@ -289,6 +336,12 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
     {showSaveConfirm && (
       <span className="task-item__save-confirm">
         <FiCheck /> Saved
+      </span>
+    )}
+    {getRecurringBadge(localTask)}
+    {localTask.priority && (
+      <span className={`task-item__badge task-item__badge--${localTask.priority}`}>
+        {localTask.priority}
       </span>
     )}
   </h3>
@@ -358,10 +411,11 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
                 name="description"
                 value={editData.description}
                 onChange={handleChange}
-                className="task-item__description-input"
+                className="task-form__input"
                 placeholder="Task description..."
               />
-              <div className="task-item__form-row">
+              
+              <div className="task-item__form-row task-item__form-row--inline">
                 <div className="task-item__form-group">
                   <label>Status</label>
                   <select 
@@ -376,6 +430,7 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
                     ))}
                   </select>
                 </div>
+
                 <div className="task-item__form-group">
                   <label>Priority</label>
                   <select name="priority" value={editData.priority} onChange={handleChange}>
@@ -384,6 +439,7 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
                     <option value="HIGH">High</option>
                   </select>
                 </div>
+
                 <div className="task-item__form-group">
                   <label>Due Date</label>
                   <input
@@ -395,6 +451,56 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
                   />
                 </div>
               </div>
+
+              <div className="task-item__form-row">
+                <div className="task-item__recurring-group">
+                  <div className="task-item__form-group">
+                    <label>Recurring</label>
+                    <select
+                      name="recurring_type"
+                      value={editData.recurring_type}
+                      onChange={handleChange}
+                      className="task-form__input"
+                    >
+                      <option value="none">No Recurrence</option>
+                      <option value="daily">Daily</option>
+                      <option value="weekly">Weekly</option>
+                      <option value="monthly">Monthly</option>
+                      <option value="custom">Custom</option>
+                    </select>
+                  </div>
+                  
+                  {editData.recurring_type === 'custom' && (
+                    <>
+                      <div className="task-item__form-group task-item__form-group--interval">
+                        <label>Every</label>
+                        <input
+                          type="number"
+                          name="recurring_interval"
+                          value={editData.recurring_interval}
+                          onChange={handleChange}
+                          min="1"
+                          className="task-form__input"
+                        />
+                      </div>
+                      <div className="task-item__form-group">
+                        <label>&nbsp;</label>
+                        <select
+                          name="recurring_unit"
+                          value={editData.recurring_unit}
+                          onChange={handleChange}
+                          className="task-form__input"
+                        >
+                          <option value="days">Days</option>
+                          <option value="weeks">Weeks</option>
+                          <option value="months">Months</option>
+                        </select>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+
               <div className="task-item__tags-editor">
                 <label>Task Properties</label>
                 <div className="task-item__tags-input">
@@ -453,6 +559,17 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
                     {localTask.priority}
                   </span>
                 </div>
+                {localTask.recurring_type && localTask.recurring_type !== 'none' && (
+                  <div className="task-item__detail">
+                    <span className="task-item__detail-label">Recurring:</span>
+                    <span className="task-item__detail-value task-item__detail-value--recurring">
+                      <FiRepeat className="task-item__detail-icon" />
+                      {localTask.recurring_type === 'custom' 
+                        ? `Every ${localTask.recurring_interval} ${localTask.recurring_unit}`
+                        : localTask.recurring_type.charAt(0).toUpperCase() + localTask.recurring_type.slice(1)}
+                    </span>
+                  </div>
+                )}
               </div>
 
               {localTask.description && (

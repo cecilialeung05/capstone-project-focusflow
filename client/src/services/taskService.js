@@ -31,8 +31,13 @@ const taskService = {
       const response = await axios.post(API_ENDPOINT, {
         title: task.title,
         description: task.description,
-        status: task.status.toLowerCase(),
+        status: task.status || 'open',
         due_date: task.due_date,
+        priority: task.priority || 'medium',
+        recurring_type: task.recurring_type || 'none',
+        recurring_interval: task.recurring_type === 'custom' ? parseInt(task.recurring_interval) : null,
+        recurring_unit: task.recurring_type === 'custom' ? task.recurring_unit : null,
+        parent_task_id: task.parent_task_id || null,
         tags: task.tags || []
       });
       return response.data;
@@ -49,6 +54,11 @@ const taskService = {
         description: task.description,
         status: task.status,
         due_date: task.due_date,
+        priority: task.priority || 'medium',
+        recurring_type: task.recurring_type || 'none',
+        recurring_interval: task.recurring_type === 'custom' ? parseInt(task.recurring_interval) : null,
+        recurring_unit: task.recurring_type === 'custom' ? task.recurring_unit : null,
+        parent_task_id: task.parent_task_id || null,
         tags: task.tags 
       };
       const response = await axios.put(`${API_ENDPOINT}/${id}`, taskData);
@@ -67,6 +77,16 @@ const taskService = {
       throw error;
     }
   },
+
+  getTaskWithNotes: async (taskId) => {
+    try {
+      const response = await axios.get(`${API_ENDPOINT}/${taskId}/notes`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching task ${taskId} with notes:`, error);
+      throw error;
+    }
+  }
 };
 
 export default taskService;
