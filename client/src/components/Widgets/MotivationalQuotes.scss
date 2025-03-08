@@ -1,6 +1,6 @@
 .motivational-quotes {
   margin-top: 1rem;
-  padding: 0.5rem;
+  padding: 1rem;
   border-radius: 8px;
   background: #fff;
   width: 100%;
@@ -28,6 +28,21 @@
     background: #64748b;
     margin-left: 4px;
     animation: blink 1s infinite;
+  }
+
+  .quote {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-relaxed);
+    
+    &__text {
+      margin-bottom: 0.5rem;
+    }
+    
+    &__author {
+      font-size: var(--font-size-sm);
+      font-style: italic;
+    }
   }
 }
 

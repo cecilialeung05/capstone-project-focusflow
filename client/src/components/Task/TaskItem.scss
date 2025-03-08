@@ -26,9 +26,10 @@
 
   &__title {
     margin: 0;
-    font-size: 0.95rem;
+    font-family: var(--font-primary);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
     color: #2c3e50;
-    font-weight: normal;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -245,6 +246,29 @@
     color: #64748b;
     font-size: 0.85rem;
     margin-bottom: 4px;
+  }
+
+  &__description {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
+  }
+
+  &__meta {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-xs);
+  }
+
+  &__tag {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+  }
+
+  &__status {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
   }
 }
 

@@ -163,8 +163,8 @@
       gap: 6px;
       flex: 1;
       margin: 0;
-      font-size: 0.9rem;
-      font-weight: 600;
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-medium);
       color: var(--text-primary);
     }
 
@@ -205,6 +205,8 @@
       transition: all 0.3s ease;
       background: var(--bg-secondary);
       border-radius: 0 0 7px 7px;
+      font-family: var(--font-primary);
+      font-size: var(--font-size-sm);
     }
   }
 
@@ -274,6 +276,12 @@
       opacity: 1;
       color: #cb6565;  
     }
+  }
+
+  .widget-message {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
   }
 }
 

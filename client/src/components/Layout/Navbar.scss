@@ -126,6 +126,9 @@ nav {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    font-family: var(--font-primary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
 
     .nav-icon {
       font-size: 1rem;
@@ -152,6 +155,9 @@ nav {
         font-size: 0.875rem;
         font-weight: 500;         
         margin-bottom: 0.5rem;
+        font-family: var(--font-mono);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-medium);
       }
 
       .timer-demo-trigger {
@@ -172,4 +178,16 @@ nav {
         }
       }
     }
+  }
+
+  .timer-display {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .motivational-quote {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-relaxed);
   }

@@ -1,8 +1,8 @@
 .note-form {
-  background-color: #fff;
+  background-color: var(--bg-elevated);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-light);
   padding: 1rem;
 
   &__group {
@@ -13,8 +13,9 @@
   }
 
   &__label {
-    color: #64748b;
-    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-family: var(--font-primary);
+    font-size: var(--font-size-sm);
     flex-shrink: 0;
     min-width: 80px;
   }
@@ -22,24 +23,27 @@
   &__input {
     flex: 1;
     padding: 0.5rem;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border-light);
     border-radius: 4px;
-    font-size: 0.95rem;
+    font-family: var(--font-primary);
+    font-size: var(--font-size-base);
     background: transparent;
 
     &:focus {
       outline: none;
-      border-color: #94a3b8;
-      background: #fff;
+      border-color: var(--accent-primary);
+      background: var(--bg-elevated);
     }
 
     &--textarea {
       resize: vertical;
       min-height: 60px;
+      font-family: var(--font-primary);
+      line-height: var(--line-height-normal);
     }
 
     &--select {
-      background-color: white;
+      background-color: var(--bg-elevated);
     }
 
     &--tags {
@@ -58,7 +62,9 @@
     padding: 0.5rem 1rem;
     border: none;
     border-radius: 4px;
-    font-size: 0.95rem;
+    font-family: var(--font-primary);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
     cursor: pointer;
     transition: all 0.2s;
     -webkit-appearance: none;
@@ -66,25 +72,25 @@
     outline: none;
 
     &:focus {
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+      box-shadow: 0 0 0 2px rgba(71, 117, 147, 0.2);
     }
 
     &--primary {
-      background: #3b82f6;
+      background: var(--accent-primary);
       color: white;
 
       &:hover {
-        background: #2563eb;
+        background: var(--accent-hover);
       }
     }
 
     &--secondary {
-      background: #f1f5f9;
-      color: #64748b;
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
 
       &:hover {
-        background: #e2e8f0;
-        color: #475569;
+        background: var(--bg-primary);
+        color: var(--text-primary);
       }
     }
   }

@@ -106,8 +106,8 @@
 
   &__display {
     font-size: 2.5rem;
-    font-family: monospace;
-    font-weight: 600;
+    font-family: var(--font-mono);
+    font-weight: var(--font-weight-bold);
     color: var(--text-primary);
     letter-spacing: 0.1em;
     text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.05);
@@ -152,6 +152,8 @@
     cursor: pointer;
     transition: all 0.2s ease;
     font-weight: 500;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-base);
 
     svg {
       font-size: 1.1em;
@@ -328,13 +330,18 @@
     font-weight: 600;
     margin-bottom: 1rem;
     color: #bfcce1;
-    font-family: monospace;
+    font-family: var(--font-mono);
   }
 
   &__prompt-message {
     font-size: 1.1rem;
     color: #64748b;
-    font-family: monospace;
+    font-family: var(--font-mono);
+  }
+
+  .timer-status {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
   }
 }
 

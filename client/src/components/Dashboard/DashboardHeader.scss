@@ -42,6 +42,23 @@
     opacity: 0.8;
   }
   
+  &__display {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+  }
+
+  &__character {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-lg);
+  }
+
+  &__message {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+  }
+
   &__digit {
     font-size: 3.5rem;
     font-weight: bold;
