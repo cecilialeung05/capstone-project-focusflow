@@ -107,7 +107,6 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
   const handleTagSelect = async (category, value) => {
     if (!value) return;
 
-    // Remove any existing tag from this category
     const filteredTags = editData.tags?.filter(tag => {
       const tagCategory = Object.entries(TAG_CATEGORIES).find(([_, tags]) =>
         tags.some(t => t.value === tag.name)
@@ -115,12 +114,11 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
       return tagCategory !== category;
     }) || [];
 
-    // Add the new tag using name as value
     const updatedTags = [
       ...filteredTags,
       { 
         id: Date.now(),
-        name: value // Use the name directly
+        name: value 
       }
     ];
 
@@ -147,17 +145,30 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
     )?.name || '';
   };
 
-  const handleSave = async () => { 
+  const handleSave = async () => {
     if (!editData.title.trim()) return;
     
     setIsSaving(true);
     try {
+      const formattedTags = editData.tags.map(tag => {
+        if (tag.id && typeof tag.id === 'number') {
+          return { id: tag.id };
+        }
+        
+        if (tag.id && typeof tag.id === 'string' && !isNaN(tag.id)) {
+          return { id: parseInt(tag.id) };
+        }
+        
+        console.warn('Tag without ID:', tag);
+        return null;
+      }).filter(tag => tag !== null);
+
       const updateData = {
         title: editData.title.trim(),
         description: editData.description?.trim() || '',
         status: editData.status.toLowerCase(),
         due_date: editData.due_date || null,
-        tags: editData.tags || []
+        tags: formattedTags
       };
 
       console.log('Task ID:', task.id);
@@ -478,4 +489,3 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
 }
 
 export default TaskItem;
-
