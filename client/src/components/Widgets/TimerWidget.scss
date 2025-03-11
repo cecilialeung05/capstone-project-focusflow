@@ -207,6 +207,15 @@
         color: var(--text-primary);
       }
     }
+
+    &.disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      
+      &:hover {
+        background: var(--button-background);
+      }
+    }
   }
 
   // .motivation-message {
@@ -342,6 +351,30 @@
   .timer-status {
     font-family: var(--font-mono);
     font-size: var(--font-size-sm);
+  }
+
+  &__task-info {
+    padding: 8px;
+    margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    font-size: 0.9em;
+    
+    .timer-widget__task-label {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.8em;
+      margin-bottom: 2px;
+    }
+    
+    .timer-widget__task-title {
+      display: block;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 200px;
+    }
   }
 }
 

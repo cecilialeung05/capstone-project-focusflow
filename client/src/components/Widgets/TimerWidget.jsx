@@ -3,7 +3,7 @@ import { FaPlay, FaPause, FaUndo } from 'react-icons/fa';
 import { BellSimpleRinging } from "@phosphor-icons/react";
 import './TimerWidget.scss';
 
-function TimerWidget({ onTimerEvent, autoStart }) {
+function TimerWidget({ onTimerEvent, autoStart, selectedTask }) {
   const [time, setTime] = useState(25 * 60);
   const [isRunning, setIsRunning] = useState(false);
   const [totalTimeToday, setTotalTimeToday] = useState(0);
@@ -70,7 +70,7 @@ function TimerWidget({ onTimerEvent, autoStart }) {
             setCurrentPrompt(randomPrompt);
             setShowBreakPrompt(true);
             setShowOverlay(true);
-            onTimerEvent?.('break', totalTimeToday);
+            onTimerEvent?.('break', totalTimeToday, selectedTask?.id);
             setIsRunning(false);
             
             const breakDuration = randomPrompt.includes("15") ? 15 * 60 : 5 * 60;
@@ -86,17 +86,21 @@ function TimerWidget({ onTimerEvent, autoStart }) {
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [isRunning, time, totalTimeToday, onTimerEvent]);
+  }, [isRunning, time, totalTimeToday, onTimerEvent, selectedTask]);
 
   const handleStart = () => {
+    if (!selectedTask) {
+      alert('Please select a task to start the timer');
+      return;
+    }
     setIsRunning(true);
     setShowBreakPrompt(false);
-    onTimerEvent?.('start', totalTimeToday);
+    onTimerEvent?.('start', totalTimeToday, selectedTask.id);
   };
 
   const handlePause = () => {
     setIsRunning(false);
-    onTimerEvent?.('pause', totalTimeToday);
+    onTimerEvent?.('pause', totalTimeToday, selectedTask?.id);
   };
 
   const handleReset = () => {
@@ -123,7 +127,7 @@ function TimerWidget({ onTimerEvent, autoStart }) {
     setShowBreakPrompt(true);
     setShowOverlay(true);
     setIsRunning(false);
-    onTimerEvent?.('break', totalTimeToday);
+    onTimerEvent?.('break', totalTimeToday, selectedTask?.id);
     
     const breakDuration = randomPrompt.includes("15") ? 15 * 60 : 5 * 60;
     setBreakCountdown(breakDuration);
@@ -133,8 +137,16 @@ function TimerWidget({ onTimerEvent, autoStart }) {
     }, 3000);
   };
 
+  const TaskInfo = () => selectedTask && (
+    <div className="timer-widget__task-info">
+      <span className="timer-widget__task-label">Current Task:</span>
+      <span className="timer-widget__task-title">{selectedTask.title}</span>
+    </div>
+  );
+
   return (
     <div className="timer-widget">
+      <TaskInfo />
       {showBreakPrompt && (
         <>
           {showOverlay && (
@@ -172,9 +184,13 @@ function TimerWidget({ onTimerEvent, autoStart }) {
       
       <div className="timer-widget__controls">
         {!isRunning ? (
-          <button onClick={handleStart} className="timer-widget__button">
+          <button 
+            onClick={handleStart} 
+            className={`timer-widget__button ${!selectedTask ? 'disabled' : ''}`}
+            disabled={!selectedTask}
+          >
             <FaPlay />
-            Start
+            {selectedTask ? 'Start' : 'Select Task'}
           </button>
         ) : (
           <button onClick={handlePause} className="timer-widget__button">

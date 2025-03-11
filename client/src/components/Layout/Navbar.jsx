@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { 
   MdDashboard,
   MdTask,         
@@ -8,15 +8,19 @@ import {
 } from 'react-icons/md';
 import TimerWidget from '../Widgets/TimerWidget';
 import MotivationalQuotes from '../Widgets/MotivationalQuotes';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { TaskContext } from '../../context/TaskContext';
 
 import './Navbar.scss'; 
 
 function Navbar({ isTimerOpen, setIsTimerOpen }) {
   const [totalTimeToday, setTotalTimeToday] = useState(0);
   const [timerEvent, setTimerEvent] = useState(null);
+  const { selectedTask } = useContext(TaskContext);
+  const location = useLocation();
+  const autoStartTimer = location.state?.autoStart;
 
-  const handleTimerEvent = (event, time) => {
+  const handleTimerEvent = (event, time, taskId) => {
     setTotalTimeToday(time);
     setTimerEvent(event);
   };
@@ -58,11 +62,14 @@ function Navbar({ isTimerOpen, setIsTimerOpen }) {
           </Link>
         </li>
         <li className="timer-container">
-          <span className="timer-label">Timer</span>
+          <span className="timer-label">
+            {selectedTask ? `Focus: ${selectedTask.title}` : 'Timer'}
+          </span>
           <div className="timer-display">
             <TimerWidget 
               onTimerEvent={handleTimerEvent} 
-              autoStart={isTimerOpen}
+              autoStart={autoStartTimer}
+              selectedTask={selectedTask}
             />
           </div>
         </li>

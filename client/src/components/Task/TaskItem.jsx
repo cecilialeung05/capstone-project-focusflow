@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { FiEdit2, FiTrash2, FiX, FiSave, FiCheck, FiChevronDown, FiChevronUp, FiClock, FiRepeat, FiFileText } from 'react-icons/fi';
+import { FiEdit2, FiTrash2, FiX, FiSave, FiCheck, FiChevronDown, FiChevronUp, FiClock, FiRepeat, FiFileText, FiPlay } from 'react-icons/fi';
 import './TaskItem.scss';
 import { TaskContext } from '../../context/TaskContext';
 import { NoteContext } from '../../context/NoteContext';
@@ -45,7 +45,6 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
     recurring_interval: task?.recurring_interval || '1',
     recurring_unit: task?.recurring_unit || 'days'
   });
-  const { updateTask: contextUpdateTask } = useContext(TaskContext);
   const { createNote } = useContext(NoteContext);
   const [showQuickNote, setShowQuickNote] = useState(false);
 
@@ -72,7 +71,7 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
   const handleTitleSubmit = async () => {
     if (editedTitle.trim() !== task.title) {
       try {
-        await contextUpdateTask(task.id, {
+        await updateTask(task.id, {
           ...task,
           title: editedTitle.trim()
         });
@@ -317,10 +316,6 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
     try {
       await createNote(noteData);
       setShowQuickNote(false);
-      if (task.id) {
-        // If you have a function to refresh task data
-        // await refreshTask(task.id);
-      }
     } catch (error) {
       console.error('Failed to save note:', error);
       alert('Failed to save note. Please try again.');
@@ -331,46 +326,49 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
 
       <div className="task-item__header">
         <div className="task-item__title-group">
-        <div 
-  className={`task-item__checkbox ${isSelected ? 'checked' : ''}`}
-  onClick={() => onCheck(localTask.id, localTask)}
->
-  {isSelected && <FiCheck className="check-icon" />}
-</div>
-{isEditing || isNew ? (
-  <input
-    type="text"
-    name="title"
-    value={editData.title}
-    onChange={handleChange}
-    onKeyDown={handleKeyDown}
-    className="task-item__title-input"
-    placeholder="Task title..."
-    autoFocus={isNew}
-  />
-) : (
-  <h3 className="task-item__title" onClick={() => setIsEditing(true)}>
-    {localTask.title}
-    {showSaveConfirm && (
-      <span className="task-item__save-confirm">
-        <FiCheck /> Saved
-      </span>
-    )}
-    {getRecurringBadge(localTask)}
-    {localTask.priority && (
-      <span className={`task-item__badge task-item__badge--${localTask.priority}`}>
-        {localTask.priority}
-      </span>
-    )}
-    {localTask.notes?.length > 0 && (
-      <span className="task-item__notes-badge">
-        {localTask.notes.length} Notes
-      </span>
-    )}
-  </h3>
-)}
-
-
+          <div 
+            className={`task-item__checkbox ${isSelected ? 'active' : ''}`}
+            onClick={() => {
+              console.log('Starting timer for task:', localTask);
+              onCheck(localTask.id, localTask);
+            }}
+            title="Start focus timer"
+          >
+            <FiPlay className="play-icon" />
+            {isSelected && <FiCheck className="check-icon" />}
+          </div>
+          {isEditing || isNew ? (
+            <input
+              type="text"
+              name="title"
+              value={editData.title}
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              className="task-item__title-input"
+              placeholder="Task title..."
+              autoFocus={isNew}
+            />
+          ) : (
+            <h3 className="task-item__title" onClick={() => setIsEditing(true)}>
+              {localTask.title}
+              {showSaveConfirm && (
+                <span className="task-item__save-confirm">
+                  <FiCheck /> Saved
+                </span>
+              )}
+              {getRecurringBadge(localTask)}
+              {localTask.priority && (
+                <span className={`task-item__badge task-item__badge--${localTask.priority}`}>
+                  {localTask.priority}
+                </span>
+              )}
+              {localTask.notes?.length > 0 && (
+                <span className="task-item__notes-badge">
+                  {localTask.notes.length} Notes
+                </span>
+              )}
+            </h3>
+          )}
         </div>
         
         <div className="task-item__actions">
@@ -628,11 +626,11 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
                 </div>
               )}
 
-              {!isEditing && task.notes && task.notes.length > 0 && (
+              {!isEditing && localTask.notes && localTask.notes.length > 0 && (
                 <div className="task-item__notes-preview">
                   <h4>Recent Notes</h4>
                   <div className="task-item__notes-list">
-                    {task.notes.slice(0, 3).map(note => (
+                    {localTask.notes.slice(0, 3).map(note => (
                       <div key={note.id} className="task-item__note">
                         <p>{note.content}</p>
                         <span className="task-item__note-date">
@@ -640,9 +638,9 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
                         </span>
                       </div>
                     ))}
-                    {task.notes.length > 3 && (
+                    {localTask.notes.length > 3 && (
                       <div className="task-item__notes-more">
-                        +{task.notes.length - 3} more notes
+                        +{localTask.notes.length - 3} more notes
                       </div>
                     )}
                   </div>

@@ -1,5 +1,12 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import './Tags.scss';
+import { 
+    DURATION_FILTERS, 
+    TIME_OF_DAY_FILTERS, 
+    WORK_TYPE_FILTERS, 
+    ENERGY_LEVEL_FILTERS 
+} from '../utils/sessionAnalytics';
+import tagService from '../services/tagService';
 
 // Define tag groups with ordered arrays and colors
 const TAG_GROUPS = {
@@ -33,132 +40,125 @@ const TAG_GROUPS = {
   }
 };
 
-function Tags({ tags, tasks, notes }) {
-  const [selectedTag, setSelectedTag] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
+const Tags = () => {
+    const [tags, setTags] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState('timeOfDay');
 
-  
-  // Group and filter tags by search term
-  const groupedTags = useMemo(() => {
-    const filtered = searchTerm
-      ? tags.filter(tag => 
-          tag.name.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      : tags;
+    useEffect(() => {
+        const fetchTags = async () => {
+            try {
+                const fetchedTags = await tagService.getAllTags();
+                setTags(fetchedTags);
+            } catch (error) {
+                console.error('Error fetching tags:', error);
+            }
+        };
 
-    const grouped = {};
-    filtered.forEach(tag => {
-      // Find which group this tag belongs to
-      const group = Object.entries(TAG_GROUPS).find(([_, groupData]) => 
-        groupData.tags.includes(tag.name)
-      )?.[0];
-      
-      if (group) {
-        grouped[group] = grouped[group] || [];
-        grouped[group].push(tag);
-      }
-    });
-    return grouped;
-  }, [tags, searchTerm]);
+        fetchTags();
+    }, []);
 
-  // Filter items by selected tag
-  const filteredItems = useMemo(() => {
-    if (!selectedTag) return { tasks: [], notes: [] };
-    return {
-      tasks: tasks.filter(task => 
-        task.tags?.some(tag => tag.id === selectedTag)
-      ),
-      notes: notes.filter(note => 
-        note.tags?.some(tag => tag.id === selectedTag)
-      )
+    // Move helper functions before useMemo
+    const calculateSuccessRate = (notes) => {
+        if (notes.length === 0) return 0;
+        const completed = notes.filter(note => 
+            note.content.includes('completed') || 
+            note.tags.some(tag => tag.name === 'Deep Focus')
+        ).length;
+        return (completed / notes.length) * 100;
     };
-  }, [selectedTag, tasks, notes]);
 
-  return (
-    <div className="tags-bar">
-      <div className="tags-header">
-        <h1>Tags</h1>
-        <div className="search-container">
-          <input
-            type="text"
-            placeholder="Search tags..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
-        </div>
-      </div>
+    const calculateAverageDuration = (notes) => {
+        if (notes.length === 0) return 0;
+        const totalDuration = notes.reduce((sum, note) => {
+            const durationMatch = note.title.match(/(\d+)\s*min/);
+            return sum + (durationMatch ? parseInt(durationMatch[1]) : 0);
+        }, 0);
+        return Math.round(totalDuration / notes.length);
+    };
 
-      <div className="tags-content">
-        <div className="tags-list">
-          {Object.entries(groupedTags).map(([groupName, groupTags]) => (
-            <div key={groupName} className="tag-group">
-              <h3 className="tag-group-title">{groupName}</h3>
-              <div className="tag-group-items">
-                {groupTags.map(tag => {
-                  const tagColor = TAG_GROUPS[groupName]?.colors[tag.name];
-                  return (
-                    <button 
-                      key={tag.id}
-                      onClick={() => setSelectedTag(selectedTag === tag.id ? null : tag.id)}
-                      className={`tag-btn ${selectedTag === tag.id ? 'active' : ''}`}
-                      style={{
-                        backgroundColor: selectedTag === tag.id ? tagColor : 'white',
-                        color: selectedTag === tag.id ? 'white' : tagColor,
-                        borderColor: tagColor
-                      }}
+    // Group filters for easy access
+    const filterCategories = {
+        duration: {
+            label: 'Session Duration',
+            filters: DURATION_FILTERS
+        },
+        timeOfDay: {
+            label: 'Time of Day',
+            filters: TIME_OF_DAY_FILTERS
+        },
+        workType: {
+            label: 'Work Type',
+            filters: WORK_TYPE_FILTERS
+        },
+        energyLevel: {
+            label: 'Energy Level',
+            filters: ENERGY_LEVEL_FILTERS
+        }
+    };
+
+    // Now use the helper functions in useMemo
+    const tagAnalytics = useMemo(() => {
+        const analyzeCategory = (filters) => {
+            return filters.map(filter => {
+                const tagData = tags.find(t => t.name === filter.value);
+                const notes = tagData?.notes || [];
+                
+                return {
+                    ...filter,
+                    count: notes.length,
+                    successRate: calculateSuccessRate(notes),
+                    averageDuration: calculateAverageDuration(notes)
+                };
+            });
+        };
+
+        return {
+            duration: analyzeCategory(DURATION_FILTERS),
+            timeOfDay: analyzeCategory(TIME_OF_DAY_FILTERS),
+            workType: analyzeCategory(WORK_TYPE_FILTERS),
+            energyLevel: analyzeCategory(ENERGY_LEVEL_FILTERS)
+        };
+    }, [tags]);
+
+    return (
+        <div className="tags-container">
+            {/* Category Selection */}
+            <div className="category-selector">
+                {Object.entries(filterCategories).map(([key, category]) => (
+                    <button
+                        key={key}
+                        className={selectedCategory === key ? 'active' : ''}
+                        onClick={() => setSelectedCategory(key)}
                     >
-                      {tag.name}
+                        {category.label}
                     </button>
-                  );
-                })}
-              </div>
+                ))}
             </div>
-          ))}
-          {Object.keys(groupedTags).length === 0 && (
-            <p className="no-results">No tags found matching "{searchTerm}"</p>
-          )}
+
+            {/* Analytics Display */}
+            <div className="analytics-cards">
+                {tagAnalytics[selectedCategory]?.map(analysis => (
+                    <div key={analysis.value} className="analytics-card">
+                        <h3>{analysis.label}</h3>
+                        <div className="stats">
+                            <div className="stat">
+                                <label>Total Sessions</label>
+                                <span>{analysis.count}</span>
+                            </div>
+                            <div className="stat">
+                                <label>Success Rate</label>
+                                <span>{analysis.successRate.toFixed(1)}%</span>
+                            </div>
+                            <div className="stat">
+                                <label>Avg Duration</label>
+                                <span>{analysis.averageDuration} min</span>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
-
-        {selectedTag && (
-          <div className="tag-details">
-            <div className="tagged-items">
-              <div className="tagged-section">
-                <h3>Tasks with this tag</h3>
-                {filteredItems.tasks.length > 0 ? (
-                  <ul className="items-list">
-                    {filteredItems.tasks.map(task => (
-                      <li key={task.id}>
-                        <span className={`status-dot ${task.status}`} />
-                        <span className="item-title">{task.title}</span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="no-items">No tasks with this tag</p>
-                )}
-              </div>
-
-              <div className="tagged-section">
-                <h3>Notes with this tag</h3>
-                {filteredItems.notes.length > 0 ? (
-                  <ul className="items-list">
-                    {filteredItems.notes.map(note => (
-                      <li key={note.id}>
-                        <span className="item-title">{note.title}</span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="no-items">No notes with this tag</p>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+    );
+};
 
 export default Tags;

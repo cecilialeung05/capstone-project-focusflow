@@ -70,5 +70,4 @@ const tagService = {
     }
   },
 };
-
 export default tagService;

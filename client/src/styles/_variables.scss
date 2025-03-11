@@ -25,6 +25,7 @@
   // Border colors
   --border-light: #dee2e6;
   --border-dark: #ced4da;
+  --border-color: #cbd5e1;
   
   // Typography
   --font-primary: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -66,4 +67,8 @@
   --z-dropdown: 1000;
   --z-modal: 2000;
   --z-tooltip: 3000;
+  
+  // Primary colors
+  --primary-color: #3b82f6;
+  --primary-color-rgb: 59, 130, 246;
 } 

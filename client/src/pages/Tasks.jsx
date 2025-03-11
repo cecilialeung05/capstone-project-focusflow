@@ -163,11 +163,15 @@ function Tasks() {
 
   const handleStartTimer = () => {
     if (!selectedTask) return;
+    
+    console.log('Starting timer for task:', selectedTask);
+    setShowPrompt(false);
     navigate(`/notes`, { 
       state: { 
         createNote: true,
         taskId: selectedTask.id,
-        taskTitle: selectedTask.title
+        taskTitle: selectedTask.title,
+        autoStart: true
       } 
     });
   };
@@ -203,9 +207,13 @@ function Tasks() {
   };
 
   const handleTaskSelect = async (task) => {
-    setSelectedTask(task);
-    await getTaskWithNotes(task.id);
-    setShowPrompt(true);
+    try {
+      console.log('Selecting task:', task);
+      setSelectedTask(task);
+      setShowPrompt(true); // Show the focus session popup
+    } catch (error) {
+      console.error('Error selecting task:', error);
+    }
   };
 
   const handleTagClick = (tagName) => {
@@ -394,28 +402,22 @@ function Tasks() {
       {showPrompt && selectedTask && (
         <div className="popup-overlay">
           <div className="focus-popup">
-            <h3>Focus Session</h3>
-            <p>Ready to focus on: {selectedTask.title}</p>
+            <h3>Starting Focus Session</h3>
+            <p>
+              Ready to focus on: <strong>{selectedTask.title}</strong>
+              <br />
+              <span className="focus-popup__subtitle">
+                Timer will start and a note will be created for this session
+              </span>
+            </p>
             
-            {selectedTaskNotes && selectedTaskNotes.length > 0 && (
-              <div className="task-notes">
-                <h4>Task Notes:</h4>
-                {selectedTaskNotes.map(note => (
-                  <div key={note.id} className="note-item">
-                    <p>{note.content}</p>
-                    <div className="note-tags">
-                      {note.tags.map(tag => (
-                        <span key={tag.id} className="tag-badge">{tag.name}</span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
             <div className="focus-buttons">
-              <button onClick={handleStartTimer}>Start Timer</button>
-              <button onClick={() => setShowPrompt(false)}>Cancel</button>
+              <button onClick={handleStartTimer}>
+                Start Session
+              </button>
+              <button onClick={() => setShowPrompt(false)}>
+                Cancel
+              </button>
             </div>
           </div>
         </div>

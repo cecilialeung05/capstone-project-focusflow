@@ -99,19 +99,8 @@ export const TaskProvider = ({ children }) => {
 
   const getTaskWithNotes = async (taskId) => {
     try {
-      const taskData = await taskService.getTaskWithNotes(taskId);
-      if (taskData) {
-        // Ensure recurring data is properly formatted
-        const formattedTask = {
-          ...taskData,
-          recurring_type: taskData.recurring_type || 'none',
-          recurring_interval: taskData.recurring_interval,
-          recurring_unit: taskData.recurring_unit
-        };
-        setSelectedTask(formattedTask);
-        setSelectedTaskNotes(formattedTask.notes || []);
-        return formattedTask;
-      }
+      const response = await taskService.getTaskWithNotes(taskId);
+      return response;
     } catch (error) {
       console.error('Error fetching task with notes:', error);
       throw error;

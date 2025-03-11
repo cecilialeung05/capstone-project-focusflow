@@ -4,6 +4,7 @@ import NoteItem from '../components/Note/NoteItem';
 import { TaskContext } from '../context/TaskContext';
 import { NoteContext } from '../context/NoteContext';
 import './Notes.scss';
+import { FiPlus } from 'react-icons/fi';
 
 function Notes() {
   const location = useLocation();
@@ -15,6 +16,7 @@ function Notes() {
   const [selectedTask, setSelectedTask] = useState(location.state?.taskId || '');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('created');
+  const [activeTab, setActiveTab] = useState('All');
 
   // Initialize new note if coming from task
   useEffect(() => {
@@ -23,17 +25,49 @@ function Notes() {
       setIsCreatingNew(true);
       // Ensure taskId is a number
       setSelectedTask(location.state.taskId ? parseInt(location.state.taskId) : '');
+      // Set the active tab to the task's notes if coming from a task
+      if (location.state.taskId) {
+        const task = tasks.find(t => t.id === location.state.taskId);
+        if (task) {
+          setActiveTab(task.title);
+        }
+      }
     }
-  }, [location.state]);
+  }, [location.state, tasks]);
+
+  // Get unique task titles for tabs
+  const noteTabs = useMemo(() => {
+    const taskTabs = [...new Set(notes
+      .filter(note => note.task_id)
+      .map(note => {
+        const task = tasks.find(t => t.id === note.task_id);
+        return task ? task.title : null;
+      })
+      .filter(Boolean)
+    )];
+    
+    return ['All', 'Unassigned', ...taskTabs];
+  }, [notes, tasks]);
 
   // Filter and sort notes
   const filteredNotes = useMemo(() => {
     return notes
       .filter(note => {
-        const matchesTask = !selectedTask || note.task_id === selectedTask;
+        // Tab filtering
+        if (activeTab === 'All') {
+          return true;
+        }
+        if (activeTab === 'Unassigned') {
+          return !note.task_id;
+        }
+        const task = tasks.find(t => t.id === note.task_id);
+        return task && task.title === activeTab;
+      })
+      .filter(note => {
+        // Search filtering
         const matchesSearch = (note.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           note.content?.toLowerCase().includes(searchTerm.toLowerCase()));
-        return matchesTask && matchesSearch;
+        return matchesSearch;
       })
       .sort((a, b) => {
         switch (sortBy) {
@@ -45,7 +79,7 @@ function Notes() {
             return new Date(b.created_at) - new Date(a.created_at);
         }
       });
-  }, [notes, selectedTask, searchTerm, sortBy]);
+  }, [notes, activeTab, searchTerm, sortBy, tasks]);
 
   const handleCreateNote = async (_, noteData) => {
     try {
@@ -100,60 +134,71 @@ function Notes() {
 
   return (
     <div className="notes-page">
-      <div className="filters-column">
-        <div className="filters-section">
-          <h3>Filters</h3>
-          <div className="search-bar">
-            <input
-              type="text"
-              placeholder="Search notes..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-
-          <div className="filter-group">
-            <label>Task</label>
-            <select
-              value={selectedTask}
-              onChange={(e) => setSelectedTask(e.target.value)}
+      <div className="sidebar">
+        <div className="tabs-section">
+          {noteTabs.map(tab => (
+            <div 
+              key={tab}
+              className={`tab-item ${activeTab === tab ? 'active' : ''}`}
+              onClick={() => setActiveTab(tab)}
             >
-              <option value="">All Tasks</option>
-              {tasks.map(task => (
-                <option key={task.id} value={task.id}>
-                  {task.title}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="filter-group">
-            <label>Sort By</label>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-            >
-              <option value="created">Created Date</option>
-              <option value="updated">Updated Date</option>
-              <option value="title">Title</option>
-            </select>
-          </div>
+              <span>{tab}</span>
+              {tab !== 'All' && tab !== 'Unassigned' && (
+                <span className="count-badge">
+                  {notes.filter(note => {
+                    const task = tasks.find(t => t.id === note.task_id);
+                    return task && task.title === tab;
+                  }).length}
+                </span>
+              )}
+            </div>
+          ))}
         </div>
       </div>
 
-      <div className="notes-column">
-        <div className="header-title-row">
-          <div className="header-left">
-            <h1>Notes</h1>
-          </div>
-          <div className="header-actions">
-            <button 
-              onClick={() => setIsCreatingNew(true)} 
-              className="header-button add-note-button"
-              disabled={isCreatingNew}
-            >
-              Add Note
-            </button>
+      <div className="main-content">
+        <div className="header-actions">
+          <button 
+            onClick={() => setIsCreatingNew(true)} 
+            className="add-note-button"
+            disabled={isCreatingNew}
+          >
+            <FiPlus /> Add New Note
+          </button>
+        </div>
+
+        <div className="filters-section">
+          <div className="filters-container">
+            <div className="filters-row">
+              <input
+                type="text"
+                placeholder="Search notes..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+              />
+              
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="filter-select"
+              >
+                <option value="created">Created Date</option>
+                <option value="updated">Updated Date</option>
+                <option value="title">Title</option>
+              </select>
+
+              <select 
+                value={selectedTask} 
+                onChange={(e) => setSelectedTask(e.target.value)}
+                className="filter-select"
+              >
+                <option value="">Task</option>
+                {tasks.map(task => (
+                  <option key={task.id} value={task.id}>{task.title}</option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
 
