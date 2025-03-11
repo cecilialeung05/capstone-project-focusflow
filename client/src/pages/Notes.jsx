@@ -83,26 +83,46 @@ function Notes() {
 
   const handleCreateNote = async (_, noteData) => {
     try {
-      // Log the incoming data
-      console.log('Incoming note data:', noteData);
-      
-      // Ensure we're sending a plain object with the correct structure
-      const noteToCreate = {
-        title: noteData.title,
-        content: noteData.content,
-        // Only include task_id if it's a valid number
-        ...(noteData.task_id ? { task_id: parseInt(noteData.task_id) } : {}),
-        tags: noteData.tags || []
-      };
+        // Log the incoming data
+        console.log('Incoming note data:', noteData);
+        
+        // Validate required fields
+        if (!noteData.title || !noteData.content) {
+            throw new Error('Title and content are required');
+        }
 
-      console.log('Formatted note to create:', noteToCreate);
-      await createNote(noteToCreate);
-      setIsCreatingNew(false);
+        // Ensure we're sending a plain object with the correct structure
+        const noteToCreate = {
+            title: noteData.title.trim(),
+            content: noteData.content.trim(),
+            // Only include task_id if it's a valid number
+            ...(noteData.task_id ? { task_id: parseInt(noteData.task_id) } : {}),
+            // Ensure tags is always an array of integers
+            tags: Array.isArray(noteData.tags) 
+                ? noteData.tags.map(tag => 
+                    typeof tag === 'number' ? tag : parseInt(tag)
+                  )
+                : []
+        };
+
+        console.log('Formatted note to create:', noteToCreate);
+        
+        // Validate the formatted data
+        if (noteToCreate.task_id && isNaN(noteToCreate.task_id)) {
+            throw new Error('Invalid task ID');
+        }
+
+        await createNote(noteToCreate);
+        setIsCreatingNew(false);
     } catch (error) {
-      console.error('Create note error:', {
-        data: error.response?.data,
-        status: error.response?.status
-      });
+        console.error('Create note error:', {
+            message: error.message,
+            data: error.response?.data,
+            status: error.response?.status,
+            validationErrors: error.response?.data?.errors
+        });
+        // Optionally show error to user
+        alert(`Failed to create note: ${error.message}`);
     }
   };
 

@@ -50,25 +50,25 @@ function NoteItem({ note, onEdit, onDelete, isNew = false }) {
 
   const handleSave = async () => {
     try {
-      // Log the data at each step
-      console.log('EditData before formatting:', editData);
-      
-      const formattedData = {
+      // Validate required fields
+      if (!editData.title.trim() || !editData.content.trim()) {
+        alert('Title and content are required');
+        return;
+      }
+
+      const noteData = {
         title: editData.title.trim(),
         content: editData.content.trim(),
-        ...(editData.task_id ? { task_id: parseInt(editData.task_id) } : {}),
-        tags: editData.tags || []
+        task_id: editData.task_id ? parseInt(editData.task_id) : null,
+        tags: editData.tags.map(tag => parseInt(tag))
       };
 
-      console.log('Formatted data before save:', formattedData);
-      await onEdit(note?.id, formattedData);
+      console.log('Saving note with data:', noteData);
+      await onEdit(note?.id, noteData);
       setIsEditing(false);
     } catch (error) {
-      console.error('Save error:', {
-        editData,
-        formattedData,
-        error: error.response?.data
-      });
+      console.error('Error saving note:', error);
+      alert('Failed to save note');
     }
   };
 

@@ -120,8 +120,64 @@ const Tags = () => {
         };
     }, [tags]);
 
+    // Calculate focus metrics
+    const focusStats = useMemo(() => {
+        // Find Deep Focus and Light Work tags
+        const deepFocusNotes = tags.find(t => t.name === 'Deep Focus')?.notes || [];
+        const lightWorkNotes = tags.find(t => t.name === 'Light Work')?.notes || [];
+        
+        // Calculate totals
+        const totalSessions = deepFocusNotes.length + lightWorkNotes.length;
+        const focusedMinutes = deepFocusNotes.reduce((acc, note) => {
+            const duration = note.title.match(/(\d+)\s*min/);
+            return acc + (duration ? parseInt(duration[1]) : 0);
+        }, 0);
+
+        return {
+            totalSessions,
+            focusedSessions: deepFocusNotes.length,
+            distractedSessions: lightWorkNotes.length,
+            totalMinutes: focusedMinutes,
+            focusRate: totalSessions ? 
+                Math.round((deepFocusNotes.length / totalSessions) * 100) : 0
+        };
+    }, [tags]);
+
     return (
         <div className="tags-container">
+            {/* Focus Dashboard */}
+            <div className="focus-dashboard">
+                <h2>Focus Dashboard</h2>
+                <div className="stats-grid">
+                    <div className="stat-card">
+                        <h3>Focus Rate</h3>
+                        <div className="stat-value">{focusStats.focusRate}%</div>
+                        <div className="focus-bar">
+                            <div 
+                                className="focus-progress" 
+                                style={{ width: `${focusStats.focusRate}%` }}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="stat-card">
+                        <h3>Total Sessions</h3>
+                        <div className="stat-value">{focusStats.totalSessions}</div>
+                        <div className="stat-breakdown">
+                            <span>🎯 {focusStats.focusedSessions} Focused</span>
+                            <span>💭 {focusStats.distractedSessions} Distracted</span>
+                        </div>
+                    </div>
+
+                    <div className="stat-card">
+                        <h3>Total Focus Time</h3>
+                        <div className="stat-value">
+                            {Math.floor(focusStats.totalMinutes / 60)}h {focusStats.totalMinutes % 60}m
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {/* Category Selection */}
             <div className="category-selector">
                 {Object.entries(filterCategories).map(([key, category]) => (

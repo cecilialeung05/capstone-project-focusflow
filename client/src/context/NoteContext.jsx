@@ -25,17 +25,28 @@ export const NoteProvider = ({ children }) => {
     fetchNotes();
   }, []);
 
-  const createNote = async (note) => {
+  const createNote = async (noteData) => {
     try {
-      const newNote = await noteService.createNote({
-        ...note,
-        task_id: note.task_id || null,
-        tags: note.tags || []
-      });
-      setNotes(prevNotes => [...prevNotes, newNote]);
-      return newNote;
+      // Ensure data meets validation requirements
+      const formattedNote = {
+        title: noteData.title,
+        content: noteData.content,
+        task_id: noteData.task_id || null,
+        tags: Array.isArray(noteData.tags) ? noteData.tags : []
+      };
+
+      console.log('Sending note data:', formattedNote);
+      
+      const response = await noteService.createNote(formattedNote);
+      setNotes(prevNotes => [...prevNotes, response]);
+      return response;
     } catch (error) {
       console.error('Error creating note:', error);
+      console.log('Server response:', {
+        status: error.response?.status,
+        data: error.response?.data,
+        validationErrors: error.response?.data?.errors
+      });
       throw error;
     }
   };
