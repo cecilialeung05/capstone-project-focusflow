@@ -67,6 +67,7 @@ export const getNote = async (req, res) => {
 
 export const addNote = async (req, res) => {
   const { task_id, title, content, tags } = req.body;
+  console.log('Received note data:', { task_id, title, content, tags });
   try {
     await knex.transaction(async (trx) => {
       const [noteId] = await trx("notes").insert({

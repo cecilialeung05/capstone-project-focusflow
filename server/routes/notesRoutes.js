@@ -5,7 +5,11 @@ import { getNotes, getNote, addNote, updateNote, deleteNote } from '../controlle
 import { body, validationResult } from 'express-validator';
 
 const validateNote = [
-    body('task_id').optional().isInt().withMessage('Task ID must be an integer'),
+    body('task_id')
+        .optional({ nullable: true })
+        .isInt()
+        .withMessage('Task ID must be an integer')
+        .toInt(),
     body('title').notEmpty().withMessage('Title is required'),
     body('content').notEmpty().withMessage('Content is required'),
     body('tags').optional().isArray().withMessage('Tags must be an array'),

@@ -1,9 +1,10 @@
 .tasks-page {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 100vh;
   padding: 20px;
   background-color: var(--bg-primary);
+  overflow: hidden;
 }
 
 .tasks-container {
@@ -13,14 +14,18 @@
   border-radius: 8px;
   overflow: hidden;
   background-color: var(--bg-elevated);
+  height: calc(100vh - 40px);
 }
 
 .task-tabs {
+  min-width: 120px;
   width: 120px;
   background-color: var(--bg-secondary);
   border-right: 1px solid var(--border-light);
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
+  overflow-y: auto;
 }
 
 .task-tab {
@@ -48,12 +53,21 @@
   display: flex;
   flex-direction: column;
   padding: 20px;
+  overflow: hidden;
+  min-width: 0;
 }
 
 .task-input-container {
-  display: flex;
+  flex-shrink: 0;
   margin-bottom: 20px;
   gap: 10px;
+  
+  .task-form {
+    background-color: var(--bg-elevated);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(71, 117, 147, 0.1);
+  }
 }
 
 .task-input {
@@ -95,6 +109,7 @@
 }
 
 .task-filters {
+  flex-shrink: 0;
   margin-bottom: 1.5rem;
   padding: 15px;
   background-color: var(--bg-secondary);
@@ -193,21 +208,51 @@
 }
 
 .tasks-list {
-  background: var(--bg-elevated);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(71, 117, 147, 0.1);
+  flex: 1;
   overflow-y: auto;
+  padding: 10px;
+  margin-right: -10px;
+  
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin-top: 1rem;
+}
+
+.task-item {
+  width: 100%;
+  min-width: 0;
+  background: var(--bg-elevated);
+  margin-bottom: 8px;
+  border-radius: 4px;
   
-  p {
-    text-align: center;
-    color: var(--text-secondary);
-    font-style: italic;
-    font-family: var(--font-primary);
-    font-size: var(--font-size-sm);
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    gap: 10px;
+  }
+
+  &__title-group {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__actions {
+    flex-shrink: 0;
+    display: flex;
+    gap: 8px;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 }
 

@@ -37,7 +37,8 @@ function Tasks() {
     selectedTask,
     setSelectedTask,
     selectedTaskNotes,
-    getTaskWithNotes 
+    getTaskWithNotes,
+    createNote
   } = useContext(TaskContext);
   const navigate = useNavigate();
   const location = useLocation();
@@ -231,6 +232,16 @@ function Tasks() {
     }
   };
 
+  const handleQuickNote = async (taskId) => {
+    const quickNote = {
+      title: `Quick Note for ${selectedTask.title}`,
+      content: '',
+      task_id: taskId,
+      tags: []
+    };
+    await createNote(quickNote);
+  };
+
   const renderTaskInput = () => {
     if (showNewTaskForm) {
       return (
@@ -370,6 +381,7 @@ function Tasks() {
                   onCheck={() => handleTaskSelect(task)}
                   isSelected={selectedTask?.id === task.id}
                   onTagClick={handleTagClick}
+                  onQuickNote={() => handleQuickNote(task.id)}
                 />
               ))
             ) : (

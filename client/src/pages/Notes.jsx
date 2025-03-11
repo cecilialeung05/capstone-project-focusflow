@@ -19,8 +19,10 @@ function Notes() {
   // Initialize new note if coming from task
   useEffect(() => {
     if (location.state?.createNote) {
+      console.log('Received state from Tasks:', location.state);
       setIsCreatingNew(true);
-      setSelectedTask(location.state.taskId);
+      // Ensure taskId is a number
+      setSelectedTask(location.state.taskId ? parseInt(location.state.taskId) : '');
     }
   }, [location.state]);
 
@@ -47,13 +49,26 @@ function Notes() {
 
   const handleCreateNote = async (_, noteData) => {
     try {
-      await createNote({
-        ...noteData,
-        task_id: selectedTask || null
-      });
+      // Log the incoming data
+      console.log('Incoming note data:', noteData);
+      
+      // Ensure we're sending a plain object with the correct structure
+      const noteToCreate = {
+        title: noteData.title,
+        content: noteData.content,
+        // Only include task_id if it's a valid number
+        ...(noteData.task_id ? { task_id: parseInt(noteData.task_id) } : {}),
+        tags: noteData.tags || []
+      };
+
+      console.log('Formatted note to create:', noteToCreate);
+      await createNote(noteToCreate);
       setIsCreatingNew(false);
     } catch (error) {
-      console.error('Error creating note:', error);
+      console.error('Create note error:', {
+        data: error.response?.data,
+        status: error.response?.status
+      });
     }
   };
 
@@ -148,7 +163,8 @@ function Notes() {
               note={{
                 title: location.state?.taskTitle ? `Notes for: ${location.state.taskTitle}` : '',
                 content: '',
-                task_id: location.state?.taskId || null,
+                // Ensure task_id is a number if present
+                task_id: location.state?.taskId ? parseInt(location.state.taskId) : undefined,
                 tags: []
               }}
               onEdit={handleCreateNote}

@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { FiEdit2, FiTrash2, FiX, FiSave, FiCheck, FiChevronDown, FiChevronUp, FiClock, FiRepeat } from 'react-icons/fi';
+import { FiEdit2, FiTrash2, FiX, FiSave, FiCheck, FiChevronDown, FiChevronUp, FiClock, FiRepeat, FiFileText } from 'react-icons/fi';
 import './TaskItem.scss';
 import { TaskContext } from '../../context/TaskContext';
+import { NoteContext } from '../../context/NoteContext';
 import { formatDate } from '../../utils/dateUtils';
+import QuickNoteModal from '../QuickNoteModal/QuickNoteModal';
 
 const TAG_CATEGORIES = {
   Duration: [
@@ -44,6 +46,8 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
     recurring_unit: task?.recurring_unit || 'days'
   });
   const { updateTask: contextUpdateTask } = useContext(TaskContext);
+  const { createNote } = useContext(NoteContext);
+  const [showQuickNote, setShowQuickNote] = useState(false);
 
   useEffect(() => {
     setLocalTask(task);
@@ -309,6 +313,20 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
     );
   };
 
+  const handleQuickNoteSave = async (noteData) => {
+    try {
+      await createNote(noteData);
+      setShowQuickNote(false);
+      if (task.id) {
+        // If you have a function to refresh task data
+        // await refreshTask(task.id);
+      }
+    } catch (error) {
+      console.error('Failed to save note:', error);
+      alert('Failed to save note. Please try again.');
+    }
+  };
+
   return (<div className={`task-item ${localTask.status ? localTask.status.toLowerCase().replace(' ', '-') : 'default-status'} ${showDetails ? 'show-details' : ''} ${isEditing ? 'task-item--editing' : ''} ${isNew ? 'task-item--new' : ''}`}>
 
       <div className="task-item__header">
@@ -342,6 +360,11 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
     {localTask.priority && (
       <span className={`task-item__badge task-item__badge--${localTask.priority}`}>
         {localTask.priority}
+      </span>
+    )}
+    {localTask.notes?.length > 0 && (
+      <span className="task-item__notes-badge">
+        {localTask.notes.length} Notes
       </span>
     )}
   </h3>
@@ -383,20 +406,27 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
               >
                 {showDetails ? <FiChevronUp /> : <FiChevronDown />}
               </button>
-                   <button 
-        className="task-item__button"
-        onClick={handleEditClick}
-        title="Edit task"
-      >
-        <FiEdit2 />
-      </button>
-      <button 
-        className="task-item__button"
-        onClick={() => deleteTask(task.id)}
-        title="Delete task"
-      >
-        <FiTrash2 />
-      </button> 
+              <button 
+                className="task-item__button"
+                onClick={() => setShowQuickNote(true)}
+                title="Add Quick Note"
+              >
+                <FiFileText />
+              </button>
+              <button 
+                className="task-item__button"
+                onClick={handleEditClick}
+                title="Edit task"
+              >
+                <FiEdit2 />
+              </button>
+              <button 
+                className="task-item__button"
+                onClick={() => deleteTask(task.id)}
+                title="Delete task"
+              >
+                <FiTrash2 />
+              </button> 
            </>
   
               )}
@@ -597,9 +627,38 @@ function TaskItem({ task, updateTask, deleteTask, onStatusChange, onCheck, isSel
                   </div>
                 </div>
               )}
+
+              {!isEditing && task.notes && task.notes.length > 0 && (
+                <div className="task-item__notes-preview">
+                  <h4>Recent Notes</h4>
+                  <div className="task-item__notes-list">
+                    {task.notes.slice(0, 3).map(note => (
+                      <div key={note.id} className="task-item__note">
+                        <p>{note.content}</p>
+                        <span className="task-item__note-date">
+                          {formatDate(note.created_at)}
+                        </span>
+                      </div>
+                    ))}
+                    {task.notes.length > 3 && (
+                      <div className="task-item__notes-more">
+                        +{task.notes.length - 3} more notes
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
+      )}
+
+      {showQuickNote && (
+        <QuickNoteModal
+          task={task}
+          onSave={handleQuickNoteSave}
+          onClose={() => setShowQuickNote(false)}
+        />
       )}
     </div>
   );

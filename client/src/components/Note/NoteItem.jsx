@@ -49,19 +49,26 @@ function NoteItem({ note, onEdit, onDelete, isNew = false }) {
   };
 
   const handleSave = async () => {
-    if (editData.title.trim() === '' || editData.content.trim() === '') return;
-    
     try {
-      await onEdit(note?.id, {
-        ...editData,
+      // Log the data at each step
+      console.log('EditData before formatting:', editData);
+      
+      const formattedData = {
         title: editData.title.trim(),
         content: editData.content.trim(),
-        task_id: editData.task_id,
-        tags: editData.tags
-      });
+        ...(editData.task_id ? { task_id: parseInt(editData.task_id) } : {}),
+        tags: editData.tags || []
+      };
+
+      console.log('Formatted data before save:', formattedData);
+      await onEdit(note?.id, formattedData);
       setIsEditing(false);
     } catch (error) {
-      console.error('Error saving note:', error);
+      console.error('Save error:', {
+        editData,
+        formattedData,
+        error: error.response?.data
+      });
     }
   };
 
@@ -211,13 +218,13 @@ function NoteItem({ note, onEdit, onDelete, isNew = false }) {
                 <>
                   <span className="note-item__detail--separator">•</span>
                   <span className="note-item__detail--label">Task:</span>
-                  <a 
-                    href="#"
-                    onClick={handleTaskClick}
+                  <Link 
+                    to={`/tasks`} 
+                    state={{ selectedTaskId: note.task_id }}
                     className="note-item__detail--link"
                   >
                     {note.task?.title || 'View Task'} <FiExternalLink size={12} />
-                  </a>
+                  </Link>
                 </>
               )}
             </div>
