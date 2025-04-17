@@ -1,14 +1,14 @@
-import initKnex from "knex";
-import configuration from "../knexfile.js";
-const knex = initKnex(configuration);
+import supabase from "../supabaseClient.js";
 
 export const getTags = async (req, res) => {
   try {
-    const tags = await knex("tags")
-      .select('*')
-      .orderBy('name');
+    const { data, error } = await supabase
+      .from("tags")
+      .select("*")
+      .order("name", { ascending: true });
 
-    res.status(200).json(tags);
+    if (error) throw error;
+    res.status(200).json(data);
   } catch (error) {
     console.error("Error getting tags:", error);
     res.status(500).json({ message: "Error retrieving tags", error: error.message });
@@ -19,28 +19,29 @@ export const getTag = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const tag = await knex("tags")
-      .where({ id })
-      .first();
+    const { data: tag, error: tagError } = await supabase
+      .from("tags")
+      .select("*")
+      .eq("id", id)
+      .single();
 
-    if (!tag) {
-      return res.status(404).json({ message: `Tag with ID ${id} not found` });
-    }
+    if (tagError) throw tagError;
+    if (!tag) return res.status(404).json({ message: `Tag with ID ${id} not found` });
 
-    const tasks = await knex("tasks")
-      .select("tasks.*")
-      .join("task_tags", "tasks.id", "task_tags.task_id")
-      .where("task_tags.tag_id", id);
+    const { data: tasks } = await supabase
+      .from("task_tags")
+      .select("tasks(*)")
+      .eq("tag_id", id);
 
-    const notes = await knex("notes")
-      .select("notes.*")
-      .join("note_tags", "notes.id", "note_tags.note_id")
-      .where("note_tags.tag_id", id);
+    const { data: notes } = await supabase
+      .from("note_tags")
+      .select("notes(*)")
+      .eq("tag_id", id);
 
     res.status(200).json({
       ...tag,
-      tasks,
-      notes
+      tasks: tasks?.map(t => t.tasks) || [],
+      notes: notes?.map(n => n.notes) || []
     });
   } catch (error) {
     console.error("Error getting tag:", error);
@@ -52,9 +53,14 @@ export const addTag = async (req, res) => {
   const { name } = req.body;
 
   try {
-    const [id] = await knex("tags").insert({ name });
-    const newTag = await knex("tags").where({ id }).first();
-    res.status(201).json(newTag);
+    const { data, error } = await supabase
+      .from("tags")
+      .insert({ name })
+      .select()
+      .single();
+
+    if (error) throw error;
+    res.status(201).json(data);
   } catch (error) {
     console.error("Error creating tag:", error);
     res.status(500).json({ message: "Error creating tag", error: error.message });
@@ -66,9 +72,15 @@ export const updateTag = async (req, res) => {
   const { name } = req.body;
 
   try {
-    await knex("tags").where({ id }).update({ name });
-    const updatedTag = await knex("tags").where({ id }).first();
-    res.status(200).json(updatedTag);
+    const { data, error } = await supabase
+      .from("tags")
+      .update({ name })
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    res.status(200).json(data);
   } catch (error) {
     console.error("Error updating tag:", error);
     res.status(500).json({ message: "Error updating tag", error: error.message });
@@ -79,11 +91,25 @@ export const deleteTag = async (req, res) => {
   const { id } = req.params;
 
   try {
-    await knex.transaction(async (trx) => {
-      await trx("task_tags").where({ tag_id: id }).del();
-      await trx("note_tags").where({ tag_id: id }).del();
-      await trx("tags").where({ id }).del();
-    });
+    const { error: deleteTaskTagsError } = await supabase
+      .from("task_tags")
+      .delete()
+      .eq("tag_id", id);
+
+    const { error: deleteNoteTagsError } = await supabase
+      .from("note_tags")
+      .delete()
+      .eq("tag_id", id);
+
+    const { error: deleteTagError } = await supabase
+      .from("tags")
+      .delete()
+      .eq("id", id);
+
+    if (deleteTaskTagsError || deleteNoteTagsError || deleteTagError) {
+      throw deleteTaskTagsError || deleteNoteTagsError || deleteTagError;
+    }
+
     res.status(204).send();
   } catch (error) {
     console.error("Error deleting tag:", error);

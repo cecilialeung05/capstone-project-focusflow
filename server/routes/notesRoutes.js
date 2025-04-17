@@ -9,7 +9,7 @@ const validateNote = [
     body('title').notEmpty().withMessage('Title is required'),
     body('content').notEmpty().withMessage('Content is required'),
     body('tags').optional().isArray().withMessage('Tags must be an array'),
-    body('tags.*').isInt().withMessage('Each tag must be an integer'),
+    body('tags.*').isUUID().withMessage('Each tag must be a valid UUID'),
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -18,7 +18,6 @@ const validateNote = [
         next();
     }
 ];
-// // Notes routes
 router.get("/", getNotes); 
 router.get("/:id", getNote);
 router.post("/", validateNote, addNote);

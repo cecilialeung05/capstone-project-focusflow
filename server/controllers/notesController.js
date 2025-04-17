@@ -1,30 +1,31 @@
-import initKnex from "knex";
-import configuration from "../knexfile.js";
-
-const knex = initKnex(configuration);
+import supabase from "../supabaseClient.js";
 
 export const getNotes = async (req, res) => {
   const { taskId } = req.query;
 
   try {
-    let notesQuery = knex("notes")
-      .select("notes.*")
-      .orderBy("notes.created_at", "desc");
-
+    let query = supabase.from('notes').select('*').order('created_at', { ascending: false });
     if (taskId) {
-      notesQuery = notesQuery.where({ task_id: taskId });
+      query = query.eq('task_id', taskId);
     }
 
-    const notes = await notesQuery;
+    const { data: notes, error } = await query;
+    if (error) throw error;
 
     const notesWithTags = await Promise.all(
       notes.map(async (note) => {
-        const tags = await knex("tags")
-          .select("tags.*")
-          .join("note_tags", "tags.id", "note_tags.tag_id")
-          .where("note_tags.note_id", note.id);
-
-        console.log(`Tags for note ${note.id}:`, tags);
+        const { data: tags, error: tagError } = await supabase
+          .from('tags')
+          .select('*')
+          .in(
+            'id',
+            (
+              await supabase
+                .from('note_tags')
+                .select('tag_id')
+                .eq('note_id', note.id)
+            ).data.map((row) => row.tag_id)
+          );
 
         return {
           ...note,
@@ -33,11 +34,10 @@ export const getNotes = async (req, res) => {
       })
     );
 
-    console.log('Final notes with tags:', notesWithTags); 
     res.status(200).json(notesWithTags);
   } catch (error) {
-    console.error("Error getting notes:", error);
-    res.status(500).json({ message: "Error retrieving notes", error: error.message });
+    console.error('Error getting notes:', error);
+    res.status(500).json({ message: 'Error retrieving notes', error: error.message });
   }
 };
 
@@ -45,109 +45,92 @@ export const getNote = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const note = await knex("notes").where({ id }).first();
-    if (!note) {
-      return res.status(404).json({ message: `Note with ID ${id} not found` });
-    }
+    const { data: note, error } = await supabase.from('notes').select('*').eq('id', id).single();
+    if (error || !note) return res.status(404).json({ message: `Note with ID ${id} not found` });
 
-    const tags = await knex("tags")
-      .select("tags.*")
-      .join("note_tags", "tags.id", "note_tags.tag_id")
-      .where("note_tags.note_id", id);
+    const { data: tags } = await supabase
+      .from('tags')
+      .select('*')
+      .in(
+        'id',
+        (
+          await supabase
+            .from('note_tags')
+            .select('tag_id')
+            .eq('note_id', id)
+        ).data.map((row) => row.tag_id)
+      );
 
-    res.status(200).json({
-      ...note,
-      tags: tags || []
-    });
+    res.status(200).json({ ...note, tags: tags || [] });
   } catch (error) {
-    console.error("Error getting note:", error);
-    res.status(500).json({ message: "Error retrieving note", error: error.message });
+    console.error('Error getting note:', error);
+    res.status(500).json({ message: 'Error retrieving note', error: error.message });
   }
 };
 
 export const addNote = async (req, res) => {
   const { task_id, title, content, tags } = req.body;
+
   try {
-    await knex.transaction(async (trx) => {
-      const [noteId] = await trx("notes").insert({
-        task_id: task_id || null,
-        title,
-        content,
-      });
-      console.log('Created note with ID:', noteId); 
+    const { data: note, error } = await supabase
+      .from('notes')
+      .insert([{ task_id, title, content }])
+      .select()
+      .single();
 
-      if (tags && Array.isArray(tags) && tags.length > 0) {
-        console.log('Inserting tags for note:', tags); 
-        const tagInserts = tags.map(tagId => ({
-          note_id: noteId,
-          tag_id: parseInt(tagId)
-        }));
-        await trx("note_tags").insert(tagInserts);
-      }
+    if (error) throw error;
 
-      const note = await trx("notes").where({ id: noteId }).first();
-      const noteTags = await trx("tags")
-        .select("tags.*")
-        .join("note_tags", "tags.id", "note_tags.tag_id")
-        .where("note_tags.note_id", noteId);
+    if (tags?.length) {
+      await supabase.from('note_tags').insert(
+        tags.map((tagId) => ({ note_id: note.id, tag_id: tagId }))
+      );
+    }
 
-      console.log('Final note with tags:', { ...note, tags: noteTags }); 
+    const { data: noteTags } = await supabase
+      .from('tags')
+      .select('*')
+      .in(
+        'id',
+        tags
+      );
 
-      res.status(201).json({
-        ...note,
-        tags: noteTags || []
-      });
-    });
+    res.status(201).json({ ...note, tags: noteTags || [] });
   } catch (error) {
-    console.error("Error creating note:", error);
-    res.status(500).json({ message: "Error creating note", error: error.message });
+    console.error('Error creating note:', error);
+    res.status(500).json({ message: 'Error creating note', error: error.message });
   }
 };
 
 export const updateNote = async (req, res) => {
   const { id } = req.params;
   const { task_id, title, content, tags } = req.body;
-  console.log('Updating note:', id, 'with data:', req.body); 
 
   try {
-    await knex.transaction(async (trx) => {
-      const noteExists = await trx("notes").where({ id }).first();
-      if (!noteExists) {
-        return res.status(404).json({ message: `Note with ID ${id} not found` });
-      }
+    const { error: updateError } = await supabase
+      .from('notes')
+      .update({ task_id, title, content })
+      .eq('id', id);
 
-      await trx("notes").where({ id }).update({
-        task_id: task_id || null,
-        title,
-        content,
-      });
+    if (updateError) throw updateError;
 
-      await trx("note_tags").where({ note_id: id }).del();
-      
-      if (tags && Array.isArray(tags) && tags.length > 0) {
-        const tagInserts = tags.map(tagId => ({
-          note_id: id,
-          tag_id: parseInt(tagId)
-        }));
-        await trx("note_tags").insert(tagInserts);
-      }
+    await supabase.from('note_tags').delete().eq('note_id', id);
 
-      const updatedNote = await trx("notes").where({ id }).first();
-      const noteTags = await trx("tags")
-        .select("tags.*")
-        .join("note_tags", "tags.id", "note_tags.tag_id")
-        .where("note_tags.note_id", id);
+    if (tags?.length) {
+      await supabase.from('note_tags').insert(
+        tags.map((tagId) => ({ note_id: id, tag_id: tagId }))
+      );
+    }
 
-      console.log('Updated note with tags:', { ...updatedNote, tags: noteTags }); 
+    const { data: updatedNote } = await supabase.from('notes').select('*').eq('id', id).single();
+    const { data: noteTags } = await supabase
+      .from('tags')
+      .select('*')
+      .in('id', tags);
 
-      res.status(200).json({
-        ...updatedNote,
-        tags: noteTags || []
-      });
-    });
+    res.status(200).json({ ...updatedNote, tags: noteTags || [] });
   } catch (error) {
-    console.error("Error updating note:", error);
-    res.status(500).json({ message: "Error updating note", error: error.message });
+    console.error('Error updating note:', error);
+    res.status(500).json({ message: 'Error updating note', error: error.message });
   }
 };
 
@@ -155,18 +138,11 @@ export const deleteNote = async (req, res) => {
   const { id } = req.params;
 
   try {
-    await knex.transaction(async (trx) => {
-      const noteExists = await trx("notes").where({ id }).first();
-      if (!noteExists) {
-        return res.status(404).json({ message: `Note with ID ${id} not found` });
-      }
-      await trx("note_tags").where({ note_id: id }).del();
-      await trx("notes").where({ id }).del();
-    });
-
+    await supabase.from('note_tags').delete().eq('note_id', id);
+    await supabase.from('notes').delete().eq('id', id);
     res.sendStatus(204);
   } catch (error) {
-    console.error("Error deleting note:", error);
-    res.status(500).json({ message: "Error deleting note", error: error.message });
+    console.error('Error deleting note:', error);
+    res.status(500).json({ message: 'Error deleting note', error: error.message });
   }
 };

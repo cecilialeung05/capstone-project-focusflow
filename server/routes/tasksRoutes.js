@@ -10,7 +10,7 @@ const validateTask = [
     body('status').optional().isIn(['open', 'in progress', 'completed']).withMessage('Status must be one of: open, in progress, completed'),
     body('dueDate').optional().isISO8601().toDate().withMessage('Due date must be a valid date'),
     body('tags').optional().isArray().withMessage('Tags must be an array'),
-    body('tags.*').isInt().withMessage('Each tag must be an integer'),
+    body('tags.*').isUUID().withMessage('Each tag must be a UUID'),
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
