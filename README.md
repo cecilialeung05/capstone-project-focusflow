@@ -1,5 +1,7 @@
 # FocusFlow
 
+## Live Demo: [https://capstone-project-focusflow.vercel.app/](https://capstone-project-focusflow.vercel.app/)
+
 FocusFlow is a modern productivity application that empowers users to create, manage, and track tasks and notes in one seamless interface. Built with a focus on simplicity, efficiency, and overall well-being, FocusFlow integrates an intuitive task manager, linked note-taking, a focus timer which prompts you to take a break every 25 minutes, and wellness motivational boost prompts to help you stay on track and inspired throughout your day.
 
 ---
