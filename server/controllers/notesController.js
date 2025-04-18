@@ -4,9 +4,13 @@ export const getNotes = async (req, res) => {
   const { taskId } = req.query;
 
   try {
-    let query = supabase.from('notes').select('*').order('created_at', { ascending: false });
+    let query = supabase
+      .from("notes")
+      .select("*")
+      .order("created_at", { ascending: false });
+
     if (taskId) {
-      query = query.eq('task_id', taskId);
+      query = query.eq("task_id", taskId);
     }
 
     const { data: notes, error } = await query;
@@ -14,30 +18,37 @@ export const getNotes = async (req, res) => {
 
     const notesWithTags = await Promise.all(
       notes.map(async (note) => {
-        const { data: tags, error: tagError } = await supabase
-          .from('tags')
-          .select('*')
-          .in(
-            'id',
-            (
-              await supabase
-                .from('note_tags')
-                .select('tag_id')
-                .eq('note_id', note.id)
-            ).data.map((row) => row.tag_id)
-          );
+        const { data: tagLinks, error: tagLinkError } = await supabase
+          .from("note_tags")
+          .select("tag_id")
+          .eq("note_id", note.id);
 
-        return {
-          ...note,
-          tags: tags || []
-        };
+        if (tagLinkError) throw tagLinkError;
+
+        const tagIds = tagLinks.map((t) => t.tag_id);
+
+        let tags = [];
+        if (tagIds.length) {
+          const { data: tagDetails, error: tagFetchError } = await supabase
+            .from("tags")
+            .select("*")
+            .in("id", tagIds);
+
+          if (tagFetchError) throw tagFetchError;
+          tags = tagDetails;
+        }
+
+        return { ...note, tags };
       })
     );
 
     res.status(200).json(notesWithTags);
   } catch (error) {
-    console.error('Error getting notes:', error);
-    res.status(500).json({ message: 'Error retrieving notes', error: error.message });
+    console.error("Error getting notes:", error);
+    res.status(500).json({
+      message: "Error retrieving notes",
+      error: error.message || error,
+    });
   }
 };
 
@@ -45,26 +56,42 @@ export const getNote = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const { data: note, error } = await supabase.from('notes').select('*').eq('id', id).single();
-    if (error || !note) return res.status(404).json({ message: `Note with ID ${id} not found` });
+    const { data: note, error } = await supabase
+      .from("notes")
+      .select("*")
+      .eq("id", id)
+      .single();
 
-    const { data: tags } = await supabase
-      .from('tags')
-      .select('*')
-      .in(
-        'id',
-        (
-          await supabase
-            .from('note_tags')
-            .select('tag_id')
-            .eq('note_id', id)
-        ).data.map((row) => row.tag_id)
-      );
+    if (error || !note) {
+      return res
+        .status(404)
+        .json({ message: `Note with ID ${id} not found` });
+    }
 
-    res.status(200).json({ ...note, tags: tags || [] });
+    const { data: tagLinks, error: tagLinkError } = await supabase
+      .from("note_tags")
+      .select("tag_id")
+      .eq("note_id", id);
+
+    if (tagLinkError) throw tagLinkError;
+
+    const tagIds = tagLinks.map((t) => t.tag_id);
+
+    let tags = [];
+    if (tagIds.length) {
+      const { data: tagDetails, error: tagFetchError } = await supabase
+        .from("tags")
+        .select("*")
+        .in("id", tagIds);
+
+      if (tagFetchError) throw tagFetchError;
+      tags = tagDetails;
+    }
+
+    res.status(200).json({ ...note, tags });
   } catch (error) {
-    console.error('Error getting note:', error);
-    res.status(500).json({ message: 'Error retrieving note', error: error.message });
+    console.error("Error getting note:", error);
+    res.status(500).json({ message: "Error retrieving note", error: error.message });
   }
 };
 
@@ -73,7 +100,7 @@ export const addNote = async (req, res) => {
 
   try {
     const { data: note, error } = await supabase
-      .from('notes')
+      .from("notes")
       .insert([{ task_id, title, content }])
       .select()
       .single();
@@ -81,23 +108,22 @@ export const addNote = async (req, res) => {
     if (error) throw error;
 
     if (tags?.length) {
-      await supabase.from('note_tags').insert(
-        tags.map((tagId) => ({ note_id: note.id, tag_id: tagId }))
-      );
+      const tagLinks = tags.map((tagId) => ({
+        note_id: note.id,
+        tag_id: tagId,
+      }));
+
+      const { error: tagError } = await supabase
+        .from("note_tags")
+        .insert(tagLinks);
+
+      if (tagError) throw tagError;
     }
 
-    const { data: noteTags } = await supabase
-      .from('tags')
-      .select('*')
-      .in(
-        'id',
-        tags
-      );
-
-    res.status(201).json({ ...note, tags: noteTags || [] });
+    res.status(201).json({ ...note, tags: tags || [] });
   } catch (error) {
-    console.error('Error creating note:', error);
-    res.status(500).json({ message: 'Error creating note', error: error.message });
+    console.error("Error creating note:", error);
+    res.status(500).json({ message: "Error creating note", error: error.message });
   }
 };
 
@@ -107,30 +133,48 @@ export const updateNote = async (req, res) => {
 
   try {
     const { error: updateError } = await supabase
-      .from('notes')
+      .from("notes")
       .update({ task_id, title, content })
-      .eq('id', id);
+      .eq("id", id);
 
     if (updateError) throw updateError;
 
-    await supabase.from('note_tags').delete().eq('note_id', id);
+    await supabase.from("note_tags").delete().eq("note_id", id);
 
     if (tags?.length) {
-      await supabase.from('note_tags').insert(
-        tags.map((tagId) => ({ note_id: id, tag_id: tagId }))
-      );
+      const tagLinks = tags.map((tagId) => ({
+        note_id: id,
+        tag_id: tagId,
+      }));
+
+      const { error: tagInsertError } = await supabase
+        .from("note_tags")
+        .insert(tagLinks);
+
+      if (tagInsertError) throw tagInsertError;
     }
 
-    const { data: updatedNote } = await supabase.from('notes').select('*').eq('id', id).single();
-    const { data: noteTags } = await supabase
-      .from('tags')
-      .select('*')
-      .in('id', tags);
+    const { data: updatedNote, error: fetchError } = await supabase
+      .from("notes")
+      .select("*")
+      .eq("id", id)
+      .single();
 
-    res.status(200).json({ ...updatedNote, tags: noteTags || [] });
+    if (fetchError) throw fetchError;
+
+    const { data: tagLinks, error: tagFetchError } = await supabase
+      .from("note_tags")
+      .select("tag_id")
+      .eq("note_id", id);
+
+    if (tagFetchError) throw tagFetchError;
+
+    const tagIds = tagLinks.map((t) => t.tag_id);
+
+    res.status(200).json({ ...updatedNote, tags: tagIds });
   } catch (error) {
-    console.error('Error updating note:', error);
-    res.status(500).json({ message: 'Error updating note', error: error.message });
+    console.error("Error updating note:", error);
+    res.status(500).json({ message: "Error updating note", error: error.message });
   }
 };
 
@@ -138,11 +182,12 @@ export const deleteNote = async (req, res) => {
   const { id } = req.params;
 
   try {
-    await supabase.from('note_tags').delete().eq('note_id', id);
-    await supabase.from('notes').delete().eq('id', id);
+    await supabase.from("note_tags").delete().eq("note_id", id);
+    const { error } = await supabase.from("notes").delete().eq("id", id);
+    if (error) throw error;
     res.sendStatus(204);
   } catch (error) {
-    console.error('Error deleting note:', error);
-    res.status(500).json({ message: 'Error deleting note', error: error.message });
+    console.error("Error deleting note:", error);
+    res.status(500).json({ message: "Error deleting note", error: error.message });
   }
 };
